@@ -63,25 +63,34 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.129 0.042 264.695);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.208 0.042 265.755);
-  --primary-foreground: oklch(0.984 0.003 247.858);
-  --secondary: oklch(0.968 0.007 247.896);
-  --secondary-foreground: oklch(0.208 0.042 265.755);
-  --muted: oklch(0.968 0.007 247.896);
-  --muted-foreground: oklch(0.554 0.046 257.417);
-  --accent: oklch(0.968 0.007 247.896);
-  --accent-foreground: oklch(0.208 0.042 265.755);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(0.929 0.013 255.508);
-  --input: oklch(0.929 0.013 255.508);
-  --ring: oklch(0.704 0.04 256.788);
+  /* BrokerMind AI — deep navy + cyan/magenta */
+  --background: oklch(0.18 0.04 265);
+  --foreground: oklch(0.97 0.01 240);
+  --card: oklch(0.22 0.04 265 / 0.6);
+  --card-foreground: oklch(0.97 0.01 240);
+  --popover: oklch(0.20 0.04 265);
+  --popover-foreground: oklch(0.97 0.01 240);
+  --primary: oklch(0.78 0.16 210);            /* cyan #00BCD4 */
+  --primary-foreground: oklch(0.15 0.04 265);
+  --secondary: oklch(0.65 0.27 350);          /* magenta #E91E8C */
+  --secondary-foreground: oklch(0.98 0 0);
+  --muted: oklch(0.28 0.04 265);
+  --muted-foreground: oklch(0.72 0.03 250);
+  --accent: oklch(0.55 0.24 310);             /* purple */
+  --accent-foreground: oklch(0.98 0 0);
+  --destructive: oklch(0.65 0.24 25);
+  --destructive-foreground: oklch(0.98 0 0);
+  --border: oklch(1 0 0 / 0.1);
+  --input: oklch(1 0 0 / 0.08);
+  --ring: oklch(0.78 0.16 210);
+  --brand-cyan: #00BCD4;
+  --brand-magenta: #E91E8C;
+  --brand-purple: #9C27B0;
+  --brand-navy: #0F172A;
+  --gradient-brand: linear-gradient(135deg, #00BCD4 0%, #9C27B0 50%, #E91E8C 100%);
+  --gradient-text: linear-gradient(90deg, #ffffff 0%, #00BCD4 50%, #E91E8C 100%);
+  --shadow-glow-cyan: 0 0 40px -10px rgba(0,188,212,0.5);
+  --shadow-glow-magenta: 0 0 40px -10px rgba(233,30,140,0.5);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -138,7 +147,42 @@
   }
 
   body {
-    background-color: var(--color-background);
+    background: radial-gradient(ellipse at top, #1a2548 0%, #0F172A 55%, #060914 100%);
     color: var(--color-foreground);
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   }
+}
+
+@utility text-gradient-brand {
+  background: var(--gradient-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility glass-card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015));
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 1rem;
+}
+
+@keyframes float-y {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+@keyframes pulse-glow {
+  0%,100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+@keyframes dash-flow {
+  to { stroke-dashoffset: -200; }
+}
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
+}
+@keyframes drift {
+  0% { transform: translate3d(0,0,0); }
+  50% { transform: translate3d(20px,-15px,0); }
+  100% { transform: translate3d(0,0,0); }
 }
