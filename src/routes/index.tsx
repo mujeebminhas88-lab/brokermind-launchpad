@@ -527,5 +527,3 @@ function Footer() {
     </footer>
   );
 }
-  );
-}
