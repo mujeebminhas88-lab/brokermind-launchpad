@@ -1,5 +1,36 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  AnimatePresence,
+  useMotionValue,
+  useSpring,
+  useInView,
+} from "framer-motion";
+import confetti from "canvas-confetti";
+import {
+  FileSearch,
+  ShieldCheck,
+  TrendingUp,
+  AlertTriangle,
+  Network,
+  Sparkles,
+  Upload,
+  Brain,
+  Gauge,
+  Send,
+  Lock,
+  KeyRound,
+  ScrollText,
+  Cloud,
+  BadgeCheck,
+  ArrowRight,
+  CheckCircle2,
+  Loader2,
+  Quote,
+} from "lucide-react";
 import { toast } from "sonner";
 import logoAsset from "@/assets/brokermind-logo.png.asset.json";
 import {
@@ -9,100 +40,232 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Toaster } from "@/components/ui/sonner";
+import { joinWaitlist, readAttribution, validateEmail } from "@/lib/waitlist";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "BrokerMind AI — Underwriting Reimagined" },
+      { title: "BrokerMindAI — Underwrite Smarter. Close Faster." },
       {
         name: "description",
         content:
-          "Smarter underwriting with AI-powered insights. Faster decisions. Stronger outcomes. Join the BrokerMind AI waitlist.",
+          "AI decision intelligence for mortgage brokers, private lenders, B lenders, credit unions, and modern lending teams. Analyze borrower documents, assess risk, and close deals faster.",
       },
-      { property: "og:title", content: "BrokerMind AI — Underwriting Reimagined" },
+      { property: "og:title", content: "BrokerMindAI — Underwrite Smarter. Close Faster." },
       {
         property: "og:description",
         content:
-          "Smarter underwriting with AI-powered insights. Faster decisions. Stronger outcomes.",
+          "AI decision intelligence for mortgage and lending teams. Analyze. Verify. Recommend.",
       },
       { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [{ rel: "canonical", href: "/" }],
   }),
   component: Index,
 });
 
-function Index() {
-  return (
-    <div className="min-h-screen text-foreground">
-      <Toaster theme="dark" position="top-center" />
-      <Header />
-      <Hero />
-      <Features />
-      <FAQ />
-      <Footer />
-    </div>
-  );
-}
+/* ---------------------------------------------------------------- helpers */
 
 function Logo({ className = "h-32 w-auto" }: { className?: string }) {
   return (
     <img
       src={logoAsset.url}
-      alt="BrokerMind AI"
+      alt="BrokerMindAI"
       className={className + " select-none drop-shadow-[0_0_30px_rgba(0,188,212,0.25)]"}
       draggable={false}
     />
   );
 }
 
-function Header() {
-  const nav = [
-    { label: "Features", href: "#features" },
-    { label: "FAQ", href: "#faq" },
-    { label: "Waitlist", href: "#waitlist" },
-  ];
+const fadeUp = {
+  hidden: { opacity: 0, y: 24 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.21, 0.47, 0.32, 0.98] as const } },
+};
+
+const stagger = {
+  show: { transition: { staggerChildren: 0.08 } },
+};
+
+function useCountUp(target: number, duration = 1400, start = false) {
+  const [value, setValue] = useState(0);
+  useEffect(() => {
+    if (!start) return;
+    let raf = 0;
+    const t0 = performance.now();
+    const step = (t: number) => {
+      const p = Math.min(1, (t - t0) / duration);
+      const eased = 1 - Math.pow(1 - p, 3);
+      setValue(target * eased);
+      if (p < 1) raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
+  }, [target, duration, start]);
+  return value;
+}
+
+/* ---------------------------------------------------------------- page */
+
+function Index() {
   return (
-    <header className="absolute top-0 left-0 right-0 z-30">
+    <div className="min-h-screen text-foreground">
+      <Toaster theme="dark" position="top-center" />
+      <Nav />
+      <Hero />
+      <Capabilities />
+      <HowItWorks />
+      <DashboardPreview />
+      <Comparison />
+      <Integrations />
+      <Security />
+      <Testimonials />
+      <FAQ />
+      <FinalCTA />
+      <Footer />
+    </div>
+  );
+}
+
+/* ---------------------------------------------------------------- nav */
+
+const NAV_LINKS = [
+  { label: "Platform", href: "#capabilities" },
+  { label: "How it works", href: "#how" },
+  { label: "Dashboard", href: "#dashboard" },
+  { label: "Security", href: "#security" },
+  { label: "FAQ", href: "#faq" },
+];
+
+function Nav() {
+  const [scrolled, setScrolled] = useState(false);
+  const [active, setActive] = useState<string>("#capabilities");
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) setActive("#" + e.target.id);
+        });
+      },
+      { rootMargin: "-40% 0px -55% 0px", threshold: 0 },
+    );
+    NAV_LINKS.forEach((l) => {
+      const el = document.querySelector(l.href);
+      if (el) obs.observe(el);
+    });
+    return () => obs.disconnect();
+  }, []);
+
+  return (
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        scrolled
+          ? "backdrop-blur-xl bg-[#0F172A]/70 border-b border-white/5"
+          : "backdrop-blur-0 bg-transparent"
+      }`}
+    >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6">
-        <a href="#" className="flex items-center" aria-label="BrokerMind AI">
-          <Logo className="h-20 sm:h-28 md:h-32 w-auto -my-4" />
+        <a href="#top" className="flex items-center" aria-label="BrokerMindAI">
+          <Logo
+            className={`w-auto transition-all duration-300 ${
+              scrolled ? "h-14 sm:h-16" : "h-20 sm:h-28 md:h-32"
+            } -my-2`}
+          />
         </a>
-        <nav className="flex items-center gap-1 sm:gap-2">
-          {nav.map((n) => (
-            <a
-              key={n.label}
-              href={n.href}
-              className="rounded-full px-3 py-1.5 text-sm font-medium text-foreground/80 transition-all duration-300 hover:text-foreground hover:bg-white/5"
-            >
-              {n.label}
-            </a>
-          ))}
+        <nav className="hidden md:flex items-center gap-1">
+          {NAV_LINKS.map((n) => {
+            const isActive = active === n.href;
+            return (
+              <a
+                key={n.label}
+                href={n.href}
+                className="group relative rounded-full px-3 py-1.5 text-sm font-medium text-foreground/75 transition-colors duration-300 hover:text-foreground"
+              >
+                {n.label}
+                <span
+                  className={`pointer-events-none absolute left-3 right-3 -bottom-0.5 h-px origin-left transition-transform duration-300 ${
+                    isActive ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                  }`}
+                  style={{ background: "var(--gradient-brand)" }}
+                />
+              </a>
+            );
+          })}
         </nav>
+        <a
+          href="#waitlist"
+          className="group inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold text-white shadow-[0_8px_24px_-10px_rgba(233,30,140,0.6)] transition-all duration-300 hover:shadow-[0_12px_32px_-8px_rgba(0,188,212,0.6)]"
+          style={{ background: "var(--gradient-brand)" }}
+        >
+          Join Waitlist
+          <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
+        </a>
       </div>
     </header>
   );
 }
 
+/* ---------------------------------------------------------------- hero */
+
 function AnimatedBackdrop() {
-  // Neon financial visualization: nodes, lines, bars, $ glyphs
+  const mx = useMotionValue(0);
+  const my = useMotionValue(0);
+  const px = useSpring(mx, { stiffness: 40, damping: 20 });
+  const py = useSpring(my, { stiffness: 40, damping: 20 });
+
+  useEffect(() => {
+    const onMove = (e: MouseEvent) => {
+      const x = (e.clientX / window.innerWidth - 0.5) * 30;
+      const y = (e.clientY / window.innerHeight - 0.5) * 30;
+      mx.set(x);
+      my.set(y);
+    };
+    window.addEventListener("mousemove", onMove);
+    return () => window.removeEventListener("mousemove", onMove);
+  }, [mx, my]);
+
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden">
-      {/* Soft color blobs */}
-      <div
+      <motion.div
+        style={{ x: px, y: py }}
         className="absolute -top-32 -left-24 h-[420px] w-[420px] rounded-full blur-3xl opacity-40"
-        style={{ background: "radial-gradient(circle, #00BCD4 0%, transparent 65%)", animation: "drift 11s ease-in-out infinite" }}
-      />
-      <div
+      >
+        <div
+          className="h-full w-full"
+          style={{
+            background: "radial-gradient(circle, #00BCD4 0%, transparent 65%)",
+            animation: "drift 11s ease-in-out infinite",
+          }}
+        />
+      </motion.div>
+      <motion.div
+        style={{ x: useTransform(px, (v) => -v), y: useTransform(py, (v) => -v) }}
         className="absolute top-20 -right-20 h-[460px] w-[460px] rounded-full blur-3xl opacity-40"
-        style={{ background: "radial-gradient(circle, #E91E8C 0%, transparent 65%)", animation: "drift 13s ease-in-out infinite reverse" }}
-      />
+      >
+        <div
+          className="h-full w-full"
+          style={{
+            background: "radial-gradient(circle, #E91E8C 0%, transparent 65%)",
+            animation: "drift 13s ease-in-out infinite reverse",
+          }}
+        />
+      </motion.div>
       <div
         className="absolute bottom-0 left-1/3 h-[380px] w-[380px] rounded-full blur-3xl opacity-30"
-        style={{ background: "radial-gradient(circle, #9C27B0 0%, transparent 65%)", animation: "drift 15s ease-in-out infinite" }}
+        style={{
+          background: "radial-gradient(circle, #9C27B0 0%, transparent 65%)",
+          animation: "drift 15s ease-in-out infinite",
+        }}
       />
 
-      {/* SVG network + bars + glyphs */}
       <svg
         className="absolute inset-0 h-full w-full"
         viewBox="0 0 1200 800"
@@ -131,7 +294,6 @@ function AnimatedBackdrop() {
           </filter>
         </defs>
 
-        {/* Flowing line chart */}
         <path
           d="M0,520 C150,460 250,560 380,500 C520,435 640,560 780,470 C920,380 1050,500 1200,420"
           fill="none"
@@ -151,7 +313,6 @@ function AnimatedBackdrop() {
           style={{ animation: "dash-flow 9s linear infinite" }}
         />
 
-        {/* Network nodes + edges */}
         {[
           [120, 220, 180, 290],
           [180, 290, 260, 230],
@@ -194,7 +355,6 @@ function AnimatedBackdrop() {
           />
         ))}
 
-        {/* Bar chart cluster */}
         <g transform="translate(880, 540)" filter="url(#glow)">
           {[60, 100, 75, 130, 95, 150].map((h, i) => (
             <rect
@@ -210,7 +370,6 @@ function AnimatedBackdrop() {
           ))}
         </g>
 
-        {/* Dollar glyphs */}
         {[
           { x: 220, y: 130, s: 28, c: "#00BCD4", d: "7s" },
           { x: 560, y: 180, s: 22, c: "#E91E8C", d: "9s" },
@@ -235,7 +394,6 @@ function AnimatedBackdrop() {
         ))}
       </svg>
 
-      {/* Grid overlay */}
       <div
         className="absolute inset-0 opacity-[0.07]"
         style={{
@@ -246,225 +404,1096 @@ function AnimatedBackdrop() {
         }}
       />
 
-      {/* Bottom fade for legibility */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0F172A]/80" />
     </div>
   );
 }
 
-function ArrowIcon({ className = "h-4 w-4" }: { className?: string }) {
+function Hero() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">
-      <path d="M5 12h14" />
-      <path d="M13 5l7 7-7 7" />
+    <section
+      id="top"
+      className="relative isolate overflow-hidden pt-32 pb-20 sm:pt-40 sm:pb-24"
+    >
+      <AnimatedBackdrop />
+      <div className="relative mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+        <motion.div
+          variants={stagger}
+          initial="hidden"
+          animate="show"
+          className="text-center lg:text-left"
+        >
+          <motion.span
+            variants={fadeUp}
+            className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-foreground/80 backdrop-blur"
+          >
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[color:var(--brand-cyan)] opacity-60" />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[color:var(--brand-cyan)]" />
+            </span>
+            AI Decision Intelligence — Private Beta
+          </motion.span>
+          <motion.h1
+            variants={fadeUp}
+            className="mt-5 text-5xl font-semibold leading-[1.02] tracking-tight sm:text-6xl md:text-7xl"
+            style={{ fontFamily: "'Playfair Display', serif" }}
+          >
+            <span className="block text-white">Underwrite Smarter.</span>
+            <span className="block text-gradient-brand">Close Faster.</span>
+          </motion.h1>
+          <motion.p
+            variants={fadeUp}
+            className="mx-auto mt-5 max-w-xl text-base text-foreground/75 sm:text-lg lg:mx-0"
+          >
+            The AI copilot for mortgage brokers, private lenders, B lenders, credit
+            unions, and modern lending teams.{" "}
+            <span className="text-foreground">Analyze. Verify. Recommend.</span>
+          </motion.p>
+          <motion.div variants={fadeUp}>
+            <WaitlistForm />
+          </motion.div>
+          <motion.p variants={fadeUp} className="mt-3 text-xs text-muted-foreground">
+            No spam. Early access pricing for waitlist members.
+          </motion.p>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 30, scale: 0.96 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ delay: 0.3, duration: 0.8, ease: [0.21, 0.47, 0.32, 0.98] }}
+        >
+          <AIDecisionWidget />
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------------------------------------------------------------- AI widget */
+
+const WIDGET_CHECKS = [
+  "Income Verified",
+  "Employment Confirmed",
+  "Bank Statements Parsed",
+  "Property Value Estimated",
+  "Fraud Risk: Low",
+  "LTV: 74%",
+  "Debt Service Ratio: Healthy",
+];
+
+function AIDecisionWidget() {
+  const [idx, setIdx] = useState(0);
+  const [confidence, setConfidence] = useState(96.4);
+
+  useEffect(() => {
+    const a = setInterval(() => setIdx((i) => (i + 1) % (WIDGET_CHECKS.length + 1)), 1100);
+    const b = setInterval(() => {
+      setConfidence(() => 96 + Math.random() * 3.4);
+    }, 2200);
+    return () => {
+      clearInterval(a);
+      clearInterval(b);
+    };
+  }, []);
+
+  return (
+    <div
+      className="glass-card relative mx-auto w-full max-w-md p-5 sm:p-6"
+      style={{
+        boxShadow:
+          "0 30px 80px -30px rgba(0,188,212,0.35), 0 30px 80px -40px rgba(233,30,140,0.35)",
+      }}
+    >
+      <div className="absolute -inset-px rounded-2xl bg-gradient-to-br from-[#00BCD4]/30 via-transparent to-[#E91E8C]/30 opacity-50 blur-sm" aria-hidden />
+      <div className="relative">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/5 border border-white/10">
+              <Brain className="h-4 w-4 text-[color:var(--brand-cyan)]" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-foreground">AI Decision Engine</p>
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                Live · File #BM-48217
+              </p>
+            </div>
+          </div>
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-[color:var(--brand-cyan)]/10 px-2 py-1 text-[10px] font-medium text-[color:var(--brand-cyan)]">
+            <Loader2 className="h-3 w-3 animate-spin" />
+            Processing
+          </span>
+        </div>
+
+        <ul className="mt-5 space-y-2.5">
+          {WIDGET_CHECKS.map((c, i) => {
+            const done = i < idx;
+            return (
+              <li
+                key={c}
+                className="flex items-center justify-between text-sm"
+              >
+                <div className="flex items-center gap-2.5">
+                  <motion.span
+                    initial={false}
+                    animate={{
+                      backgroundColor: done ? "rgba(0,188,212,0.18)" : "rgba(255,255,255,0.04)",
+                      borderColor: done ? "rgba(0,188,212,0.5)" : "rgba(255,255,255,0.1)",
+                    }}
+                    transition={{ duration: 0.3 }}
+                    className="inline-flex h-5 w-5 items-center justify-center rounded-full border"
+                  >
+                    <AnimatePresence>
+                      {done && (
+                        <motion.span
+                          initial={{ scale: 0, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          exit={{ scale: 0, opacity: 0 }}
+                        >
+                          <CheckCircle2 className="h-3.5 w-3.5 text-[color:var(--brand-cyan)]" />
+                        </motion.span>
+                      )}
+                    </AnimatePresence>
+                  </motion.span>
+                  <span
+                    className={
+                      done ? "text-foreground" : "text-muted-foreground"
+                    }
+                  >
+                    {c}
+                  </span>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+
+        <div className="mt-5 rounded-xl border border-white/10 bg-white/[0.03] p-4">
+          <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+            Recommended Product
+          </p>
+          <p className="mt-1 text-base font-semibold text-foreground">
+            Alternative Prime Fixed
+          </p>
+          <div className="mt-3 flex items-end justify-between">
+            <div>
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                Confidence Score
+              </p>
+              <p
+                className="text-3xl font-semibold tabular-nums text-gradient-brand"
+                style={{ fontFamily: "'Playfair Display', serif" }}
+              >
+                {confidence.toFixed(1)}%
+              </p>
+            </div>
+            <div className="h-12 w-24">
+              <Sparkline />
+            </div>
+          </div>
+          <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-white/5">
+            <motion.div
+              className="h-full rounded-full"
+              style={{ background: "var(--gradient-brand)" }}
+              animate={{ width: `${confidence}%` }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Sparkline() {
+  const points = useMemo(() => {
+    return Array.from({ length: 24 }, (_, i) => {
+      const y = 18 + Math.sin(i / 2) * 8 + Math.random() * 4;
+      return `${(i / 23) * 96},${y}`;
+    }).join(" ");
+  }, []);
+  return (
+    <svg viewBox="0 0 96 48" className="h-full w-full">
+      <defs>
+        <linearGradient id="sparkfill" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0%" stopColor="#00BCD4" stopOpacity="0.4" />
+          <stop offset="100%" stopColor="#00BCD4" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <polyline
+        points={points}
+        fill="none"
+        stroke="#00BCD4"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <polygon points={`0,48 ${points} 96,48`} fill="url(#sparkfill)" />
     </svg>
   );
 }
+
+/* ---------------------------------------------------------------- waitlist */
+
+const LOADING_STAGES = [
+  "Analyzing request...",
+  "Reserving beta access...",
+  "Creating your profile...",
+  "Preparing early access...",
+];
 
 function WaitlistForm() {
   const [email, setEmail] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [stage, setStage] = useState(0);
+  const [state, setState] = useState<"idle" | "loading" | "done">("idle");
 
-  function onSubmit(e: React.FormEvent) {
+  useEffect(() => {
+    if (state !== "loading") return;
+    const t = setInterval(() => setStage((s) => (s + 1) % LOADING_STAGES.length), 700);
+    return () => clearInterval(t);
+  }, [state]);
+
+  async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const trimmed = email.trim();
-    const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed);
-    if (!valid) {
-      toast.error("Please enter a valid email address.");
+    if (state === "loading") return;
+    const err = validateEmail(email);
+    if (err) {
+      toast.error(err);
       return;
     }
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setEmail("");
-      toast.success("You're on the waitlist. We'll be in touch.");
-    }, 700);
+    setState("loading");
+    setStage(0);
+    const minDelay = new Promise((r) => setTimeout(r, 1800));
+    const result = await joinWaitlist({ email, ...readAttribution() });
+    await minDelay;
+    if (!result.ok) {
+      setState("idle");
+      toast.error(result.error);
+      return;
+    }
+    setState("done");
+    setEmail("");
+    if (result.alreadyJoined) {
+      toast.success("You're already on the list — we'll be in touch.");
+    } else {
+      confetti({
+        particleCount: 70,
+        spread: 70,
+        startVelocity: 35,
+        ticks: 180,
+        origin: { y: 0.3 },
+        colors: ["#00BCD4", "#E91E8C", "#9C27B0", "#ffffff"],
+        disableForReducedMotion: true,
+      });
+    }
   }
 
   return (
-    <form
-      id="waitlist"
-      onSubmit={onSubmit}
-      className="mx-auto mt-7 flex w-full max-w-xl flex-col gap-2 sm:flex-row"
-    >
-      <div className="relative flex-1">
-        <input
-          type="email"
-          required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="you@company.com"
-          aria-label="Work email"
-          className="w-full rounded-full border border-white/10 bg-white/[0.04] px-5 py-3.5 text-sm text-foreground placeholder:text-muted-foreground/70 outline-none transition-all duration-300 focus:border-[color:var(--brand-cyan)] focus:bg-white/[0.06] focus:ring-2 focus:ring-[color:var(--brand-cyan)]/30"
-        />
-      </div>
-      <button
-        type="submit"
-        disabled={loading}
-        className="group inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-semibold text-white shadow-[0_8px_30px_-8px_rgba(233,30,140,0.55)] transition-all duration-300 hover:shadow-[0_12px_40px_-8px_rgba(0,188,212,0.6)] disabled:opacity-70"
-        style={{ background: "var(--gradient-brand)" }}
-      >
-        {loading ? "Joining..." : "Join Waitlist"}
-        <ArrowIcon className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
-      </button>
-    </form>
+    <div id="waitlist" className="mx-auto mt-7 w-full max-w-xl lg:mx-0">
+      <AnimatePresence mode="wait">
+        {state === "done" ? (
+          <motion.div
+            key="done"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="glass-card flex items-start gap-3 p-5"
+          >
+            <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[color:var(--brand-cyan)]/15 text-[color:var(--brand-cyan)]">
+              <CheckCircle2 className="h-5 w-5" />
+            </div>
+            <div className="text-left">
+              <p className="text-sm font-semibold text-foreground">You're on the waitlist.</p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                We'll contact you as soon as private beta invitations begin.
+              </p>
+            </div>
+          </motion.div>
+        ) : (
+          <motion.form
+            key="form"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onSubmit={onSubmit}
+            className="flex w-full flex-col gap-2 sm:flex-row"
+          >
+            <div className="relative flex-1">
+              <input
+                type="email"
+                required
+                disabled={state === "loading"}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@company.com"
+                aria-label="Work email"
+                className="w-full rounded-full border border-white/10 bg-white/[0.04] px-5 py-3.5 text-sm text-foreground placeholder:text-muted-foreground/70 outline-none transition-all duration-300 focus:border-[color:var(--brand-cyan)] focus:bg-white/[0.06] focus:ring-2 focus:ring-[color:var(--brand-cyan)]/30 disabled:opacity-60"
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={state === "loading"}
+              className="group inline-flex min-w-[180px] items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-semibold text-white shadow-[0_8px_30px_-8px_rgba(233,30,140,0.55)] transition-all duration-300 hover:shadow-[0_12px_40px_-8px_rgba(0,188,212,0.6)] disabled:opacity-90"
+              style={{ background: "var(--gradient-brand)" }}
+            >
+              {state === "loading" ? (
+                <span className="flex items-center gap-2">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <AnimatePresence mode="wait">
+                    <motion.span
+                      key={stage}
+                      initial={{ opacity: 0, y: 6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -6 }}
+                      transition={{ duration: 0.25 }}
+                    >
+                      {LOADING_STAGES[stage]}
+                    </motion.span>
+                  </AnimatePresence>
+                </span>
+              ) : (
+                <>
+                  Join Waitlist
+                  <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
+                </>
+              )}
+            </button>
+          </motion.form>
+        )}
+      </AnimatePresence>
+    </div>
   );
 }
 
-function Hero() {
+/* ---------------------------------------------------------------- shared section header */
+
+function SectionHead({
+  eyebrow,
+  title,
+  accent,
+  desc,
+  color = "cyan",
+}: {
+  eyebrow: string;
+  title: string;
+  accent: string;
+  desc?: string;
+  color?: "cyan" | "magenta" | "purple";
+}) {
+  const c =
+    color === "magenta"
+      ? "text-[color:var(--brand-magenta)]"
+      : color === "purple"
+      ? "text-[color:var(--brand-purple)]"
+      : "text-[color:var(--brand-cyan)]";
   return (
-    <section className="relative isolate overflow-hidden pt-36 pb-20 sm:pt-44 sm:pb-24">
-      <AnimatedBackdrop />
-      <div className="relative mx-auto max-w-5xl px-4 text-center sm:px-6">
-        <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-foreground/80 backdrop-blur">
-          <span className="h-1.5 w-1.5 rounded-full bg-[color:var(--brand-cyan)] shadow-[0_0_10px_var(--brand-cyan)]" />
-          Coming soon — Private beta
-        </span>
-        <h1
-          className="mt-5 text-5xl font-semibold leading-[1.02] tracking-tight sm:text-6xl md:text-7xl"
-          style={{ fontFamily: "'Playfair Display', serif" }}
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 0.6 }}
+      className="mx-auto max-w-2xl text-center"
+    >
+      <p className={`text-xs font-semibold uppercase tracking-[0.2em] ${c}`}>{eyebrow}</p>
+      <h2
+        className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl md:text-5xl"
+        style={{ fontFamily: "'Playfair Display', serif" }}
+      >
+        {title} <span className="text-gradient-brand">{accent}</span>
+      </h2>
+      {desc && <p className="mt-4 text-sm sm:text-base text-muted-foreground">{desc}</p>}
+    </motion.div>
+  );
+}
+
+/* ---------------------------------------------------------------- capabilities */
+
+const CAPABILITIES = [
+  {
+    icon: FileSearch,
+    title: "Document Intelligence",
+    desc: "Automatically extracts structured data from uploaded financial documents.",
+    color: "#00BCD4",
+  },
+  {
+    icon: BadgeCheck,
+    title: "Income Verification",
+    desc: "Quickly validates borrower income across multiple document types.",
+    color: "#9C27B0",
+  },
+  {
+    icon: AlertTriangle,
+    title: "Risk Assessment",
+    desc: "Highlights potential concerns before submission.",
+    color: "#E91E8C",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Fraud Detection",
+    desc: "Identifies anomalies and inconsistencies in supporting documents.",
+    color: "#00BCD4",
+  },
+  {
+    icon: Network,
+    title: "Lender Matching",
+    desc: "Suggests suitable lending options based on borrower profile.",
+    color: "#9C27B0",
+  },
+  {
+    icon: Send,
+    title: "Submission Assistant",
+    desc: "Helps prepare complete and professional lender submissions.",
+    color: "#E91E8C",
+  },
+];
+
+function Capabilities() {
+  return (
+    <section id="capabilities" className="relative py-20 sm:py-24">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
+        <SectionHead
+          eyebrow="AI Capabilities"
+          title="Decision intelligence for"
+          accent="modern lending"
+          desc="Every step of the underwriting workflow, accelerated by purpose-built AI for mortgage and private lending teams."
+        />
+        <motion.div
+          variants={stagger}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-60px" }}
+          className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
         >
-          <span className="block text-white">Underwriting</span>
-          <span className="block text-gradient-brand">Reimagined</span>
-        </h1>
-        <p className="mx-auto mt-5 max-w-2xl text-base text-foreground/75 sm:text-lg">
-          Smarter underwriting with AI-powered insights.{" "}
-          <span className="text-foreground">Faster decisions. Stronger outcomes.</span>
-        </p>
-        <WaitlistForm />
-        <p className="mt-3 text-xs text-muted-foreground">
-          No spam. We'll only email you about the BrokerMind AI launch.
-        </p>
+          {CAPABILITIES.map((c) => (
+            <motion.div
+              key={c.title}
+              variants={fadeUp}
+              whileHover={{ y: -4 }}
+              className="glass-card group relative overflow-hidden p-6 transition-all duration-300 hover:border-white/20"
+            >
+              <div
+                className="pointer-events-none absolute -top-20 -right-20 h-40 w-40 rounded-full blur-3xl opacity-0 transition-opacity duration-500 group-hover:opacity-60"
+                style={{ background: c.color }}
+              />
+              <div
+                className="relative inline-flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/5"
+                style={{ color: c.color }}
+              >
+                <c.icon className="h-5 w-5" strokeWidth={1.6} />
+              </div>
+              <h3 className="relative mt-4 text-lg font-semibold text-foreground">{c.title}</h3>
+              <p className="relative mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                {c.desc}
+              </p>
+            </motion.div>
+          ))}
+        </motion.div>
       </div>
     </section>
   );
 }
 
-function BoltIcon() {
+/* ---------------------------------------------------------------- how it works */
+
+const STEPS = [
+  {
+    icon: Upload,
+    title: "Upload Borrower Documents",
+    desc: "T1s, NOAs, pay stubs, bank statements, property docs — drag and drop or sync from your AMS.",
+  },
+  {
+    icon: Brain,
+    title: "AI Extracts & Organizes Data",
+    desc: "Income, assets, liabilities, and credit signals are extracted into a structured borrower profile.",
+  },
+  {
+    icon: Gauge,
+    title: "Risk Analysis & Recommendations",
+    desc: "Confidence scores, fraud alerts, LTV, DSCR, and ranked lender matches surface in seconds.",
+  },
+  {
+    icon: Send,
+    title: "Ready-to-Submit Lending File",
+    desc: "Generate a clean, complete submission package — formatted for your lender of choice.",
+  },
+];
+
+function HowItWorks() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
-      <path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z" />
-    </svg>
-  );
-}
-function ChartIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
-      <path d="M3 3v18h18" />
-      <rect x="7" y="12" width="3" height="6" />
-      <rect x="12" y="8" width="3" height="10" />
-      <rect x="17" y="4" width="3" height="14" />
-    </svg>
-  );
-}
-function LinkIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
-      <path d="M10 14a5 5 0 007.07 0l3-3a5 5 0 10-7.07-7.07l-1.5 1.5" />
-      <path d="M14 10a5 5 0 00-7.07 0l-3 3a5 5 0 107.07 7.07l1.5-1.5" />
-    </svg>
+    <section id="how" className="relative py-20 sm:py-24">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6">
+        <SectionHead
+          eyebrow="How it works"
+          title="From submission to"
+          accent="decision-ready"
+          color="magenta"
+          desc="Four steps. Minutes, not hours."
+        />
+        <div className="relative mt-14">
+          <div
+            className="pointer-events-none absolute left-1/2 top-0 hidden h-full w-px -translate-x-1/2 md:block"
+            style={{
+              background:
+                "linear-gradient(180deg, transparent 0%, #00BCD4 20%, #9C27B0 50%, #E91E8C 80%, transparent 100%)",
+              opacity: 0.4,
+            }}
+          />
+          <div className="space-y-8 md:space-y-12">
+            {STEPS.map((s, i) => {
+              const left = i % 2 === 0;
+              return (
+                <motion.div
+                  key={s.title}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-80px" }}
+                  transition={{ duration: 0.6, delay: i * 0.05 }}
+                  className={`grid items-center gap-4 md:grid-cols-[1fr_auto_1fr] ${
+                    left ? "" : ""
+                  }`}
+                >
+                  <div
+                    className={`glass-card p-5 md:p-6 ${left ? "md:text-right md:col-start-1" : "md:col-start-3"}`}
+                  >
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[color:var(--brand-cyan)]">
+                      Step {i + 1}
+                    </p>
+                    <h3 className="mt-1 text-lg font-semibold text-foreground">{s.title}</h3>
+                    <p className="mt-1.5 text-sm text-muted-foreground">{s.desc}</p>
+                  </div>
+                  <div className="relative hidden md:flex md:col-start-2 md:justify-center">
+                    <div
+                      className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-[#0F172A]"
+                      style={{ boxShadow: "0 0 30px -5px rgba(0,188,212,0.4)" }}
+                    >
+                      <s.icon className="h-5 w-5 text-[color:var(--brand-cyan)]" strokeWidth={1.6} />
+                    </div>
+                  </div>
+                  <div className="md:hidden flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-[#0F172A]">
+                      <s.icon className="h-4 w-4 text-[color:var(--brand-cyan)]" strokeWidth={1.6} />
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
 
-function Features() {
-  const items = [
-    {
-      icon: <BoltIcon />,
-      title: "AI-Powered Analysis",
-      desc: "Submission triage, risk scoring, and document extraction in seconds — not days.",
-      tint: "from-[color:var(--brand-cyan)]/30 to-transparent",
-      glow: "shadow-[0_0_40px_-10px_rgba(0,188,212,0.5)]",
-      iconColor: "text-[color:var(--brand-cyan)]",
-    },
-    {
-      icon: <ChartIcon />,
-      title: "Real-Time Insights",
-      desc: "Live portfolio analytics and pricing signals that surface the risks worth your time.",
-      tint: "from-[color:var(--brand-purple)]/30 to-transparent",
-      glow: "shadow-[0_0_40px_-10px_rgba(156,39,176,0.5)]",
-      iconColor: "text-[color:var(--brand-purple)]",
-    },
-    {
-      icon: <LinkIcon />,
-      title: "Seamless Integration",
-      desc: "Plugs into your AMS, PAS, and broker workflows — no rip-and-replace required.",
-      tint: "from-[color:var(--brand-magenta)]/30 to-transparent",
-      glow: "shadow-[0_0_40px_-10px_rgba(233,30,140,0.5)]",
-      iconColor: "text-[color:var(--brand-magenta)]",
-    },
+/* ---------------------------------------------------------------- dashboard preview */
+
+function CountValue({ to, prefix = "", suffix = "", decimals = 0 }: { to: number; prefix?: string; suffix?: string; decimals?: number }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-50px" });
+  const v = useCountUp(to, 1400, inView);
+  return (
+    <span ref={ref} className="tabular-nums">
+      {prefix}
+      {v.toLocaleString(undefined, { minimumFractionDigits: decimals, maximumFractionDigits: decimals })}
+      {suffix}
+    </span>
+  );
+}
+
+function DashboardPreview() {
+  return (
+    <section id="dashboard" className="relative py-20 sm:py-24">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
+        <SectionHead
+          eyebrow="Dashboard"
+          title="One view. Every"
+          accent="lending signal."
+          color="purple"
+        />
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.7 }}
+          className="mt-12"
+        >
+          <div className="glass-card relative overflow-hidden p-4 sm:p-6">
+            <div
+              className="pointer-events-none absolute inset-0 opacity-30"
+              style={{
+                background:
+                  "radial-gradient(ellipse at top left, rgba(0,188,212,0.18), transparent 50%), radial-gradient(ellipse at bottom right, rgba(233,30,140,0.18), transparent 50%)",
+              }}
+            />
+            <div className="relative">
+              {/* mock chrome */}
+              <div className="flex items-center gap-1.5 border-b border-white/5 pb-3">
+                <span className="h-2.5 w-2.5 rounded-full bg-white/15" />
+                <span className="h-2.5 w-2.5 rounded-full bg-white/15" />
+                <span className="h-2.5 w-2.5 rounded-full bg-white/15" />
+                <span className="ml-3 text-[10px] uppercase tracking-wider text-muted-foreground">
+                  brokermind.ai / files / BM-48217
+                </span>
+              </div>
+
+              <div className="mt-5 grid gap-4 lg:grid-cols-3">
+                {/* Borrower summary */}
+                <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+                  <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                    Borrower Summary
+                  </p>
+                  <h4 className="mt-2 text-lg font-semibold">M. Tremblay</h4>
+                  <p className="text-xs text-muted-foreground">Self-employed · ON</p>
+                  <dl className="mt-4 space-y-2 text-sm">
+                    {[
+                      ["Income", "$184,200"],
+                      ["Assets", "$612,800"],
+                      ["Liabilities", "$72,400"],
+                      ["Credit", "742"],
+                    ].map(([k, v]) => (
+                      <div key={k} className="flex justify-between">
+                        <dt className="text-muted-foreground">{k}</dt>
+                        <dd className="font-medium text-foreground tabular-nums">{v}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                </div>
+
+                {/* Metrics */}
+                <div className="grid gap-4">
+                  <Metric label="Loan Amount" value={680000} prefix="$" />
+                  <Metric label="Property Value" value={920000} prefix="$" />
+                  <div className="grid grid-cols-2 gap-4">
+                    <Metric label="LTV" value={73.9} suffix="%" decimals={1} bar />
+                    <Metric label="DSCR" value={1.32} decimals={2} bar barMax={2} />
+                  </div>
+                </div>
+
+                {/* Decision panel */}
+                <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+                  <div className="flex items-center justify-between">
+                    <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                      Risk & Decision
+                    </p>
+                    <span className="inline-flex items-center gap-1 rounded-full bg-[color:var(--brand-cyan)]/10 px-2 py-0.5 text-[10px] font-medium text-[color:var(--brand-cyan)]">
+                      Low risk
+                    </span>
+                  </div>
+                  <div className="mt-3 flex items-end gap-3">
+                    <div
+                      className="text-4xl font-semibold text-gradient-brand"
+                      style={{ fontFamily: "'Playfair Display', serif" }}
+                    >
+                      <CountValue to={97.8} decimals={1} suffix="%" />
+                    </div>
+                    <div className="pb-1 text-xs text-muted-foreground">approval probability</div>
+                  </div>
+                  <div className="mt-4 space-y-2 text-xs">
+                    {[
+                      ["Document Status", "12 / 12 complete"],
+                      ["Fraud Signals", "None detected"],
+                      ["Recommended Lender", "Alterna Prime"],
+                    ].map(([k, v]) => (
+                      <div key={k} className="flex justify-between">
+                        <span className="text-muted-foreground">{k}</span>
+                        <span className="font-medium text-foreground">{v}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-4">
+                    <MiniBars />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+function Metric({
+  label,
+  value,
+  prefix,
+  suffix,
+  decimals = 0,
+  bar,
+  barMax = 100,
+}: {
+  label: string;
+  value: number;
+  prefix?: string;
+  suffix?: string;
+  decimals?: number;
+  bar?: boolean;
+  barMax?: number;
+}) {
+  return (
+    <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+      <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+        {label}
+      </p>
+      <p className="mt-1 text-2xl font-semibold text-foreground">
+        <CountValue to={value} prefix={prefix} suffix={suffix} decimals={decimals} />
+      </p>
+      {bar && (
+        <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-white/5">
+          <motion.div
+            initial={{ width: 0 }}
+            whileInView={{ width: `${Math.min(100, (value / barMax) * 100)}%` }}
+            viewport={{ once: true }}
+            transition={{ duration: 1.2, ease: "easeOut" }}
+            className="h-full rounded-full"
+            style={{ background: "var(--gradient-brand)" }}
+          />
+        </div>
+      )}
+    </div>
+  );
+}
+
+function MiniBars() {
+  const heights = [40, 65, 52, 80, 70, 90, 60];
+  return (
+    <div className="flex h-16 items-end gap-1.5">
+      {heights.map((h, i) => (
+        <motion.div
+          key={i}
+          initial={{ height: 0 }}
+          whileInView={{ height: `${h}%` }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: i * 0.06 }}
+          className="flex-1 rounded-sm"
+          style={{
+            background:
+              i % 2
+                ? "linear-gradient(to top, rgba(233,30,140,0.2), rgba(233,30,140,0.9))"
+                : "linear-gradient(to top, rgba(0,188,212,0.2), rgba(0,188,212,0.9))",
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
+/* ---------------------------------------------------------------- comparison */
+
+function Comparison() {
+  const traditional = [
+    "Manual document review",
+    "Hours per application",
+    "Email chains",
+    "PDF chaos",
+    "Human error",
+  ];
+  const ours = [
+    "AI-assisted analysis",
+    "Minutes per application",
+    "Centralized workflow",
+    "Risk alerts",
+    "Smart recommendations",
   ];
   return (
-    <section id="features" className="relative py-16">
+    <section className="relative py-20 sm:py-24">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <div className="mx-auto max-w-2xl text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[color:var(--brand-cyan)]">
-            The Platform
-          </p>
-          <h2 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl" style={{ fontFamily: "'Playfair Display', serif" }}>
-            What's <span className="text-gradient-brand">Coming</span>
-          </h2>
-        </div>
-        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {items.map((it) => (
+        <SectionHead
+          eyebrow="Why BrokerMindAI"
+          title="The new standard for"
+          accent="lending decisions"
+        />
+        <div className="mt-12 grid gap-4 md:grid-cols-2">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="glass-card p-6"
+          >
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+              Traditional Process
+            </p>
+            <h3 className="mt-1 text-xl font-semibold text-foreground/80 line-through decoration-white/20">
+              The old way
+            </h3>
+            <ul className="mt-5 space-y-3">
+              {traditional.map((t) => (
+                <li key={t} className="flex items-center gap-3 text-sm text-muted-foreground">
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full border border-white/10 bg-white/[0.03]">
+                    <span className="h-1 w-2.5 bg-white/30" />
+                  </span>
+                  {t}
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="glass-card relative overflow-hidden p-6"
+            style={{ boxShadow: "0 30px 80px -40px rgba(0,188,212,0.5)" }}
+          >
             <div
-              key={it.title}
-              className={`glass-card group relative overflow-hidden p-6 transition-all duration-300 hover:-translate-y-1 hover:border-white/20 ${it.glow}`}
+              className="pointer-events-none absolute -top-20 -right-20 h-60 w-60 rounded-full blur-3xl opacity-40"
+              style={{ background: "#00BCD4" }}
+            />
+            <p className="relative text-[11px] font-semibold uppercase tracking-[0.2em] text-[color:var(--brand-cyan)]">
+              BrokerMindAI
+            </p>
+            <h3
+              className="relative mt-1 text-xl font-semibold text-gradient-brand"
+              style={{ fontFamily: "'Playfair Display', serif" }}
             >
-              <div className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${it.tint} opacity-0 transition-opacity duration-300 group-hover:opacity-100`} />
-              <div className={`relative inline-flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/5 ${it.iconColor}`}>
-                {it.icon}
-              </div>
-              <h3 className="relative mt-4 text-lg font-semibold text-foreground">{it.title}</h3>
-              <p className="relative mt-1.5 text-sm leading-relaxed text-muted-foreground">{it.desc}</p>
-            </div>
-          ))}
+              The new way
+            </h3>
+            <ul className="relative mt-5 space-y-3">
+              {ours.map((t) => (
+                <li key={t} className="flex items-center gap-3 text-sm text-foreground">
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[color:var(--brand-cyan)]/15">
+                    <CheckCircle2 className="h-3.5 w-3.5 text-[color:var(--brand-cyan)]" />
+                  </span>
+                  {t}
+                </li>
+              ))}
+            </ul>
+          </motion.div>
         </div>
       </div>
     </section>
   );
 }
+
+/* ---------------------------------------------------------------- integrations */
+
+const INTEGRATIONS = [
+  "Equifax",
+  "TransUnion",
+  "Plaid",
+  "Filogix",
+  "Velocity",
+  "DocuSign",
+  "Google Drive",
+  "Microsoft 365",
+  "Adobe Acrobat",
+];
+
+function Integrations() {
+  return (
+    <section className="relative py-20 sm:py-24">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
+        <SectionHead
+          eyebrow="Future integrations"
+          title="Connects to the tools you"
+          accent="already use"
+          color="magenta"
+        />
+        <motion.div
+          variants={stagger}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-80px" }}
+          className="mt-12 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-3"
+        >
+          {INTEGRATIONS.map((name) => (
+            <motion.div
+              key={name}
+              variants={fadeUp}
+              whileHover={{ y: -3 }}
+              className="glass-card flex items-center justify-between p-4 transition-all duration-300 hover:border-white/20"
+            >
+              <div className="flex items-center gap-3">
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/5">
+                  <span
+                    className="text-sm font-semibold"
+                    style={{
+                      background: "var(--gradient-brand)",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                    }}
+                  >
+                    {name[0]}
+                  </span>
+                </div>
+                <span className="text-sm font-medium text-foreground">{name}</span>
+              </div>
+              <span className="rounded-full border border-white/10 bg-white/[0.03] px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+                Coming soon
+              </span>
+            </motion.div>
+          ))}
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------------------------------------------------------------- security */
+
+const SECURITY_ITEMS = [
+  { icon: ShieldCheck, t: "Enterprise-grade Security", d: "Defense-in-depth controls across every layer." },
+  { icon: Lock, t: "Encrypted Data", d: "AES-256 at rest, TLS 1.3 in transit. No exceptions." },
+  { icon: KeyRound, t: "Role-Based Permissions", d: "Granular access for brokers, underwriters, and admins." },
+  { icon: ScrollText, t: "Audit Logs", d: "Every action recorded. Every decision traceable." },
+  { icon: Cloud, t: "Cloud Infrastructure", d: "Built on hardened, SOC 2-aligned cloud foundations." },
+  { icon: BadgeCheck, t: "Compliance Ready", d: "SOC 2 Type II and PIPEDA-aligned roadmap." },
+];
+
+function Security() {
+  return (
+    <section id="security" className="relative py-20 sm:py-24">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
+        <SectionHead
+          eyebrow="Security"
+          title="Built for the trust"
+          accent="lending demands"
+          color="cyan"
+        />
+        <motion.div
+          variants={stagger}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-80px" }}
+          className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+        >
+          {SECURITY_ITEMS.map((s) => (
+            <motion.div
+              key={s.t}
+              variants={fadeUp}
+              whileHover={{ y: -3 }}
+              className="glass-card flex items-start gap-4 p-5 transition-all duration-300 hover:border-white/20"
+            >
+              <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-[color:var(--brand-cyan)]">
+                <s.icon className="h-5 w-5" strokeWidth={1.6} />
+              </div>
+              <div>
+                <h4 className="text-base font-semibold text-foreground">{s.t}</h4>
+                <p className="mt-1 text-sm text-muted-foreground">{s.d}</p>
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------------------------------------------------------------- testimonials */
+
+const TESTIMONIALS = [
+  {
+    name: "Placeholder Name",
+    role: "Mortgage Broker",
+    quote:
+      "BrokerMindAI takes the busywork out of every file. I see the risk picture in minutes instead of an afternoon.",
+  },
+  {
+    name: "Placeholder Name",
+    role: "Private Lender",
+    quote:
+      "Confidence scores and fraud flags surface things my team would have spent days digging up.",
+  },
+  {
+    name: "Placeholder Name",
+    role: "Commercial Underwriter",
+    quote:
+      "Finally — a system that thinks like an underwriter, not just another document viewer.",
+  },
+];
+
+function Testimonials() {
+  return (
+    <section className="relative py-20 sm:py-24">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
+        <SectionHead
+          eyebrow="Voices from the field"
+          title="Designed with"
+          accent="lending professionals"
+          color="purple"
+        />
+        <motion.div
+          variants={stagger}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-80px" }}
+          className="mt-12 grid gap-4 md:grid-cols-3"
+        >
+          {TESTIMONIALS.map((t, i) => (
+            <motion.div
+              key={i}
+              variants={fadeUp}
+              className="glass-card relative p-6 transition-all duration-300 hover:border-white/20"
+            >
+              <Quote className="h-7 w-7 text-[color:var(--brand-cyan)]/40" />
+              <p className="mt-3 text-sm leading-relaxed text-foreground/85">"{t.quote}"</p>
+              <div className="mt-5 flex items-center gap-3 border-t border-white/5 pt-4">
+                <div
+                  className="flex h-9 w-9 items-center justify-center rounded-full text-xs font-semibold text-white"
+                  style={{ background: "var(--gradient-brand)" }}
+                >
+                  {t.role.split(" ").map((w) => w[0]).slice(0, 2).join("")}
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-foreground">{t.name}</p>
+                  <p className="text-xs text-muted-foreground">{t.role}</p>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------------------------------------------------------------- faq */
+
+const FAQS = [
+  {
+    q: "Who is BrokerMindAI built for?",
+    a: "Mortgage brokers, private lenders, B lenders, credit unions, commercial lenders, alternative finance companies, and modern lending teams who want AI-assisted decisioning across the underwriting workflow.",
+  },
+  {
+    q: "When is BrokerMindAI launching?",
+    a: "We're rolling out a private beta to design partners now, with broader access opening through 2026. Join the waitlist for early access and locked-in launch pricing.",
+  },
+  {
+    q: "How does BrokerMindAI improve underwriting?",
+    a: "It ingests borrower documents, extracts structured data, surfaces risk and fraud signals, computes LTV/DSCR, and ranks lender matches — cutting hours of manual review on every file.",
+  },
+  {
+    q: "Will it integrate with my existing systems?",
+    a: "Yes. Native connectors for major credit, document, and lender workflow platforms are on the roadmap, plus a documented API for custom pipelines. No rip-and-replace required.",
+  },
+  {
+    q: "How is my data protected?",
+    a: "All data is encrypted in transit and at rest, isolated per tenant, and never used to train shared models. We're building toward SOC 2 Type II compliance ahead of general availability.",
+  },
+  {
+    q: "What's the pricing model?",
+    a: "Per-seat with file-volume tiers. Waitlist members lock in launch pricing and receive a complimentary first quarter once they go live.",
+  },
+];
 
 function FAQ() {
-  const faqs = [
-    {
-      q: "When is BrokerMind AI launching?",
-      a: "We're rolling out a private beta to design partners now, with general availability planned for late 2026. Join the waitlist for early access and pricing.",
-    },
-    {
-      q: "How does BrokerMind AI improve underwriting?",
-      a: "BrokerMind AI ingests submissions, extracts the data points underwriters care about, and surfaces risk indicators alongside benchmark pricing — cutting hours of manual review per file.",
-    },
-    {
-      q: "Will it integrate with my existing systems?",
-      a: "Yes. We offer native connectors for major AMS and policy administration platforms, plus a documented API for custom pipelines. No rip-and-replace required.",
-    },
-    {
-      q: "How is my data protected?",
-      a: "All data is encrypted in transit and at rest, isolated per tenant, and never used to train shared models. We're building toward SOC 2 Type II compliance ahead of GA.",
-    },
-    {
-      q: "What's the pricing model?",
-      a: "Per-seat with submission-based volume tiers. Waitlist members lock in launch pricing and receive a complimentary first quarter once they go live.",
-    },
-    {
-      q: "Can I get a demo before launch?",
-      a: "Absolutely. Qualified brokerages and carriers can request a guided walkthrough — join the waitlist and our team will reach out within two business days.",
-    },
-  ];
   return (
-    <section id="faq" className="relative py-16">
+    <section id="faq" className="relative py-20 sm:py-24">
       <div className="mx-auto max-w-3xl px-4 sm:px-6">
-        <div className="text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[color:var(--brand-magenta)]">
-            Answers
-          </p>
-          <h2 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl" style={{ fontFamily: "'Playfair Display', serif" }}>
-            Frequently Asked <span className="text-gradient-brand">Questions</span>
-          </h2>
-        </div>
-        <div className="mt-8 glass-card p-2 sm:p-3">
+        <SectionHead
+          eyebrow="Answers"
+          title="Frequently asked"
+          accent="questions"
+          color="magenta"
+        />
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.6 }}
+          className="mt-10 glass-card p-2 sm:p-3"
+        >
           <Accordion type="single" collapsible className="w-full">
-            {faqs.map((f, i) => (
+            {FAQS.map((f, i) => (
               <AccordionItem
                 key={i}
                 value={`item-${i}`}
@@ -479,36 +1508,91 @@ function FAQ() {
               </AccordionItem>
             ))}
           </Accordion>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
 }
 
+/* ---------------------------------------------------------------- final CTA */
+
+function FinalCTA() {
+  return (
+    <section className="relative py-20 sm:py-28">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.7 }}
+          className="glass-card relative overflow-hidden p-10 text-center sm:p-16"
+        >
+          <div
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background:
+                "radial-gradient(ellipse at top, rgba(0,188,212,0.18), transparent 55%), radial-gradient(ellipse at bottom, rgba(233,30,140,0.18), transparent 55%)",
+            }}
+          />
+          <div className="relative">
+            <h2
+              className="text-3xl font-semibold tracking-tight sm:text-5xl"
+              style={{ fontFamily: "'Playfair Display', serif" }}
+            >
+              <span className="block text-white">Ready to underwrite</span>
+              <span className="block text-gradient-brand">smarter?</span>
+            </h2>
+            <p className="mx-auto mt-5 max-w-xl text-sm text-muted-foreground sm:text-base">
+              Join the private beta and help shape the future of AI-powered lending.
+            </p>
+            <div className="mt-7 flex justify-center">
+              <a
+                href="#waitlist"
+                className="group inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-white shadow-[0_12px_40px_-10px_rgba(233,30,140,0.6)] transition-all duration-300 hover:shadow-[0_16px_50px_-8px_rgba(0,188,212,0.7)]"
+                style={{ background: "var(--gradient-brand)" }}
+              >
+                Join the Waitlist
+                <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
+              </a>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------------------------------------------------------------- footer */
+
 function Footer() {
   const cols: { title: string; links: string[] }[] = [
-    { title: "Product", links: ["Features", "Waitlist", "Roadmap", "Changelog"] },
+    { title: "Product", links: ["Capabilities", "Waitlist", "Roadmap", "Changelog"] },
     { title: "Company", links: ["About", "Careers", "Press", "Contact"] },
     { title: "Legal", links: ["Privacy", "Terms", "Security", "DPA"] },
     { title: "Connect", links: ["LinkedIn", "X / Twitter", "Email", "Newsletter"] },
   ];
   return (
     <footer className="mt-16 border-t border-white/5">
-      <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
         <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-5">
           <div className="md:col-span-1">
             <Logo className="h-16 w-auto -ml-2" />
             <p className="mt-2 max-w-xs text-xs text-muted-foreground">
-              Smarter underwriting. Stronger outcomes.
+              AI decision intelligence for modern lending.
             </p>
           </div>
           {cols.map((c) => (
             <div key={c.title}>
-              <h4 className="text-xs font-semibold uppercase tracking-wider text-foreground/90">{c.title}</h4>
+              <h4 className="text-xs font-semibold uppercase tracking-wider text-foreground/90">
+                {c.title}
+              </h4>
               <ul className="mt-3 space-y-2">
                 {c.links.map((l) => (
                   <li key={l}>
-                    <a href="#" className="text-sm text-muted-foreground transition-colors duration-300 hover:text-foreground">
+                    <a
+                      href="#"
+                      className="text-sm text-muted-foreground transition-colors duration-300 hover:text-foreground"
+                    >
                       {l}
                     </a>
                   </li>
@@ -519,9 +1603,9 @@ function Footer() {
         </div>
         <div className="mt-8 flex flex-col items-start justify-between gap-2 border-t border-white/5 pt-5 sm:flex-row sm:items-center">
           <p className="text-xs text-muted-foreground">
-            © {new Date().getFullYear()} BrokerMind AI. All rights reserved.
+            © {new Date().getFullYear()} BrokerMindAI. All rights reserved.
           </p>
-          <p className="text-xs text-muted-foreground">Built for brokers and underwriters.</p>
+          <p className="text-xs text-muted-foreground">Built for brokers, lenders, and underwriters.</p>
         </div>
       </div>
     </footer>
