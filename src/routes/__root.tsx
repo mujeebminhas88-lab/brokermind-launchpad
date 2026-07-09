@@ -77,14 +77,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "BrokerMindAI — Underwrite Smarter. Close Faster." },
+      {
+        name: "description",
+        content:
+          "AI decision intelligence for mortgage brokers, private lenders, B lenders, credit unions, and modern lending teams.",
+      },
+      { property: "og:title", content: "BrokerMindAI — Underwrite Smarter. Close Faster." },
+      {
+        property: "og:description",
+        content: "AI decision intelligence for mortgage and lending teams.",
+      },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
       {
