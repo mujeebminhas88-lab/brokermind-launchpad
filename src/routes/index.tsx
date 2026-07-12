@@ -1599,7 +1599,7 @@ function FinalCTA() {
             <div className="mt-7 flex justify-center">
               <a
                 href="#waitlist"
-                className="group inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-white shadow-[0_12px_40px_-10px_rgba(233,30,140,0.6)] transition-all duration-300 hover:shadow-[0_16px_50px_-8px_rgba(0,188,212,0.7)]"
+                className="group inline-flex min-h-[52px] items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-white shadow-[0_12px_40px_-10px_rgba(233,30,140,0.6)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_54px_-8px_rgba(0,188,212,0.75)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-cyan)]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0F172A] active:translate-y-0"
                 style={{ background: "var(--gradient-brand)" }}
               >
                 Join the Waitlist
