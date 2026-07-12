@@ -885,7 +885,7 @@ const CAPABILITIES = [
 
 function Capabilities() {
   return (
-    <section id="capabilities" className="relative py-20 sm:py-24">
+    <section id="capabilities" className="relative section-y">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <SectionHead
           eyebrow="AI Capabilities"
@@ -956,7 +956,7 @@ const STEPS = [
 
 function HowItWorks() {
   return (
-    <section id="how" className="relative py-20 sm:py-24">
+    <section id="how" className="relative section-y">
       <div className="mx-auto max-w-5xl px-4 sm:px-6">
         <SectionHead
           eyebrow="How it works"
@@ -1037,7 +1037,7 @@ function CountValue({ to, prefix = "", suffix = "", decimals = 0 }: { to: number
 
 function DashboardPreview() {
   return (
-    <section id="dashboard" className="relative py-20 sm:py-24">
+    <section id="dashboard" className="relative section-y">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <SectionHead
           eyebrow="Dashboard"
@@ -1231,7 +1231,7 @@ function Comparison() {
     "Smart recommendations",
   ];
   return (
-    <section className="relative py-20 sm:py-24">
+    <section className="relative section-y">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <SectionHead
           eyebrow="Why BrokerMindAI"
@@ -1317,7 +1317,7 @@ const INTEGRATIONS = [
 
 function Integrations() {
   return (
-    <section className="relative py-20 sm:py-24">
+    <section className="relative section-y">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <SectionHead
           eyebrow="Future integrations"
@@ -1378,7 +1378,7 @@ const SECURITY_ITEMS = [
 
 function Security() {
   return (
-    <section id="security" className="relative py-20 sm:py-24">
+    <section id="security" className="relative section-y">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <SectionHead
           eyebrow="Security"
@@ -1440,7 +1440,7 @@ const TESTIMONIALS = [
 
 function Testimonials() {
   return (
-    <section className="relative py-20 sm:py-24">
+    <section className="relative section-y">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <SectionHead
           eyebrow="Voices from the field"
@@ -1514,7 +1514,7 @@ const FAQS = [
 
 function FAQ() {
   return (
-    <section id="faq" className="relative py-20 sm:py-24">
+    <section id="faq" className="relative section-y">
       <div className="mx-auto max-w-3xl px-4 sm:px-6">
         <SectionHead
           eyebrow="Answers"
@@ -1555,7 +1555,7 @@ function FAQ() {
 
 function FinalCTA() {
   return (
-    <section className="relative py-20 sm:py-28">
+    <section className="relative section-y">
       <div className="mx-auto max-w-5xl px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
