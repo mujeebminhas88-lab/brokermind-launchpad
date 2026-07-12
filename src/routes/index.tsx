@@ -109,20 +109,40 @@ function useCountUp(target: number, duration = 1400, start = false) {
 
 function Index() {
   return (
-    <div className="min-h-screen text-foreground">
+    <div className="min-h-dvh text-foreground antialiased">
       <Toaster theme="dark" position="top-center" />
       <Nav />
-      <Hero />
-      <Capabilities />
-      <HowItWorks />
-      <DashboardPreview />
-      <Comparison />
-      <Integrations />
-      <Security />
-      <Testimonials />
-      <FAQ />
-      <FinalCTA />
+      <main id="main">
+        <Hero />
+        <SectionDivider />
+        <Capabilities />
+        <SectionDivider />
+        <HowItWorks />
+        <SectionDivider />
+        <DashboardPreview />
+        <SectionDivider />
+        <Comparison />
+        <SectionDivider />
+        <Integrations />
+        <SectionDivider />
+        <Security />
+        <SectionDivider />
+        <Testimonials />
+        <SectionDivider />
+        <FAQ />
+        <FinalCTA />
+      </main>
       <Footer />
+    </div>
+  );
+}
+
+/* ---------------------------------------------------------------- section divider */
+
+function SectionDivider() {
+  return (
+    <div aria-hidden="true" className="mx-auto max-w-7xl px-4 sm:px-6">
+      <div className="section-divider" />
     </div>
   );
 }
@@ -166,28 +186,43 @@ function Nav() {
 
   return (
     <header
+      role="banner"
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
           ? "backdrop-blur-xl bg-[#0F172A]/70 border-b border-white/5"
           : "backdrop-blur-0 bg-transparent"
       }`}
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6">
-        <a href="#top" className="flex items-center" aria-label="BrokerMindAI">
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[60] focus:rounded-full focus:bg-[#0F172A] focus:px-4 focus:py-2 focus:text-sm focus:text-foreground focus:ring-2 focus:ring-[color:var(--brand-cyan)]"
+      >
+        Skip to content
+      </a>
+      <div className="mx-auto grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 sm:px-6 md:flex md:max-w-7xl md:justify-between">
+        <a
+          href="#top"
+          className="flex min-w-0 items-center rounded-md focus-visible:outline-none"
+          aria-label="BrokerMindAI — Home"
+        >
           <Logo
             className={`w-auto transition-all duration-300 ${
-              scrolled ? "h-14 sm:h-16" : "h-20 sm:h-28 md:h-32"
+              scrolled ? "h-12 sm:h-14 md:h-16" : "h-16 sm:h-24 md:h-32"
             } -my-2`}
           />
         </a>
-        <nav className="hidden md:flex items-center gap-1">
+        <nav
+          aria-label="Primary"
+          className="hidden md:flex items-center gap-1"
+        >
           {NAV_LINKS.map((n) => {
             const isActive = active === n.href;
             return (
               <a
                 key={n.label}
                 href={n.href}
-                className="group relative rounded-full px-3 py-1.5 text-sm font-medium text-foreground/75 transition-colors duration-300 hover:text-foreground"
+                aria-current={isActive ? "true" : undefined}
+                className="group relative rounded-full px-3 py-1.5 text-sm font-medium text-foreground/75 transition-colors duration-300 hover:text-foreground focus-visible:text-foreground"
               >
                 {n.label}
                 <span
@@ -202,10 +237,11 @@ function Nav() {
         </nav>
         <a
           href="#waitlist"
-          className="group inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold text-white shadow-[0_8px_24px_-10px_rgba(233,30,140,0.6)] transition-all duration-300 hover:shadow-[0_12px_32px_-8px_rgba(0,188,212,0.6)]"
+          className="group inline-flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-semibold text-white shadow-[0_8px_24px_-10px_rgba(233,30,140,0.6)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_14px_36px_-8px_rgba(0,188,212,0.7)] active:translate-y-0 sm:px-4 sm:text-sm"
           style={{ background: "var(--gradient-brand)" }}
         >
-          Join Waitlist
+          <span className="hidden sm:inline">Join Waitlist</span>
+          <span className="sm:hidden">Join</span>
           <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
         </a>
       </div>
@@ -413,10 +449,10 @@ function Hero() {
   return (
     <section
       id="top"
-      className="relative isolate overflow-hidden pt-32 pb-20 sm:pt-40 sm:pb-24"
+      className="relative isolate overflow-hidden pt-28 pb-16 sm:pt-36 sm:pb-20 lg:pt-40 lg:pb-24"
     >
       <AnimatedBackdrop />
-      <div className="relative mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+      <div className="relative mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 md:gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
         <motion.div
           variants={stagger}
           initial="hidden"
@@ -435,7 +471,7 @@ function Hero() {
           </motion.span>
           <motion.h1
             variants={fadeUp}
-            className="mt-5 text-5xl font-semibold leading-[1.02] tracking-tight sm:text-6xl md:text-7xl"
+            className="mt-5 text-[2.6rem] font-semibold leading-[1.05] tracking-tight sm:text-6xl md:text-7xl"
             style={{ fontFamily: "'Playfair Display', serif" }}
           >
             <span className="block text-white">Underwrite Smarter.</span>
@@ -443,7 +479,7 @@ function Hero() {
           </motion.h1>
           <motion.p
             variants={fadeUp}
-            className="mx-auto mt-5 max-w-xl text-base text-foreground/75 sm:text-lg lg:mx-0"
+            className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-foreground/75 sm:text-lg lg:mx-0"
           >
             The AI copilot for mortgage brokers, private lenders, B lenders, credit
             unions, and modern lending teams.{" "}
@@ -461,6 +497,7 @@ function Hero() {
           initial={{ opacity: 0, y: 30, scale: 0.96 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ delay: 0.3, duration: 0.8, ease: [0.21, 0.47, 0.32, 0.98] }}
+          className="w-full"
         >
           <AIDecisionWidget />
         </motion.div>
@@ -688,7 +725,7 @@ function WaitlistForm() {
   }
 
   return (
-    <div id="waitlist" className="mx-auto mt-7 w-full max-w-xl lg:mx-0">
+    <div id="waitlist" className="mx-auto mt-7 w-full max-w-xl lg:mx-0" aria-live="polite">
       <AnimatePresence mode="wait">
         {state === "done" ? (
           <motion.div
@@ -697,6 +734,7 @@ function WaitlistForm() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             className="glass-card flex items-start gap-3 p-5"
+            role="status"
           >
             <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[color:var(--brand-cyan)]/15 text-[color:var(--brand-cyan)]">
               <CheckCircle2 className="h-5 w-5" />
@@ -716,27 +754,36 @@ function WaitlistForm() {
             exit={{ opacity: 0 }}
             onSubmit={onSubmit}
             className="flex w-full flex-col gap-2 sm:flex-row"
+            noValidate
           >
+            <label htmlFor="waitlist-email" className="sr-only">
+              Work email
+            </label>
             <div className="relative flex-1">
               <input
+                id="waitlist-email"
                 type="email"
                 required
+                autoComplete="email"
+                inputMode="email"
+                spellCheck={false}
                 disabled={state === "loading"}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@company.com"
                 aria-label="Work email"
-                className="w-full rounded-full border border-white/10 bg-white/[0.04] px-5 py-3.5 text-sm text-foreground placeholder:text-muted-foreground/70 outline-none transition-all duration-300 focus:border-[color:var(--brand-cyan)] focus:bg-white/[0.06] focus:ring-2 focus:ring-[color:var(--brand-cyan)]/30 disabled:opacity-60"
+                className="w-full rounded-full border border-white/10 bg-white/[0.04] px-5 py-3.5 text-sm text-foreground placeholder:text-muted-foreground/70 outline-none transition-all duration-300 focus:border-[color:var(--brand-cyan)] focus:bg-white/[0.06] focus:ring-2 focus:ring-[color:var(--brand-cyan)]/40 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-60"
               />
             </div>
             <button
               type="submit"
               disabled={state === "loading"}
-              className="group inline-flex min-w-[180px] items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-semibold text-white shadow-[0_8px_30px_-8px_rgba(233,30,140,0.55)] transition-all duration-300 hover:shadow-[0_12px_40px_-8px_rgba(0,188,212,0.6)] disabled:opacity-90"
+              aria-busy={state === "loading"}
+              className="group inline-flex min-h-[48px] items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-semibold text-white shadow-[0_8px_30px_-8px_rgba(233,30,140,0.55)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_14px_42px_-8px_rgba(0,188,212,0.7)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-cyan)]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0F172A] active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-90 sm:min-w-[184px]"
               style={{ background: "var(--gradient-brand)" }}
             >
               {state === "loading" ? (
-                <span className="flex items-center gap-2">
+                <span className="flex items-center gap-2" aria-live="polite">
                   <Loader2 className="h-4 w-4 animate-spin" />
                   <AnimatePresence mode="wait">
                     <motion.span
@@ -793,14 +840,18 @@ function SectionHead({
       transition={{ duration: 0.6 }}
       className="mx-auto max-w-2xl text-center"
     >
-      <p className={`text-xs font-semibold uppercase tracking-[0.2em] ${c}`}>{eyebrow}</p>
+      <p className={`text-[11px] font-semibold uppercase tracking-[0.22em] ${c}`}>{eyebrow}</p>
       <h2
-        className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl md:text-5xl"
+        className="mt-3 text-[1.85rem] font-semibold leading-[1.1] tracking-tight sm:text-4xl md:text-5xl"
         style={{ fontFamily: "'Playfair Display', serif" }}
       >
         {title} <span className="text-gradient-brand">{accent}</span>
       </h2>
-      {desc && <p className="mt-4 text-sm sm:text-base text-muted-foreground">{desc}</p>}
+      {desc && (
+        <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+          {desc}
+        </p>
+      )}
     </motion.div>
   );
 }
@@ -848,7 +899,7 @@ const CAPABILITIES = [
 
 function Capabilities() {
   return (
-    <section id="capabilities" className="relative py-20 sm:py-24">
+    <section id="capabilities" className="relative section-y">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <SectionHead
           eyebrow="AI Capabilities"
@@ -919,7 +970,7 @@ const STEPS = [
 
 function HowItWorks() {
   return (
-    <section id="how" className="relative py-20 sm:py-24">
+    <section id="how" className="relative section-y">
       <div className="mx-auto max-w-5xl px-4 sm:px-6">
         <SectionHead
           eyebrow="How it works"
@@ -968,8 +1019,13 @@ function HowItWorks() {
                       <s.icon className="h-5 w-5 text-[color:var(--brand-cyan)]" strokeWidth={1.6} />
                     </div>
                   </div>
-                  <div className="md:hidden flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-[#0F172A]">
+                  {/* Mobile: icon accent renders beneath the card content. */}
+                  <div className="md:hidden flex justify-center">
+                    <div
+                      className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-[#0F172A]"
+                      style={{ boxShadow: "0 0 24px -6px rgba(0,188,212,0.35)" }}
+                      aria-hidden="true"
+                    >
                       <s.icon className="h-4 w-4 text-[color:var(--brand-cyan)]" strokeWidth={1.6} />
                     </div>
                   </div>
@@ -1000,7 +1056,7 @@ function CountValue({ to, prefix = "", suffix = "", decimals = 0 }: { to: number
 
 function DashboardPreview() {
   return (
-    <section id="dashboard" className="relative py-20 sm:py-24">
+    <section id="dashboard" className="relative section-y">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <SectionHead
           eyebrow="Dashboard"
@@ -1194,7 +1250,7 @@ function Comparison() {
     "Smart recommendations",
   ];
   return (
-    <section className="relative py-20 sm:py-24">
+    <section className="relative section-y">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <SectionHead
           eyebrow="Why BrokerMindAI"
@@ -1280,7 +1336,7 @@ const INTEGRATIONS = [
 
 function Integrations() {
   return (
-    <section className="relative py-20 sm:py-24">
+    <section className="relative section-y">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <SectionHead
           eyebrow="Future integrations"
@@ -1341,7 +1397,7 @@ const SECURITY_ITEMS = [
 
 function Security() {
   return (
-    <section id="security" className="relative py-20 sm:py-24">
+    <section id="security" className="relative section-y">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <SectionHead
           eyebrow="Security"
@@ -1403,7 +1459,7 @@ const TESTIMONIALS = [
 
 function Testimonials() {
   return (
-    <section className="relative py-20 sm:py-24">
+    <section className="relative section-y">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <SectionHead
           eyebrow="Voices from the field"
@@ -1477,7 +1533,7 @@ const FAQS = [
 
 function FAQ() {
   return (
-    <section id="faq" className="relative py-20 sm:py-24">
+    <section id="faq" className="relative section-y">
       <div className="mx-auto max-w-3xl px-4 sm:px-6">
         <SectionHead
           eyebrow="Answers"
@@ -1518,7 +1574,7 @@ function FAQ() {
 
 function FinalCTA() {
   return (
-    <section className="relative py-20 sm:py-28">
+    <section className="relative section-y">
       <div className="mx-auto max-w-5xl px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -1548,7 +1604,7 @@ function FinalCTA() {
             <div className="mt-7 flex justify-center">
               <a
                 href="#waitlist"
-                className="group inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-white shadow-[0_12px_40px_-10px_rgba(233,30,140,0.6)] transition-all duration-300 hover:shadow-[0_16px_50px_-8px_rgba(0,188,212,0.7)]"
+                className="group inline-flex min-h-[52px] items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-white shadow-[0_12px_40px_-10px_rgba(233,30,140,0.6)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_54px_-8px_rgba(0,188,212,0.75)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-cyan)]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0F172A] active:translate-y-0"
                 style={{ background: "var(--gradient-brand)" }}
               >
                 Join the Waitlist
