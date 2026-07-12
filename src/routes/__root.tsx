@@ -89,7 +89,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content: "AI decision intelligence for mortgage and lending teams.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "BrokerMindAI" },
+      { property: "og:locale", content: "en_US" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "theme-color", content: "#0F172A" },
+      { name: "format-detection", content: "telephone=no" },
+      { name: "robots", content: "index, follow, max-image-preview:large, max-snippet:-1" },
     ],
     links: [
       {
@@ -101,8 +106,27 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: "https://fonts.googleapis.com",
       },
       {
+        rel: "preconnect",
+        href: "https://fonts.gstatic.com",
+        crossOrigin: "anonymous",
+      },
+      {
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap",
+      },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: "BrokerMindAI",
+          url: "/",
+          description:
+            "AI decision intelligence for mortgage brokers, private lenders, B lenders, credit unions, and modern lending teams.",
+          slogan: "Underwrite Smarter. Close Faster.",
+        }),
       },
     ],
   }),
