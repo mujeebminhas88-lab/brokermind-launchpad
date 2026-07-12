@@ -725,7 +725,7 @@ function WaitlistForm() {
   }
 
   return (
-    <div id="waitlist" className="mx-auto mt-7 w-full max-w-xl lg:mx-0">
+    <div id="waitlist" className="mx-auto mt-7 w-full max-w-xl lg:mx-0" aria-live="polite">
       <AnimatePresence mode="wait">
         {state === "done" ? (
           <motion.div
@@ -734,6 +734,7 @@ function WaitlistForm() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             className="glass-card flex items-start gap-3 p-5"
+            role="status"
           >
             <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[color:var(--brand-cyan)]/15 text-[color:var(--brand-cyan)]">
               <CheckCircle2 className="h-5 w-5" />
@@ -753,27 +754,36 @@ function WaitlistForm() {
             exit={{ opacity: 0 }}
             onSubmit={onSubmit}
             className="flex w-full flex-col gap-2 sm:flex-row"
+            noValidate
           >
+            <label htmlFor="waitlist-email" className="sr-only">
+              Work email
+            </label>
             <div className="relative flex-1">
               <input
+                id="waitlist-email"
                 type="email"
                 required
+                autoComplete="email"
+                inputMode="email"
+                spellCheck={false}
                 disabled={state === "loading"}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@company.com"
                 aria-label="Work email"
-                className="w-full rounded-full border border-white/10 bg-white/[0.04] px-5 py-3.5 text-sm text-foreground placeholder:text-muted-foreground/70 outline-none transition-all duration-300 focus:border-[color:var(--brand-cyan)] focus:bg-white/[0.06] focus:ring-2 focus:ring-[color:var(--brand-cyan)]/30 disabled:opacity-60"
+                className="w-full rounded-full border border-white/10 bg-white/[0.04] px-5 py-3.5 text-sm text-foreground placeholder:text-muted-foreground/70 outline-none transition-all duration-300 focus:border-[color:var(--brand-cyan)] focus:bg-white/[0.06] focus:ring-2 focus:ring-[color:var(--brand-cyan)]/40 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-60"
               />
             </div>
             <button
               type="submit"
               disabled={state === "loading"}
-              className="group inline-flex min-w-[180px] items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-semibold text-white shadow-[0_8px_30px_-8px_rgba(233,30,140,0.55)] transition-all duration-300 hover:shadow-[0_12px_40px_-8px_rgba(0,188,212,0.6)] disabled:opacity-90"
+              aria-busy={state === "loading"}
+              className="group inline-flex min-h-[48px] items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-semibold text-white shadow-[0_8px_30px_-8px_rgba(233,30,140,0.55)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_14px_42px_-8px_rgba(0,188,212,0.7)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-cyan)]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0F172A] active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-90 sm:min-w-[184px]"
               style={{ background: "var(--gradient-brand)" }}
             >
               {state === "loading" ? (
-                <span className="flex items-center gap-2">
+                <span className="flex items-center gap-2" aria-live="polite">
                   <Loader2 className="h-4 w-4 animate-spin" />
                   <AnimatePresence mode="wait">
                     <motion.span
