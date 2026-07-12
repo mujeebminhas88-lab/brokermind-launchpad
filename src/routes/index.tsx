@@ -43,25 +43,64 @@ import { Toaster } from "@/components/ui/sonner";
 import { joinWaitlist, readAttribution, validateEmail } from "@/lib/waitlist";
 
 export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "BrokerMindAI — Underwrite Smarter. Close Faster." },
-      {
-        name: "description",
-        content:
-          "AI decision intelligence for mortgage brokers, private lenders, B lenders, credit unions, and modern lending teams. Analyze borrower documents, assess risk, and close deals faster.",
-      },
-      { property: "og:title", content: "BrokerMindAI — Underwrite Smarter. Close Faster." },
-      {
-        property: "og:description",
-        content:
-          "AI decision intelligence for mortgage and lending teams. Analyze. Verify. Recommend.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-    links: [{ rel: "canonical", href: "/" }],
-  }),
+  head: () => {
+    const TITLE = "BrokerMindAI — Underwrite Smarter. Close Faster.";
+    const DESCRIPTION =
+      "AI decision intelligence for mortgage brokers, private lenders, B lenders, credit unions, and modern lending teams. Analyze borrower documents, assess risk, and close deals faster.";
+    return {
+      meta: [
+        { title: TITLE },
+        { name: "description", content: DESCRIPTION },
+        { property: "og:title", content: TITLE },
+        { property: "og:description", content: DESCRIPTION },
+        { property: "og:type", content: "website" },
+        { property: "og:url", content: "/" },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: TITLE },
+        { name: "twitter:description", content: DESCRIPTION },
+      ],
+      links: [{ rel: "canonical", href: "/" }],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            name: "BrokerMindAI",
+            applicationCategory: "BusinessApplication",
+            applicationSubCategory: "Underwriting & Loan Origination Software",
+            operatingSystem: "Web",
+            description: DESCRIPTION,
+            url: "/",
+            offers: {
+              "@type": "Offer",
+              price: "0",
+              priceCurrency: "USD",
+              availability: "https://schema.org/PreOrder",
+              description: "Private beta — join the waitlist for early access.",
+            },
+            audience: {
+              "@type": "Audience",
+              audienceType:
+                "Mortgage brokers, private lenders, B lenders, credit unions, and lending teams",
+            },
+          }),
+        },
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: FAQS.map((f) => ({
+              "@type": "Question",
+              name: f.q,
+              acceptedAnswer: { "@type": "Answer", text: f.a },
+            })),
+          }),
+        },
+      ],
+    };
+  },
   component: Index,
 });
 
