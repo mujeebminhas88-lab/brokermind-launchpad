@@ -32,7 +32,7 @@ import {
   Quote,
 } from "lucide-react";
 import { toast } from "sonner";
-import logoAsset from "@/assets/brokermind-logo.png.asset.json";
+import logoUrl from "@/assets/brokermind-logo.png";
 import {
   Accordion,
   AccordionContent,
@@ -109,10 +109,12 @@ export const Route = createFileRoute("/")({
 function Logo({ className = "h-32 w-auto" }: { className?: string }) {
   return (
     <img
-      src={logoAsset.url}
+      src={logoUrl}
       alt="BrokerMindAI"
       className={className + " select-none drop-shadow-[0_0_30px_rgba(0,188,212,0.25)]"}
       draggable={false}
+      width={500}
+      height={500}
     />
   );
 }
@@ -191,7 +193,6 @@ function SectionDivider() {
 const NAV_LINKS = [
   { label: "Platform", href: "#capabilities" },
   { label: "How it works", href: "#how" },
-  { label: "Dashboard", href: "#dashboard" },
   { label: "Security", href: "#security" },
   { label: "FAQ", href: "#faq" },
 ];
