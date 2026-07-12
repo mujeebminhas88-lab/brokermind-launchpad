@@ -109,20 +109,40 @@ function useCountUp(target: number, duration = 1400, start = false) {
 
 function Index() {
   return (
-    <div className="min-h-screen text-foreground">
+    <div className="min-h-dvh text-foreground antialiased">
       <Toaster theme="dark" position="top-center" />
       <Nav />
-      <Hero />
-      <Capabilities />
-      <HowItWorks />
-      <DashboardPreview />
-      <Comparison />
-      <Integrations />
-      <Security />
-      <Testimonials />
-      <FAQ />
-      <FinalCTA />
+      <main id="main">
+        <Hero />
+        <SectionDivider />
+        <Capabilities />
+        <SectionDivider />
+        <HowItWorks />
+        <SectionDivider />
+        <DashboardPreview />
+        <SectionDivider />
+        <Comparison />
+        <SectionDivider />
+        <Integrations />
+        <SectionDivider />
+        <Security />
+        <SectionDivider />
+        <Testimonials />
+        <SectionDivider />
+        <FAQ />
+        <FinalCTA />
+      </main>
       <Footer />
+    </div>
+  );
+}
+
+/* ---------------------------------------------------------------- section divider */
+
+function SectionDivider() {
+  return (
+    <div aria-hidden="true" className="mx-auto max-w-7xl px-4 sm:px-6">
+      <div className="section-divider" />
     </div>
   );
 }
