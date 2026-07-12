@@ -150,6 +150,40 @@
     background: radial-gradient(ellipse at top, #1a2548 0%, #0F172A 55%, #060914 100%);
     color: var(--color-foreground);
     font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "ss01", "cv11";
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* Offsets hash anchors so section titles aren't hidden under the fixed nav. */
+    scroll-padding-top: 96px;
+  }
+
+  /* Consistent, visible keyboard focus that respects the brand palette. */
+  :focus-visible {
+    outline: 2px solid var(--brand-cyan);
+    outline-offset: 3px;
+    border-radius: 10px;
+  }
+
+  /* Typographic rhythm: balance display headlines, avoid orphaned words. */
+  h1, h2, h3 {
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
 
@@ -165,6 +199,33 @@
   backdrop-filter: blur(14px);
   border: 1px solid rgba(255,255,255,0.08);
   border-radius: 1rem;
+}
+
+/* Unified vertical rhythm for every landing section. */
+@utility section-y {
+  padding-top: 4.5rem;
+  padding-bottom: 4.5rem;
+}
+@media (min-width: 640px) {
+  .section-y { padding-top: 5.5rem; padding-bottom: 5.5rem; }
+}
+@media (min-width: 1024px) {
+  .section-y { padding-top: 6.5rem; padding-bottom: 6.5rem; }
+}
+
+/* Subtle hairline divider used between sections to strengthen transitions. */
+@utility section-divider {
+  height: 1px;
+  width: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.08) 20%,
+    rgba(0, 188, 212, 0.18) 50%,
+    rgba(233, 30, 140, 0.18) 80%,
+    transparent 100%
+  );
+  opacity: 0.55;
 }
 
 @keyframes float-y {
