@@ -1019,8 +1019,13 @@ function HowItWorks() {
                       <s.icon className="h-5 w-5 text-[color:var(--brand-cyan)]" strokeWidth={1.6} />
                     </div>
                   </div>
-                  <div className="md:hidden flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-[#0F172A]">
+                  {/* Mobile: icon accent renders beneath the card content. */}
+                  <div className="md:hidden flex justify-center">
+                    <div
+                      className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-[#0F172A]"
+                      style={{ boxShadow: "0 0 24px -6px rgba(0,188,212,0.35)" }}
+                      aria-hidden="true"
+                    >
                       <s.icon className="h-4 w-4 text-[color:var(--brand-cyan)]" strokeWidth={1.6} />
                     </div>
                   </div>
