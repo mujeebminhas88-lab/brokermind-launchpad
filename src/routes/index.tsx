@@ -449,10 +449,10 @@ function Hero() {
   return (
     <section
       id="top"
-      className="relative isolate overflow-hidden pt-32 pb-20 sm:pt-40 sm:pb-24"
+      className="relative isolate overflow-hidden pt-28 pb-16 sm:pt-36 sm:pb-20 lg:pt-40 lg:pb-24"
     >
       <AnimatedBackdrop />
-      <div className="relative mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+      <div className="relative mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 md:gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
         <motion.div
           variants={stagger}
           initial="hidden"
@@ -471,7 +471,7 @@ function Hero() {
           </motion.span>
           <motion.h1
             variants={fadeUp}
-            className="mt-5 text-5xl font-semibold leading-[1.02] tracking-tight sm:text-6xl md:text-7xl"
+            className="mt-5 text-[2.6rem] font-semibold leading-[1.05] tracking-tight sm:text-6xl md:text-7xl"
             style={{ fontFamily: "'Playfair Display', serif" }}
           >
             <span className="block text-white">Underwrite Smarter.</span>
@@ -479,7 +479,7 @@ function Hero() {
           </motion.h1>
           <motion.p
             variants={fadeUp}
-            className="mx-auto mt-5 max-w-xl text-base text-foreground/75 sm:text-lg lg:mx-0"
+            className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-foreground/75 sm:text-lg lg:mx-0"
           >
             The AI copilot for mortgage brokers, private lenders, B lenders, credit
             unions, and modern lending teams.{" "}
@@ -497,6 +497,7 @@ function Hero() {
           initial={{ opacity: 0, y: 30, scale: 0.96 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ delay: 0.3, duration: 0.8, ease: [0.21, 0.47, 0.32, 0.98] }}
+          className="w-full"
         >
           <AIDecisionWidget />
         </motion.div>
