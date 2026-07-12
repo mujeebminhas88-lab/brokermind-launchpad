@@ -840,14 +840,18 @@ function SectionHead({
       transition={{ duration: 0.6 }}
       className="mx-auto max-w-2xl text-center"
     >
-      <p className={`text-xs font-semibold uppercase tracking-[0.2em] ${c}`}>{eyebrow}</p>
+      <p className={`text-[11px] font-semibold uppercase tracking-[0.22em] ${c}`}>{eyebrow}</p>
       <h2
-        className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl md:text-5xl"
+        className="mt-3 text-[1.85rem] font-semibold leading-[1.1] tracking-tight sm:text-4xl md:text-5xl"
         style={{ fontFamily: "'Playfair Display', serif" }}
       >
         {title} <span className="text-gradient-brand">{accent}</span>
       </h2>
-      {desc && <p className="mt-4 text-sm sm:text-base text-muted-foreground">{desc}</p>}
+      {desc && (
+        <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+          {desc}
+        </p>
+      )}
     </motion.div>
   );
 }
