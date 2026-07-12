@@ -186,28 +186,43 @@ function Nav() {
 
   return (
     <header
+      role="banner"
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
           ? "backdrop-blur-xl bg-[#0F172A]/70 border-b border-white/5"
           : "backdrop-blur-0 bg-transparent"
       }`}
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6">
-        <a href="#top" className="flex items-center" aria-label="BrokerMindAI">
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[60] focus:rounded-full focus:bg-[#0F172A] focus:px-4 focus:py-2 focus:text-sm focus:text-foreground focus:ring-2 focus:ring-[color:var(--brand-cyan)]"
+      >
+        Skip to content
+      </a>
+      <div className="mx-auto grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 sm:px-6 md:flex md:max-w-7xl md:justify-between">
+        <a
+          href="#top"
+          className="flex min-w-0 items-center rounded-md focus-visible:outline-none"
+          aria-label="BrokerMindAI — Home"
+        >
           <Logo
             className={`w-auto transition-all duration-300 ${
-              scrolled ? "h-14 sm:h-16" : "h-20 sm:h-28 md:h-32"
+              scrolled ? "h-12 sm:h-14 md:h-16" : "h-16 sm:h-24 md:h-32"
             } -my-2`}
           />
         </a>
-        <nav className="hidden md:flex items-center gap-1">
+        <nav
+          aria-label="Primary"
+          className="hidden md:flex items-center gap-1"
+        >
           {NAV_LINKS.map((n) => {
             const isActive = active === n.href;
             return (
               <a
                 key={n.label}
                 href={n.href}
-                className="group relative rounded-full px-3 py-1.5 text-sm font-medium text-foreground/75 transition-colors duration-300 hover:text-foreground"
+                aria-current={isActive ? "true" : undefined}
+                className="group relative rounded-full px-3 py-1.5 text-sm font-medium text-foreground/75 transition-colors duration-300 hover:text-foreground focus-visible:text-foreground"
               >
                 {n.label}
                 <span
@@ -222,10 +237,11 @@ function Nav() {
         </nav>
         <a
           href="#waitlist"
-          className="group inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold text-white shadow-[0_8px_24px_-10px_rgba(233,30,140,0.6)] transition-all duration-300 hover:shadow-[0_12px_32px_-8px_rgba(0,188,212,0.6)]"
+          className="group inline-flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-semibold text-white shadow-[0_8px_24px_-10px_rgba(233,30,140,0.6)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_14px_36px_-8px_rgba(0,188,212,0.7)] active:translate-y-0 sm:px-4 sm:text-sm"
           style={{ background: "var(--gradient-brand)" }}
         >
-          Join Waitlist
+          <span className="hidden sm:inline">Join Waitlist</span>
+          <span className="sm:hidden">Join</span>
           <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
         </a>
       </div>
