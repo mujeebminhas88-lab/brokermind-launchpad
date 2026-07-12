@@ -32,7 +32,7 @@ import {
   Quote,
 } from "lucide-react";
 import { toast } from "sonner";
-import logoAsset from "@/assets/brokermind-logo.png.asset.json";
+import logoUrl from "@/assets/brokermind-logo.png";
 import {
   Accordion,
   AccordionContent,
@@ -109,10 +109,12 @@ export const Route = createFileRoute("/")({
 function Logo({ className = "h-32 w-auto" }: { className?: string }) {
   return (
     <img
-      src={logoAsset.url}
+      src={logoUrl}
       alt="BrokerMindAI"
       className={className + " select-none drop-shadow-[0_0_30px_rgba(0,188,212,0.25)]"}
       draggable={false}
+      width={500}
+      height={500}
     />
   );
 }
@@ -191,7 +193,6 @@ function SectionDivider() {
 const NAV_LINKS = [
   { label: "Platform", href: "#capabilities" },
   { label: "How it works", href: "#how" },
-  { label: "Dashboard", href: "#dashboard" },
   { label: "Security", href: "#security" },
   { label: "FAQ", href: "#faq" },
 ];
@@ -1361,26 +1362,47 @@ function Comparison() {
 
 /* ---------------------------------------------------------------- integrations */
 
-const INTEGRATIONS = [
-  "Equifax",
-  "TransUnion",
-  "Plaid",
-  "Filogix",
-  "Velocity",
-  "DocuSign",
-  "Google Drive",
-  "Microsoft 365",
-  "Adobe Acrobat",
+const OUTCOMES = [
+  {
+    icon: Gauge,
+    title: "Faster file reviews",
+    body: "Turn hours of manual document review into minutes with AI-assisted underwriting.",
+  },
+  {
+    icon: FileSearch,
+    title: "Less manual work",
+    body: "Automatically parse income, bank statements, and IDs so brokers focus on client decisions, not data entry.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Consistent compliance",
+    body: "Every file checked against policy and disclosure requirements — with a full audit trail.",
+  },
+  {
+    icon: AlertTriangle,
+    title: "Earlier risk signals",
+    body: "Surface fraud indicators, income anomalies, and DSR pressure before a file goes to a lender.",
+  },
+  {
+    icon: Network,
+    title: "Lender-aligned recommendations",
+    body: "Match borrowers to lenders whose policies actually fit — not guesswork from a rate sheet.",
+  },
+  {
+    icon: Sparkles,
+    title: "A copilot that keeps up",
+    body: "Ask questions about any file in plain language and get answers grounded in the borrower's documents.",
+  },
 ];
 
 function Integrations() {
   return (
-    <section className="relative section-y">
+    <section id="outcomes" className="relative section-y">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <SectionHead
-          eyebrow="Future integrations"
-          title="Connects to the tools you"
-          accent="already use"
+          eyebrow="Built for lending teams"
+          title="What BrokerMindAI does for"
+          accent="your desk"
           color="magenta"
         />
         <motion.div
@@ -1388,33 +1410,20 @@ function Integrations() {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-80px" }}
-          className="mt-12 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-3"
+          className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
         >
-          {INTEGRATIONS.map((name) => (
+          {OUTCOMES.map(({ icon: Icon, title, body }) => (
             <motion.div
-              key={name}
+              key={title}
               variants={fadeUp}
               whileHover={{ y: -3 }}
-              className="glass-card flex items-center justify-between p-4 transition-all duration-300 hover:border-white/20"
+              className="glass-card flex flex-col gap-3 p-5 transition-all duration-300 hover:border-white/20"
             >
-              <div className="flex items-center gap-3">
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/5">
-                  <span
-                    className="text-sm font-semibold"
-                    style={{
-                      background: "var(--gradient-brand)",
-                      WebkitBackgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
-                    }}
-                  >
-                    {name[0]}
-                  </span>
-                </div>
-                <span className="text-sm font-medium text-foreground">{name}</span>
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-white/5">
+                <Icon className="h-5 w-5" style={{ color: "var(--brand-cyan)" }} aria-hidden="true" />
               </div>
-              <span className="rounded-full border border-white/10 bg-white/[0.03] px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
-                Coming soon
-              </span>
+              <h3 className="text-base font-semibold text-foreground">{title}</h3>
+              <p className="text-sm leading-relaxed text-foreground/70">{body}</p>
             </motion.div>
           ))}
         </motion.div>
