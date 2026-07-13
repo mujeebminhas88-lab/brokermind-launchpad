@@ -40,7 +40,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Toaster } from "@/components/ui/sonner";
-import { joinWaitlist, readAttribution, validateEmail } from "@/lib/waitlist";
+import { joinWaitlist, readAttribution, validateEmail } from "@/services/waitlist";
 
 export const Route = createFileRoute("/")({
   head: () => {
