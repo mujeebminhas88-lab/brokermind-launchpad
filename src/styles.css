@@ -6,12 +6,7 @@
 
 /*
  * Design system definition.
- *
- * The @theme inline block maps CSS custom properties to Tailwind utility
- * classes (e.g. --color-primary -> bg-primary, text-primary).
- *
- * The :root and .dark blocks define the actual color values using oklch.
- * All colors MUST use oklch format.
+ * All color tokens updated to an ultra-modern Twilight Indigo & Deep Amethyst Violet palette.
  */
 
 @theme inline {
@@ -60,88 +55,88 @@
 :root {
   --radius: 0.625rem;
   
-  /* BrokerMind AI — High-Trust Enterprise Slate & Emerald System */
-  --background: oklch(0.14 0.02 255);            /* Deep slate/navy anchor canvas */
-  --foreground: oklch(0.97 0.01 240);            /* Crisp light text for readability */
-  --card: oklch(0.18 0.02 255 / 0.65);           /* Dark card backdrop blending with root */
-  --card-foreground: oklch(0.97 0.01 240);
-  --popover: oklch(0.16 0.02 255);
-  --popover-foreground: oklch(0.97 0.01 240);
+  /* BASE CANVAS: Deep Luxury Twilight Void */
+  --background: oklch(0.12 0.03 275);            
+  --foreground: oklch(0.98 0.01 270);            
+  --card: oklch(0.16 0.04 275 / 0.65);           
+  --card-foreground: oklch(0.98 0.01 270);
+  --popover: oklch(0.14 0.04 275);
+  --popover-foreground: oklch(0.98 0.01 270);
   
-  --primary: oklch(0.55 0.18 215);               /* Professional Trust Blue */
+  /* CORE HUES: Deep Indigo into Bright Fluid Orchid/Violet */
+  --primary: oklch(0.65 0.22 285);               /* Bright Liquid Orchid / Soft Violet */
   --primary-foreground: oklch(0.98 0 0);
-  --secondary: oklch(0.68 0.16 168);             /* Compliant Risk Teal for subheaders */
-  --secondary-foreground: oklch(0.14 0.02 255);
+  --secondary: oklch(0.45 0.18 270);             /* Deep Electric Indigo */
+  --secondary-foreground: oklch(0.98 0 0);
   
-  --muted: oklch(0.24 0.02 255);
-  --muted-foreground: oklch(0.74 0.02 240);       /* Clean low-contrast gray text */
-  --accent: oklch(0.72 0.16 150);                /* Emerald Green for CTA emphasis and passes */
-  --accent-foreground: oklch(0.14 0.02 255);
+  --muted: oklch(0.20 0.03 275);
+  --muted-foreground: oklch(0.78 0.02 270);       
+  --accent: oklch(0.82 0.12 280);                /* Luminescent Lilac for highlights */
+  --accent-foreground: oklch(0.12 0.03 275);
   
-  --destructive: oklch(0.58 0.22 28);            /* Secure warning red for alerts */
+  --destructive: oklch(0.60 0.18 20);            
   --destructive-foreground: oklch(0.98 0 0);
-  --border: oklch(1 0 0 / 0.08);
-  --input: oklch(1 0 0 / 0.06);
-  --ring: oklch(0.55 0.18 215);
+  --border: oklch(1 0 0 / 0.07);
+  --input: oklch(1 0 0 / 0.05);
+  --ring: oklch(0.65 0.22 285);
 
-  /* Semantic Brand Mappings for existing elements */
-  --brand-cyan: oklch(0.55 0.18 215);            
-  --brand-magenta: oklch(0.72 0.16 150);         
-  --brand-purple: oklch(0.68 0.16 168);          
-  --brand-navy: #091326;
+  /* Mapping old custom variables to smooth twilight layers */
+  --brand-cyan: oklch(0.65 0.22 285);            
+  --brand-magenta: oklch(0.82 0.12 280);         
+  --brand-purple: oklch(0.45 0.18 270);          
+  --brand-navy: #070a14;
   
-  /* Upgraded Gradient Flow from Deep Blue into Compliant Greens */
-  --gradient-brand: linear-gradient(135deg, oklch(0.55 0.18 215) 0%, oklch(0.68 0.16 168) 60%, oklch(0.72 0.16 150) 100%);
-  --gradient-text: linear-gradient(90deg, #ffffff 0%, oklch(0.55 0.18 215) 60%, oklch(0.72 0.16 150) 100%);
-  --shadow-glow-cyan: 0 0 40px -10px rgba(2, 132, 199, 0.35);
-  --shadow-glow-magenta: 0 0 40px -10px rgba(16, 185, 129, 0.35);
+  /* Modern Liquid Silver & Twilight Gradients */
+  --gradient-brand: linear-gradient(135deg, oklch(0.45 0.18 270) 0%, oklch(0.65 0.22 285) 50%, oklch(0.82 0.12 280) 100%);
+  --gradient-text: linear-gradient(90deg, #ffffff 0%, oklch(0.65 0.22 285) 60%, oklch(0.82 0.12 280) 100%);
+  --shadow-glow-cyan: 0 0 40px -10px rgba(168, 85, 247, 0.4);
+  --shadow-glow-magenta: 0 0 40px -10px rgba(232, 121, 249, 0.4);
 
-  /* Charts adjusted to data dashboard standards */
-  --chart-1: oklch(0.55 0.18 215);               
-  --chart-2: oklch(0.72 0.16 150);               
-  --chart-3: oklch(0.82 0.14 110);               
-  --chart-4: oklch(0.58 0.22 28);                
-  --chart-5: oklch(0.45 0.05 240);
+  /* Dashboard Chart Modules */
+  --chart-1: oklch(0.65 0.22 285);               
+  --chart-2: oklch(0.45 0.18 270);               
+  --chart-3: oklch(0.82 0.12 280);               
+  --chart-4: oklch(0.60 0.18 20);                
+  --chart-5: oklch(0.35 0.05 270);
   
-  --sidebar: oklch(0.12 0.02 255);
-  --sidebar-foreground: oklch(0.97 0.01 240);
-  --sidebar-primary: oklch(0.55 0.18 215);
+  --sidebar: oklch(0.10 0.03 275);
+  --sidebar-foreground: oklch(0.98 0.01 270);
+  --sidebar-primary: oklch(0.65 0.22 285);
   --sidebar-primary-foreground: oklch(0.98 0 0);
-  --sidebar-accent: oklch(0.18 0.02 255);
-  --sidebar-accent-foreground: oklch(0.97 0.01 240);
-  --sidebar-border: oklch(1 0 0 / 0.08);
-  --sidebar-ring: oklch(0.55 0.18 215);
+  --sidebar-accent: oklch(0.16 0.04 275);
+  --sidebar-accent-foreground: oklch(0.98 0.01 270);
+  --sidebar-border: oklch(1 0 0 / 0.07);
+  --sidebar-ring: oklch(0.65 0.22 285);
 }
 
 .dark {
-  /* Aligned Dark Variant settings */
-  --background: oklch(0.09 0.02 255);
-  --foreground: oklch(0.98 0.01 240);
-  --card: oklch(0.14 0.02 255);
-  --card-foreground: oklch(0.98 0.01 240);
-  --popover: oklch(0.14 0.02 255);
-  --popover-foreground: oklch(0.98 0.01 240);
-  --primary: oklch(0.55 0.18 215);
-  --primary-foreground: oklch(0.09 0.02 255);
-  --secondary: oklch(0.22 0.02 255);
-  --secondary-foreground: oklch(0.98 0.01 240);
-  --muted: oklch(0.22 0.02 255);
-  --muted-foreground: oklch(0.74 0.02 240);
-  --accent: oklch(0.22 0.02 255);
-  --accent-foreground: oklch(0.98 0.01 240);
-  --destructive: oklch(0.58 0.22 28);
-  --destructive-foreground: oklch(0.98 0.01 240);
-  --border: oklch(1 0 0 / 8%);
-  --input: oklch(1 0 0 / 12%);
-  --ring: oklch(0.55 0.18 215);
-  --sidebar: oklch(0.14 0.02 255);
-  --sidebar-foreground: oklch(0.98 0.01 240);
-  --sidebar-primary: oklch(0.55 0.18 215);
-  --sidebar-primary-foreground: oklch(0.98 0.01 240);
-  --sidebar-accent: oklch(0.22 0.02 255);
-  --sidebar-accent-foreground: oklch(0.98 0.01 240);
-  --sidebar-border: oklch(1 0 0 / 8%);
-  --sidebar-ring: oklch(0.55 0.18 215);
+  --background: oklch(0.08 0.02 275);
+  --foreground: oklch(0.99 0.01 270);
+  --card: oklch(0.12 0.03 275);
+  --card-foreground: oklch(0.99 0.01 270);
+  --popover: oklch(0.12 0.03 275);
+  --popover-foreground: oklch(0.99 0.01 270);
+  --primary: oklch(0.65 0.22 285);
+  --primary-foreground: oklch(0.08 0.02 275);
+  --secondary: oklch(0.16 0.03 275);
+  --secondary-foreground: oklch(0.99 0.01 270);
+  --muted: oklch(0.16 0.03 275);
+  --muted-foreground: oklch(0.78 0.02 270);
+  --accent: oklch(0.16 0.03 275);
+  --accent-foreground: oklch(0.99 0.01 270);
+  --destructive: oklch(0.60 0.18 20);
+  --destructive-foreground: oklch(0.99 0.01 270);
+  --border: oklch(1 0 0 / 6%);
+  --input: oklch(1 0 0 / 10%);
+  --ring: oklch(0.65 0.22 285);
+  --sidebar: oklch(0.12 0.03 275);
+  --sidebar-foreground: oklch(0.99 0.01 270);
+  --sidebar-primary: oklch(0.65 0.22 285);
+  --sidebar-primary-foreground: oklch(0.99 0.01 270);
+  --sidebar-accent: oklch(0.16 0.03 275);
+  --sidebar-accent-foreground: oklch(0.99 0.01 270);
+  --sidebar-border: oklch(1 0 0 / 6%);
+  --sidebar-ring: oklch(0.65 0.22 285);
 }
 
 @layer base {
@@ -150,7 +145,8 @@
   }
 
   body {
-    background: radial-gradient(ellipse at top, #0f1e36 0%, #091122 60%, #040812 100%);
+    /* Smooth radial transition using deep twilight gradients */
+    background: radial-gradient(ellipse at top, #18153c 0%, #0a0817 65%, #03020a 100%);
     color: var(--color-foreground);
     font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -159,7 +155,7 @@
     font-feature-settings: "ss01", "cv11";
   }
 
-  /* 🚨 CRITICAL STRUCTURAL TEXT & LINK RECOVERIES FOR NATIVE BROWSER DEFAULTS */
+  /* Safe fallback color assignments preventing browser overrides */
   a, button, li, span, p {
     color: var(--color-foreground);
   }
@@ -173,7 +169,6 @@
     color: var(--color-primary);
   }
 
-  /* Fixed high contrast visibility targeting header layouts explicitly */
   header a, nav a {
     color: var(--color-foreground) !important;
   }
@@ -182,7 +177,6 @@
     color: var(--color-primary) !important;
   }
 
-  /* Soft fallback color rule targeting local sections anchors */
   a[href^="#"] {
     color: var(--color-muted-foreground);
   }
@@ -230,7 +224,7 @@
 @utility glass-card {
   background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
   backdrop-filter: blur(14px);
-  border: 1px solid rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.05);
   border-radius: 1rem;
 }
 
@@ -251,9 +245,9 @@
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(255, 255, 255, 0.04) 20%,
-    rgba(2, 132, 199, 0.15) 50%,
-    rgba(16, 185, 129, 0.15) 80%,
+    rgba(255, 255, 255, 0.03) 20%,
+    rgba(168, 85, 247, 0.15) 50%,
+    rgba(232, 121, 249, 0.15) 80%,
     transparent 100%
   );
   opacity: 0.55;
