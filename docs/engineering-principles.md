@@ -1,5 +1,12 @@
 # Engineering Principles
 
+## Git Discipline
+
+- Commit after every completed logical task.
+- Never mix unrelated changes in a single commit.
+- Always review `git status` before committing.
+- Keep `main` deployable at all times.
+
 ## 1. Git is the Source of Truth
 
 Everything must exist in Git.
@@ -87,3 +94,5 @@ Code committed to main should be production-ready.
 Prefer maintainability over shortcuts.
 
 Avoid vendor lock-in where possible.
+
+
