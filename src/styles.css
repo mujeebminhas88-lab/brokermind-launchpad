@@ -1,3 +1,62 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Design system definition.
+ *
+ * The @theme inline block maps CSS custom properties to Tailwind utility
+ * classes (e.g. --color-primary -> bg-primary, text-primary).
+ *
+ * The :root and .dark blocks define the actual color values using oklch.
+ * All colors MUST use oklch format.
+ */
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ring-offset-background: var(--background);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
 :root {
   --radius: 0.625rem;
   
@@ -9,7 +68,7 @@
   --popover: oklch(0.16 0.02 255);
   --popover-foreground: oklch(0.97 0.01 240);
   
-  --primary: oklch(0.55 0.18 215);               /* Professional Trust Blue (approx #0284C7) */
+  --primary: oklch(0.55 0.18 215);               /* Professional Trust Blue */
   --primary-foreground: oklch(0.98 0 0);
   --secondary: oklch(0.68 0.16 168);             /* Compliant Risk Teal for subheaders */
   --secondary-foreground: oklch(0.14 0.02 255);
@@ -25,10 +84,10 @@
   --input: oklch(1 0 0 / 0.06);
   --ring: oklch(0.55 0.18 215);
 
-  /* Semantic Brand Overrides */
-  --brand-cyan: oklch(0.55 0.18 215);            /* Mapped to trust blue */
-  --brand-magenta: oklch(0.72 0.16 150);         /* Mapped to emerald safety */
-  --brand-purple: oklch(0.68 0.16 168);          /* Mapped to structural teal */
+  /* Semantic Brand Mappings for existing elements */
+  --brand-cyan: oklch(0.55 0.18 215);            
+  --brand-magenta: oklch(0.72 0.16 150);         
+  --brand-purple: oklch(0.68 0.16 168);          
   --brand-navy: #091326;
   
   /* Upgraded Gradient Flow from Deep Blue into Compliant Greens */
@@ -38,10 +97,10 @@
   --shadow-glow-magenta: 0 0 40px -10px rgba(16, 185, 129, 0.35);
 
   /* Charts adjusted to data dashboard standards */
-  --chart-1: oklch(0.55 0.18 215);               /* Primary Blues */
-  --chart-2: oklch(0.72 0.16 150);               /* Safe Greens */
-  --chart-3: oklch(0.82 0.14 110);               /* Mid-tier Warnings */
-  --chart-4: oklch(0.58 0.22 28);                /* Danger Red */
+  --chart-1: oklch(0.55 0.18 215);               
+  --chart-2: oklch(0.72 0.16 150);               
+  --chart-3: oklch(0.82 0.14 110);               
+  --chart-4: oklch(0.58 0.22 28);                
   --chart-5: oklch(0.45 0.05 240);
   
   --sidebar: oklch(0.12 0.02 255);
@@ -91,7 +150,6 @@
   }
 
   body {
-    /* Changed gradient sweep from electric purple into an authoritative corporate deep blue transition */
     background: radial-gradient(ellipse at top, #0f1e36 0%, #091122 60%, #040812 100%);
     color: var(--color-foreground);
     font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -101,21 +159,54 @@
     font-feature-settings: "ss01", "cv11";
   }
 
+  /* 🚨 CRITICAL STRUCTURAL TEXT & LINK RECOVERIES FOR NATIVE BROWSER DEFAULTS */
+  a, button, li, span, p {
+    color: var(--color-foreground);
+  }
+
+  a {
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  a:hover {
+    color: var(--color-primary);
+  }
+
+  /* Fixed high contrast visibility targeting header layouts explicitly */
+  header a, nav a {
+    color: var(--color-foreground) !important;
+  }
+  
+  header a:hover, nav a:hover {
+    color: var(--color-primary) !important;
+  }
+
+  /* Soft fallback color rule targeting local sections anchors */
+  a[href^="#"] {
+    color: var(--color-muted-foreground);
+  }
+  a[href^="#"]:hover {
+    color: var(--color-foreground);
+  }
+
   html {
     scroll-behavior: smooth;
     scroll-padding-top: 96px;
   }
 
   :focus-visible {
-    outline: 2px solid var(--brand-cyan);
+    outline: 2px solid var(--color-primary);
     outline-offset: 3px;
     border-radius: 10px;
   }
 
-  h1, h2, h3 {
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--color-foreground) !important;
     text-wrap: balance;
   }
-  p {
+  
+  p, span, li {
     text-wrap: pretty;
   }
 
@@ -166,4 +257,24 @@
     transparent 100%
   );
   opacity: 0.55;
+}
+
+@keyframes float-y {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+@keyframes pulse-glow {
+  0%,100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+@keyframes dash-flow {
+  to { stroke-dashoffset: -200; }
+}
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
+}
+@keyframes drift {
+  0% { transform: translate3d(0,0,0); }
+  50% { transform: translate3d(20px,-15px,0); }
+  100% { transform: translate3d(0,0,0); }
 }
