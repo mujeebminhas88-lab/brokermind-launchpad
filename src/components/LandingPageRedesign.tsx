@@ -79,11 +79,11 @@ export default function LandingPageRedesign() {
   };
 
   return (
-    <div className="bg-background text-foreground relative min-h-screen selection:bg-[oklch(0.62_0.15_48/0.3)] selection:text-white pb-12">
+    <div className="bg-neutral-950 text-neutral-100 relative min-h-screen selection:bg-orange-500/30 selection:text-white pb-12">
       <Toaster position="top-center" theme="dark" />
 
-      {/* HEADER NAVBAR AND FLOATING NAV SYSTEM */}
-      <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 border-b border-white/5 bg-background/80 backdrop-blur-md px-6 py-4 flex items-center justify-between ${
+      {/* HEADER NAVIGATION */}
+      <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 border-b border-white/5 bg-neutral-950/80 backdrop-blur-md px-6 py-4 flex items-center justify-between ${
         isNavVisible ? "translate-y-0" : "-translate-y-full"
       }`}>
         <div className="flex items-center gap-3 cursor-pointer" onClick={() => scrollToSection("hero")}>
@@ -91,7 +91,7 @@ export default function LandingPageRedesign() {
           <span className="font-medium text-sm text-white tracking-tight">BrokerMind</span>
         </div>
 
-        <div className="hidden md:flex items-center gap-6 px-4 py-2 glass-card rounded-full border border-white/10 bg-white/5">
+        <div className="hidden md:flex items-center gap-6 px-4 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-md">
           <button type="button" onClick={() => scrollToSection("features")} className="text-xs text-white/70 hover:text-white transition-colors">Features</button>
           <button type="button" onClick={() => scrollToSection("how-it-works")} className="text-xs text-white/70 hover:text-white transition-colors">How it Works</button>
           <button type="button" onClick={() => scrollToSection("pricing")} className="text-xs text-white/70 hover:text-white transition-colors">Pricing</button>
@@ -102,37 +102,37 @@ export default function LandingPageRedesign() {
           <button 
             type="button"
             onClick={() => scrollToSection("hero")}
-            className="bg-[oklch(0.62_0.15_48)] hover:bg-[oklch(0.55_0.14_48)] text-background font-bold text-xs tracking-wider uppercase px-4 py-2 rounded-full transition-all active:scale-95 shadow-[0_0_15px_rgba(200,122,83,0.3)]"
+            className="bg-orange-600 hover:bg-orange-700 text-white font-semibold text-xs tracking-wider uppercase px-4 py-2 rounded-full transition-all active:scale-95"
           >
             Join Waitlist
           </button>
         </div>
       </header>
 
-      {/* 01. THE VAULT HERO */}
+      {/* 01. HERO SECTION */}
       <section id="hero" className="relative min-h-screen flex items-center justify-center px-6 pt-32 pb-16 overflow-hidden">
         <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-12 gap-16 items-center relative z-10">
           
           <div className="lg:col-span-7 flex flex-col space-y-6 text-left">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/5 w-fit">
-              <span className="w-1.5 h-1.5 rounded-full bg-[oklch(0.62_0.15_48)] animate-pulse" />
+              <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
               <span className="text-[10px] uppercase font-mono tracking-widest opacity-60 text-white">Private Beta Active</span>
             </div>
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-semibold leading-[1.15] text-white tracking-tight">
               Underwrite Smarter. Close Deals Faster.
             </h1>
-            <p className="text-base text-[oklch(0.60_0.012_165)] max-w-xl font-light leading-relaxed">
+            <p className="text-base text-neutral-400 max-w-xl font-light leading-relaxed">
               AI decision intelligence built explicitly for mortgage brokers, private lenders, and forward-thinking lending teams. Streamline compliance, reduce risk, and save hundreds of operational hours.
             </p>
           </div>
 
           <div className="lg:col-span-5 w-full flex justify-center lg:justify-end">
-            <div className="glass-card w-full max-w-md p-8 bg-[oklch(0.15_0.020_165/0.3)] rounded-2xl relative border border-white/5 shadow-2xl text-left">
+            <div className="w-full max-w-md p-8 bg-neutral-900/60 rounded-2xl relative border border-white/5 shadow-2xl text-left backdrop-blur-md">
               {!isSubmitted ? (
                 <form onSubmit={handleWaitlistSubmit} className="flex flex-col space-y-6">
                   <div>
                     <h3 className="text-lg font-medium text-white mb-1">Secure Early Access</h3>
-                    <p className="text-xs text-[oklch(0.60_0.012_165)] font-light">Join the priority queue for our next batch release.</p>
+                    <p className="text-xs text-neutral-400 font-light">Join the priority queue for our next batch release.</p>
                   </div>
                   <div className="space-y-4">
                     <input 
@@ -142,12 +142,12 @@ export default function LandingPageRedesign() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       disabled={isPending}
-                      className="w-full bg-[oklch(0.07_0.012_165)] text-white border border-white/10 focus:border-[oklch(0.62_0.15_48)] rounded-lg px-4 py-3.5 text-sm transition-all outline-none"
+                      className="w-full bg-neutral-950 text-white border border-white/10 focus:border-orange-500 rounded-lg px-4 py-3.5 text-sm transition-all outline-none"
                     />
                     <button 
                       type="submit" 
                       disabled={isPending}
-                      className="w-full bg-[oklch(0.62_0.15_48)] hover:bg-[oklch(0.55_0.14_48)] text-background font-bold text-xs tracking-wider uppercase py-4 rounded-lg transition-all active:scale-[0.98] shadow-xl flex items-center justify-center gap-2"
+                      className="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs tracking-wider uppercase py-4 rounded-lg transition-all active:scale-[0.98] shadow-xl flex items-center justify-center gap-2"
                     >
                       {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : "Join the Waitlist"}
                     </button>
@@ -155,10 +155,10 @@ export default function LandingPageRedesign() {
                 </form>
               ) : (
                 <div className="py-12 text-center flex flex-col items-center justify-center space-y-4">
-                  <div className="w-12 h-12 rounded-full border border-[oklch(0.62_0.15_48)] flex items-center justify-center text-[oklch(0.62_0.15_48)] text-lg font-mono bg-[oklch(0.62_0.15_48/0.05)]">✓</div>
+                  <div className="w-12 h-12 rounded-full border border-orange-500 flex items-center justify-center text-orange-500 text-lg font-mono bg-orange-500/5">✓</div>
                   <div>
                     <h3 className="text-lg font-medium text-white">You're on the list!</h3>
-                    <p className="text-xs text-[oklch(0.60_0.012_165)] mt-1 max-w-xs mx-auto font-light leading-relaxed">
+                    <p className="text-xs text-neutral-400 mt-1 max-w-xs mx-auto font-light leading-relaxed">
                       Thank you for your interest. We will reach out as soon as your access spot is cleared.
                     </p>
                   </div>
@@ -170,14 +170,18 @@ export default function LandingPageRedesign() {
         </div>
       </section>
 
-      {/* 02. CORE CAPABILITIES (BENTO GRID) */}
-      <section id="features" className="section-y px-6 max-w-7xl mx-auto scroll-mt-20">
+      {/* 02. CORE FEATURES (BENTO GRID) */}
+      <section id="features" className="py-16 px-6 max-w-7xl mx-auto scroll-mt-20">
         <div className="mb-12 text-left">
-          <p className="text-xs font-mono tracking-widest uppercase text-[oklch(0.62_0.15_48)] mb-2">Capabilities</p>
+          <p className="text-xs font-mono tracking-widest uppercase text-orange-500 mb-2">Capabilities</p>
           <h2 className="text-2xl sm:text-3xl font-medium text-white">Platform Core Features</h2>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {FEATURES.map((item, index) => {
             const Icon = item.icon;
             return (
-              <div key={index} className="glass-card p-6 bg-[oklch(0.15_0.020_165/0.2)] border border-white/5 hover:border-[oklch(0.62_0.15_48/0.2)] rounded-xl transition-all group duration-300 text-left">
+              <div key={index} className="p-6 bg-neutral-900/40 border border-white/5 hover:border-orange-500/20 rounded-xl transition-all group duration-300 text-left backdrop-blur-sm">
+                <div className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-orange-500 mb-4">
+                  <Icon className="w-5 h-5" />
+                </div>
+                <h4 className="text-base font-medium text-white mb-2">{item.title}</h4>
