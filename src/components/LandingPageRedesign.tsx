@@ -66,11 +66,11 @@ export default function LandingPageRedesign() {
   };
 
   return (
-    <div className="bg-neutral-950 text-neutral-100 relative min-h-screen selection:bg-orange-500/30 selection:text-white pb-12">
+    <div className="bg-[#0a0a0a] text-neutral-100 relative min-h-screen pb-12">
       <Toaster position="top-center" theme="dark" />
 
       {/* HEADER NAV SYSTEM */}
-      <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 border-b border-neutral-800 bg-neutral-950/80 backdrop-blur-md px-6 py-4 flex items-center justify-between ${
+      <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 border-b border-neutral-800 bg-[#0a0a0ab3] backdrop-blur-md px-6 py-4 flex items-center justify-between ${
         isNavVisible ? "translate-y-0" : "-translate-y-full"
       }`}>
         <div className="flex items-center gap-3 cursor-pointer" onClick={() => scrollToSection("hero")}>
@@ -78,7 +78,7 @@ export default function LandingPageRedesign() {
           <span className="font-medium text-sm text-white tracking-tight">BrokerMind</span>
         </div>
 
-        <div className="hidden md:flex items-center gap-6 px-5 py-2 rounded-full border border-neutral-800 bg-neutral-900/50 backdrop-blur-md">
+        <div className="hidden md:flex items-center gap-6 px-5 py-2 rounded-full border border-neutral-800 bg-[#171717]">
           <button type="button" onClick={() => scrollToSection("features")} className="text-xs text-neutral-400 hover:text-white transition-colors">Features</button>
           <button type="button" onClick={() => scrollToSection("how-it-works")} className="text-xs text-neutral-400 hover:text-white transition-colors">How it Works</button>
           <button type="button" onClick={() => scrollToSection("pricing")} className="text-xs text-neutral-400 hover:text-white transition-colors">Pricing</button>
@@ -101,7 +101,7 @@ export default function LandingPageRedesign() {
         <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-12 gap-16 items-center relative z-10">
           
           <div className="lg:col-span-7 flex flex-col space-y-6 text-left">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-neutral-900 border border-neutral-800 w-fit">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#171717] border border-neutral-800 w-fit">
               <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
               <span className="text-[10px] uppercase font-mono tracking-widest text-neutral-400">Private Beta Access</span>
             </div>
@@ -114,7 +114,7 @@ export default function LandingPageRedesign() {
           </div>
 
           <div className="lg:col-span-5 w-full flex justify-center lg:justify-end">
-            <div className="w-full max-w-md p-8 bg-neutral-900/40 rounded-2xl relative border border-neutral-800 shadow-2xl text-left backdrop-blur-md">
+            <div className="w-full max-w-md p-8 bg-[#171717] rounded-2xl relative border border-neutral-800 shadow-2xl text-left">
               {!isSubmitted ? (
                 <form onSubmit={handleWaitlistSubmit} className="flex flex-col space-y-6">
                   <div>
@@ -129,7 +129,7 @@ export default function LandingPageRedesign() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       disabled={isPending}
-                      className="w-full bg-neutral-950 text-white border border-neutral-800 focus:border-orange-500 rounded-lg px-4 py-3.5 text-sm transition-all outline-none"
+                      className="w-full bg-[#0a0a0a] text-white border border-neutral-800 focus:border-orange-500 rounded-lg px-4 py-3.5 text-sm transition-all outline-none"
                     />
                     <button 
                       type="submit" 
@@ -142,7 +142,7 @@ export default function LandingPageRedesign() {
                 </form>
               ) : (
                 <div className="py-12 text-center flex flex-col items-center justify-center space-y-4">
-                  <div className="w-12 h-12 rounded-full border border-orange-500 flex items-center justify-center text-orange-500 text-lg font-mono bg-orange-500/5">✓</div>
+                  <div className="w-12 h-12 rounded-full border border-orange-500 flex items-center justify-center text-orange-500 text-lg font-mono bg-[#171717]">✓</div>
                   <div>
                     <h3 className="text-lg font-medium text-white">You're on the list!</h3>
                     <p className="text-xs text-neutral-400 mt-1 max-w-xs mx-auto font-light leading-relaxed">
@@ -165,7 +165,7 @@ export default function LandingPageRedesign() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           
-          <div className="p-6 bg-neutral-900/20 border border-neutral-800 rounded-xl text-left">
+          <div className="p-6 bg-[#171717] border border-neutral-800 rounded-xl text-left">
             <div className="w-10 h-10 rounded-lg bg-neutral-800 border border-neutral-700 flex items-center justify-center text-orange-500 mb-4">
               <Brain className="w-5 h-5" />
             </div>
@@ -173,7 +173,7 @@ export default function LandingPageRedesign() {
             <p className="text-xs text-neutral-400 font-light leading-relaxed">Automate complex risk calculations and parse applicant data files instantly.</p>
           </div>
 
-          <div className="p-6 bg-neutral-900/20 border border-neutral-800 rounded-xl text-left">
+          <div className="p-6 bg-[#171717] border border-neutral-800 rounded-xl text-left">
             <div className="w-10 h-10 rounded-lg bg-neutral-800 border border-neutral-700 flex items-center justify-center text-orange-500 mb-4">
               <FileSearch className="w-5 h-5" />
             </div>
@@ -181,7 +181,7 @@ export default function LandingPageRedesign() {
             <p className="text-xs text-neutral-400 font-light leading-relaxed">Instantly screen bank records, corporate filings, and tax transcripts for discrepancies.</p>
           </div>
 
-          <div className="p-6 bg-neutral-900/20 border border-neutral-800 rounded-xl text-left">
+          <div className="p-6 bg-[#171717] border border-neutral-800 rounded-xl text-left">
             <div className="w-10 h-10 rounded-lg bg-neutral-800 border border-neutral-700 flex items-center justify-center text-orange-500 mb-4">
               <Gauge className="w-5 h-5" />
             </div>
@@ -189,4 +189,4 @@ export default function LandingPageRedesign() {
             <p className="text-xs text-neutral-400 font-light leading-relaxed">Monitor deal progress vectors and workflow bottlenecks across your underwriting team from one central view.</p>
           </div>
 
-          <div className="p-6 bg-neutral-900/20 border border-neutral-800 rounded-xl text-left">
+          <div className="p-6 bg-[#171717] border border-neutral-800 rounded-xl text-left">
