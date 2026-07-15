@@ -35,7 +35,7 @@ const BENTO_FEATURES = [
 ];
 
 export const Route = createFileRoute("/")({
-  component: LandingPageRedesign,
+  component: () => <LandingPageRedesign />,
 });
 
 function LandingPageRedesign() {
@@ -96,13 +96,14 @@ function LandingPageRedesign() {
         isNavVisible ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-12 scale-95 pointer-events-none"
       }`}>
         <div className="glass-card px-5 py-3 flex items-center gap-6 shadow-2xl backdrop-blur-3xl rounded-full border border-white/5">
-          <button onClick={() => scrollToSection("hero")} className="text-[10px] font-mono tracking-widest uppercase opacity-50 hover:opacity-100 transition-opacity">System</button>
-          <button onClick={() => scrollToSection("features")} className="text-[10px] font-mono tracking-widest uppercase opacity-50 hover:opacity-100 transition-opacity">Index</button>
-          <button onClick={() => scrollToSection("how-it-works")} className="text-[10px] font-mono tracking-widest uppercase opacity-50 hover:opacity-100 transition-opacity">Steps</button>
-          <button onClick={() => scrollToSection("pricing")} className="text-[10px] font-mono tracking-widest uppercase opacity-50 hover:opacity-100 transition-opacity">Rates</button>
-          <button onClick={() => scrollToSection("faq")} className="text-[10px] font-mono tracking-widest uppercase opacity-50 hover:opacity-100 transition-opacity">Archive</button>
+          <button type="button" onClick={() => scrollToSection("hero")} className="text-[10px] font-mono tracking-widest uppercase opacity-50 hover:opacity-100 transition-opacity">System</button>
+          <button type="button" onClick={() => scrollToSection("features")} className="text-[10px] font-mono tracking-widest uppercase opacity-50 hover:opacity-100 transition-opacity">Index</button>
+          <button type="button" onClick={() => scrollToSection("how-it-works")} className="text-[10px] font-mono tracking-widest uppercase opacity-50 hover:opacity-100 transition-opacity">Steps</button>
+          <button type="button" onClick={() => scrollToSection("pricing")} className="text-[10px] font-mono tracking-widest uppercase opacity-50 hover:opacity-100 transition-opacity">Rates</button>
+          <button type="button" onClick={() => scrollToSection("faq")} className="text-[10px] font-mono tracking-widest uppercase opacity-50 hover:opacity-100 transition-opacity">Archive</button>
           <div className="h-3 w-[1px] bg-white/10" />
           <button 
+            type="button"
             onClick={() => scrollToSection("hero")}
             className="bg-[oklch(0.62_0.15_48)] hover:bg-[oklch(0.55_0.14_48)] text-[oklch(0.11_0.015_165)] font-bold text-[10px] tracking-widest uppercase px-3 py-1.5 rounded-full transition-all active:scale-95 shadow-[0_0_15px_rgba(200,122,83,0.3)]"
           >
