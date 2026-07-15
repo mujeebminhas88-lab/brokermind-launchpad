@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import confetti from "canvas-commetti";
+import confetti from "canvas-confetti";
 import {
   FileSearch,
   ShieldCheck,
@@ -72,8 +72,8 @@ export default function LandingPageRedesign() {
       setIsSubmitted(true);
       try {
         confetti({ particleCount: 80, spread: 60, colors: ["#C87A53", "#A37E58", "#0B1A12"] });
-      } catch (e) {
-        // Fallback if canvas-confetti bundle context varies
+      } catch (confettiError) {
+        console.error(confettiError);
       }
       toast.success("Operational clearance initialized. Queue position secured.");
     } catch (err) {
