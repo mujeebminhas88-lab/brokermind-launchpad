@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import confetti from "canvas-confetti";
 import {
   FileSearch,
   ShieldCheck,
@@ -70,11 +69,6 @@ export default function LandingPageRedesign() {
     try {
       await joinWaitlist({ email });
       setIsSubmitted(true);
-      try {
-        confetti({ particleCount: 80, spread: 60, colors: ["#C87A53", "#A37E58", "#0B1A12"] });
-      } catch (confettiError) {
-        console.error(confettiError);
-      }
       toast.success("Operational clearance initialized. Queue position secured.");
     } catch (err) {
       toast.error("Allocation protocol interrupted. Please re-attempt submission.");
@@ -162,3 +156,14 @@ export default function LandingPageRedesign() {
                   <div>
                     <h3 className="text-lg font-normal text-white">Sequence Synchronized</h3>
                     <p className="text-xs text-[oklch(0.60_0.012_165)] mt-1 max-w-xs mx-auto font-light leading-relaxed">
+                      Your institutional matrix registration has been verified. Awaiting localized decryption parameters.
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+        </div>
+      </section>
+
