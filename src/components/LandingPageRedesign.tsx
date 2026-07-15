@@ -22,9 +22,12 @@ import logoUrl from "@/assets/brokermind-logo.png";
 const styles = {
   bgMain: { backgroundColor: "#0a0a0a" },
   bgCard: { backgroundColor: "#171717", border: "1px solid #262626" },
+  bgCardGlass: { backgroundColor: "rgba(23, 23, 23, 0.4)", border: "1px solid #262626" },
   bgInput: { backgroundColor: "#050505", border: "1px solid #262626" },
   brandColor: { color: "#ea580c" },
-  brandBg: { backgroundColor: "#ea580c" }
+  brandBg: { backgroundColor: "#ea580c" },
+  iconBox: { backgroundColor: "#262626", border: "1px solid #404040" },
+  pricingTag: { backgroundColor: "rgba(234, 88, 12, 0.1)", borderBottom: "1px solid rgba(234, 88, 12, 0.2)", borderLeft: "1px solid rgba(234, 88, 12, 0.2)" }
 };
 
 export default function LandingPageRedesign() {
@@ -179,20 +182,20 @@ export default function LandingPageRedesign() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           
-          <div style={{ backgroundColor: "rgba(23, 23, 23, 0.4)", border: "1px solid #262626" }} className="p-6 rounded-xl text-left">
-            <div style={{ backgroundColor: "#262626", border: "1px solid #404040" }} className="w-10 h-10 rounded-lg flex items-center justify-center text-orange-500 mb-4">
+          <div style={styles.bgCardGlass} className="p-6 rounded-xl text-left">
+            <div style={styles.iconBox} className="w-10 h-10 rounded-lg flex items-center justify-center text-orange-500 mb-4">
               <Brain className="w-5 h-5" />
             </div>
             <h4 className="text-base font-medium text-white mb-2">AI Underwriting</h4>
             <p className="text-xs text-neutral-400 font-light leading-relaxed">Automate complex risk calculations and parse applicant data files instantly.</p>
           </div>
 
-          <div style={{ backgroundColor: "rgba(23, 23, 23, 0.4)", border: "1px solid #262626" }} className="p-6 border rounded-xl text-left">
-            <div style={{ backgroundColor: "#262626", border: "1px solid #404040" }} className="w-10 h-10 rounded-lg flex items-center justify-center text-orange-500 mb-4">
+          <div style={styles.bgCardGlass} className="p-6 rounded-xl text-left">
+            <div style={styles.iconBox} className="w-10 h-10 rounded-lg flex items-center justify-center text-orange-500 mb-4">
               <FileSearch className="w-5 h-5" />
             </div>
             <h4 className="text-base font-medium text-white mb-2">Automated Document Audits</h4>
             <p className="text-xs text-neutral-400 font-light leading-relaxed">Instantly screen bank records, corporate filings, and tax transcripts for discrepancies.</p>
           </div>
 
-          <div style={{ backgroundColor: "rgba(23, 23, 23, 0.4)", border: "1px solid #262626" }} className="p-6 border rounded-xl text-left">
+          <div style={styles.bgCardGlass} className="p-6 rounded-xl text-left">
