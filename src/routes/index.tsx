@@ -1,20 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
 import {
   FileSearch,
   ShieldCheck,
-  TrendingUp,
   Brain,
   Gauge,
-  Lock,
-  ScrollText,
   ArrowRight,
-  Loader2,
-  HelpCircle,
-  Eye,
-  UserCheck
+  Loader2
 } from "lucide-react";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
@@ -98,9 +91,7 @@ function LandingPageRedesign() {
     <div className="bg-background text-foreground relative min-h-screen selection:bg-[oklch(0.62_0.15_48/0.3)] selection:text-white">
       <Toaster position="top-center" theme="dark" />
 
-      {/* ========================================================================= */}
-      {/* DYNAMIC FLOATING MINI-DOCK                                                */}
-      {/* ========================================================================= */}
+      {/* DYNAMIC FLOATING MINI-DOCK */}
       <nav className={`fixed bottom-8 left-1/2 -translate-x-1/2 z-50 transition-all duration-500 ease-in-out ${
         isNavVisible ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-12 scale-95 pointer-events-none"
       }`}>
@@ -120,9 +111,7 @@ function LandingPageRedesign() {
         </div>
       </nav>
 
-      {/* ========================================================================= */}
-      {/* 01. THE VAULT HERO                                                        */}
-      {/* ========================================================================= */}
+      {/* 01. THE VAULT HERO */}
       <section id="hero" className="relative min-h-screen flex items-center justify-center px-6 overflow-hidden pt-12 pb-24">
         <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-12 gap-16 items-center relative z-10">
           
@@ -135,7 +124,7 @@ function LandingPageRedesign() {
               The Elite Operational Engine For Modern Brokerages.
             </h1>
             <p className="text-base text-[oklch(0.60_0.012_165)] max-w-xl font-light leading-relaxed">
-              Institutional risk isolation, dynamic metric streams, and autonomous process loops built strictly for high-end lending teams. Secure a node in our priority launch queue.
+              Institutional risk isolation, dynamic metric streams, and automated processing blueprints built strictly for private operations. Secure your priority sequence code.
             </p>
           </div>
 
@@ -168,3 +157,10 @@ function LandingPageRedesign() {
                   <div className="flex items-center justify-between pt-2 text-[9px] font-mono opacity-30 border-t border-white/5">
                     <span>SECURITY FRAME // TLS 1.3</span>
                     <span>QUEUE PROTOCOL: READY</span>
+                  </div>
+                </form>
+              ) : (
+                <div className="py-12 text-center flex flex-col items-center justify-center space-y-4">
+                  <div className="w-12 h-12 rounded-full border border-[oklch(0.62_0.15_48)] flex items-center justify-center text-[oklch(0.62_0.15_48)] text-lg font-mono bg-[oklch(0.62_0.15_48/0.05)]">✓</div>
+                  <div>
+                    <h3 className="text-lg font-normal text-white">Sequence Synchronized</h3>
