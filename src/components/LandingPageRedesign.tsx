@@ -19,12 +19,10 @@ import {
 
 import logoUrl from "@/assets/brokermind-logo.png";
 
-// Inline Javascript Style Dictionary Objects bypassing Tailwind pre-compilation parsing passes
 const styles = {
   bgMain: { backgroundColor: "#0a0a0a" },
-  bgCard: { backgroundColor: "#171717", borderColor: "#262626" },
-  bgInput: { backgroundColor: "#050505", borderColor: "#262626" },
-  borderMuted: { borderColor: "#262626" },
+  bgCard: { backgroundColor: "#171717", border: "1px solid #262626" },
+  bgInput: { backgroundColor: "#050505", border: "1px solid #262626" },
   brandColor: { color: "#ea580c" },
   brandBg: { backgroundColor: "#ea580c" }
 };
@@ -81,8 +79,8 @@ export default function LandingPageRedesign() {
 
       {/* HEADER NAV SYSTEM */}
       <header 
-        style={{ backgroundColor: "rgba(10, 10, 10, 0.8)", borderColor: "#262626" }}
-        className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 border-b backdrop-blur-md px-6 py-4 flex items-center justify-between ${
+        style={{ backgroundColor: "rgba(10, 10, 10, 0.8)", borderBottom: "1px solid #262626" }}
+        className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 backdrop-blur-md px-6 py-4 flex items-center justify-between ${
           isNavVisible ? "translate-y-0" : "-translate-y-full"
         }`}
       >
@@ -91,7 +89,7 @@ export default function LandingPageRedesign() {
           <span className="font-medium text-sm text-white tracking-tight">BrokerMind</span>
         </div>
 
-        <div style={styles.bgCard} className="hidden md:flex items-center gap-6 px-5 py-2 rounded-full border backdrop-blur-md">
+        <div style={styles.bgCard} className="hidden md:flex items-center gap-6 px-5 py-2 rounded-full backdrop-blur-md">
           <button type="button" onClick={() => scrollToSection("features")} className="text-xs text-neutral-400 hover:text-white transition-colors">Features</button>
           <button type="button" onClick={() => scrollToSection("how-it-works")} className="text-xs text-neutral-400 hover:text-white transition-colors">How it Works</button>
           <button type="button" onClick={() => scrollToSection("pricing")} className="text-xs text-neutral-400 hover:text-white transition-colors">Pricing</button>
@@ -115,7 +113,7 @@ export default function LandingPageRedesign() {
         <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-12 gap-16 items-center relative z-10">
           
           <div className="lg:col-span-7 flex flex-col space-y-6 text-left">
-            <div style={styles.bgCard} className="inline-flex items-center gap-2 px-3 py-1 rounded-full border w-fit">
+            <div style={styles.bgCard} className="inline-flex items-center gap-2 px-3 py-1 rounded-full w-fit">
               <span style={styles.brandBg} className="w-1.5 h-1.5 rounded-full animate-pulse" />
               <span className="text-[10px] uppercase font-mono tracking-widest text-neutral-400">Private Beta Access</span>
             </div>
@@ -128,7 +126,7 @@ export default function LandingPageRedesign() {
           </div>
 
           <div className="lg:col-span-5 w-full flex justify-center lg:justify-end">
-            <div style={{ backgroundColor: "rgba(23, 23, 23, 0.6)", borderColor: "#262626" }} className="w-full max-w-md p-8 rounded-2xl relative border shadow-2xl text-left backdrop-blur-md">
+            <div style={{ backgroundColor: "rgba(23, 23, 23, 0.6)", border: "1px solid #262626" }} className="w-full max-w-md p-8 rounded-2xl relative shadow-2xl text-left backdrop-blur-md">
               {!isSubmitted ? (
                 <form onSubmit={handleWaitlistSubmit} className="flex flex-col space-y-6">
                   <div>
@@ -144,7 +142,7 @@ export default function LandingPageRedesign() {
                       onChange={(e) => setEmail(e.target.value)}
                       disabled={isPending}
                       style={styles.bgInput}
-                      className="w-full text-white border focus:border-orange-500 rounded-lg px-4 py-3.5 text-sm transition-all outline-none"
+                      className="w-full text-white rounded-lg px-4 py-3.5 text-sm transition-all outline-none"
                     />
                     <button 
                       type="submit" 
@@ -181,19 +179,20 @@ export default function LandingPageRedesign() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           
-          <div style={{ backgroundColor: "rgba(23, 23, 23, 0.4)", borderColor: "#262626" }} className="p-6 border rounded-xl text-left">
-            <div style={{ backgroundColor: "#262626", borderColor: "#404040" }} className="w-10 h-10 rounded-lg border flex items-center justify-center text-orange-500 mb-4">
+          <div style={{ backgroundColor: "rgba(23, 23, 23, 0.4)", border: "1px solid #262626" }} className="p-6 rounded-xl text-left">
+            <div style={{ backgroundColor: "#262626", border: "1px solid #404040" }} className="w-10 h-10 rounded-lg flex items-center justify-center text-orange-500 mb-4">
               <Brain className="w-5 h-5" />
             </div>
             <h4 className="text-base font-medium text-white mb-2">AI Underwriting</h4>
             <p className="text-xs text-neutral-400 font-light leading-relaxed">Automate complex risk calculations and parse applicant data files instantly.</p>
           </div>
 
-          <div style={{ backgroundColor: "rgba(23, 23, 23, 0.4)", borderColor: "#262626" }} className="p-6 border rounded-xl text-left">
-            <div style={{ backgroundColor: "#262626", borderColor: "#404040" }} className="w-10 h-10 rounded-lg border flex items-center justify-center text-orange-500 mb-4">
+          <div style={{ backgroundColor: "rgba(23, 23, 23, 0.4)", border: "1px solid #262626" }} className="p-6 border rounded-xl text-left">
+            <div style={{ backgroundColor: "#262626", border: "1px solid #404040" }} className="w-10 h-10 rounded-lg flex items-center justify-center text-orange-500 mb-4">
               <FileSearch className="w-5 h-5" />
             </div>
             <h4 className="text-base font-medium text-white mb-2">Automated Document Audits</h4>
             <p className="text-xs text-neutral-400 font-light leading-relaxed">Instantly screen bank records, corporate filings, and tax transcripts for discrepancies.</p>
           </div>
 
+          <div style={{ backgroundColor: "rgba(23, 23, 23, 0.4)", border: "1px solid #262626" }} className="p-6 border rounded-xl text-left">
