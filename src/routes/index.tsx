@@ -19,7 +19,6 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
-// 1. Static Configuration Data for the Redesign
 const FAQS = [
   { q: "What exactly is BrokerMind?", a: "BrokerMind is an advanced operational decision engine built specifically for modern mortgage brokerages, private lenders, and elite lending teams. It automates heavy document auditing, risk assessment loops, and workflow routing tasks seamlessly." },
   { q: "How does the waitlist allocation sequence operate?", a: "Early applicants are assigned a sequential queue placement node. As we scale server computational architecture, clearances are systematically granted based on your queue position and volume needs." },
@@ -35,17 +34,16 @@ const BENTO_FEATURES = [
 ];
 
 export const Route = createFileRoute("/")({
-  component: () => <LandingPageRedesign />,
+  component: LandingPageRedesign
 });
 
-function LandingPageRedesign() {
+export default function LandingPageRedesign() {
   const [email, setEmail] = useState("");
   const [isPending, setIsPending] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isNavVisible, setIsNavVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
 
-  // 2. Navigation Behavior: Hide on scroll down, expand on scroll up
   useEffect(() => {
     const handleScroll = () => {
       if (typeof window !== "undefined") {
@@ -66,7 +64,6 @@ function LandingPageRedesign() {
     if (el) el.scrollIntoView({ behavior: "smooth" });
   };
 
-  // 3. Form Submission Handling
   const handleWaitlistSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateEmail(email)) {
@@ -165,3 +162,4 @@ function LandingPageRedesign() {
                   <div className="w-12 h-12 rounded-full border border-[oklch(0.62_0.15_48)] flex items-center justify-center text-[oklch(0.62_0.15_48)] text-lg font-mono bg-[oklch(0.62_0.15_48/0.05)]">✓</div>
                   <div>
                     <h3 className="text-lg font-normal text-white">Sequence Synchronized</h3>
+                    <p className="text-xs text-[oklch(0.60_0.012_165)] mt-1 max-w-xs mx-auto font-light leading-relaxed">
