@@ -5,9 +5,7 @@ import {
   Brain,
   Gauge,
   ArrowRight,
-  Loader2,
-  Menu,
-  X
+  Loader2
 } from "lucide-react";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
@@ -19,7 +17,6 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
-// Pulling your logo from your project assets folder securely
 import logoUrl from "@/assets/brokermind-logo.png";
 
 const FAQS = [
@@ -42,7 +39,6 @@ export default function LandingPageRedesign() {
   const [isNavVisible, setIsNavVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
 
-  // Dynamic Navigation trigger: Hides cleanly on downward scroll, springs back on upward scroll
   useEffect(() => {
     const handleScroll = () => {
       if (typeof window !== "undefined") {
@@ -86,19 +82,15 @@ export default function LandingPageRedesign() {
     <div className="bg-background text-foreground relative min-h-screen selection:bg-[oklch(0.62_0.15_48/0.3)] selection:text-white pb-12">
       <Toaster position="top-center" theme="dark" />
 
-      {/* ========================================================================= */}
-      {/* FIXED BRANDING NAVBAR WITH INTEGRATED FLOATING DOCK                      */}
-      {/* ========================================================================= */}
+      {/* HEADER NAVBAR AND FLOATING NAV SYSTEM */}
       <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 border-b border-white/5 bg-background/80 backdrop-blur-md px-6 py-4 flex items-center justify-between ${
         isNavVisible ? "translate-y-0" : "-translate-y-full"
       }`}>
-        {/* Your Branding Logo */}
         <div className="flex items-center gap-3 cursor-pointer" onClick={() => scrollToSection("hero")}>
           <img src={logoUrl} alt="BrokerMind Logo" className="h-7 w-auto object-contain" />
           <span className="font-medium text-sm text-white tracking-tight">BrokerMind</span>
         </div>
 
-        {/* Dynamic Center Navigation Dock */}
         <div className="hidden md:flex items-center gap-6 px-4 py-2 glass-card rounded-full border border-white/10 bg-white/5">
           <button type="button" onClick={() => scrollToSection("features")} className="text-xs text-white/70 hover:text-white transition-colors">Features</button>
           <button type="button" onClick={() => scrollToSection("how-it-works")} className="text-xs text-white/70 hover:text-white transition-colors">How it Works</button>
@@ -106,7 +98,6 @@ export default function LandingPageRedesign() {
           <button type="button" onClick={() => scrollToSection("faq")} className="text-[11px] text-white/70 hover:text-white transition-colors">FAQ</button>
         </div>
 
-        {/* Action Button */}
         <div>
           <button 
             type="button"
@@ -118,9 +109,7 @@ export default function LandingPageRedesign() {
         </div>
       </header>
 
-      {/* ========================================================================= */}
-      {/* 01. THE VAULT HERO                                                        */}
-      {/* ========================================================================= */}
+      {/* 01. THE VAULT HERO */}
       <section id="hero" className="relative min-h-screen flex items-center justify-center px-6 pt-32 pb-16 overflow-hidden">
         <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-12 gap-16 items-center relative z-10">
           
@@ -130,7 +119,7 @@ export default function LandingPageRedesign() {
               <span className="text-[10px] uppercase font-mono tracking-widest opacity-60 text-white">Private Beta Active</span>
             </div>
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-semibold leading-[1.15] text-white tracking-tight">
-              Underwrite Smarter.<br />Close Deals Faster.
+              Underwrite Smarter. Close Deals Faster.
             </h1>
             <p className="text-base text-[oklch(0.60_0.012_165)] max-w-xl font-light leading-relaxed">
               AI decision intelligence built explicitly for mortgage brokers, private lenders, and forward-thinking lending teams. Streamline compliance, reduce risk, and save hundreds of operational hours.
@@ -181,4 +170,14 @@ export default function LandingPageRedesign() {
         </div>
       </section>
 
-      {/* ========================================================================= */}
+      {/* 02. CORE CAPABILITIES (BENTO GRID) */}
+      <section id="features" className="section-y px-6 max-w-7xl mx-auto scroll-mt-20">
+        <div className="mb-12 text-left">
+          <p className="text-xs font-mono tracking-widest uppercase text-[oklch(0.62_0.15_48)] mb-2">Capabilities</p>
+          <h2 className="text-2xl sm:text-3xl font-medium text-white">Platform Core Features</h2>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {FEATURES.map((item, index) => {
+            const Icon = item.icon;
+            return (
+              <div key={index} className="glass-card p-6 bg-[oklch(0.15_0.020_165/0.2)] border border-white/5 hover:border-[oklch(0.62_0.15_48/0.2)] rounded-xl transition-all group duration-300 text-left">
