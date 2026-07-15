@@ -19,6 +19,16 @@ import {
 
 import logoUrl from "@/assets/brokermind-logo.png";
 
+// Inline Javascript Style Dictionary Objects bypassing Tailwind pre-compilation parsing passes
+const styles = {
+  bgMain: { backgroundColor: "#0a0a0a" },
+  bgCard: { backgroundColor: "#171717", borderColor: "#262626" },
+  bgInput: { backgroundColor: "#050505", borderColor: "#262626" },
+  borderMuted: { borderColor: "#262626" },
+  brandColor: { color: "#ea580c" },
+  brandBg: { backgroundColor: "#ea580c" }
+};
+
 export default function LandingPageRedesign() {
   const [email, setEmail] = useState("");
   const [isPending, setIsPending] = useState(false);
@@ -66,19 +76,22 @@ export default function LandingPageRedesign() {
   };
 
   return (
-    <div className="bg-[#0a0a0a] text-neutral-100 relative min-h-screen pb-12">
+    <div style={styles.bgMain} className="text-neutral-100 relative min-h-screen pb-12">
       <Toaster position="top-center" theme="dark" />
 
       {/* HEADER NAV SYSTEM */}
-      <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 border-b border-neutral-800 bg-[#0a0a0ab3] backdrop-blur-md px-6 py-4 flex items-center justify-between ${
-        isNavVisible ? "translate-y-0" : "-translate-y-full"
-      }`}>
+      <header 
+        style={{ backgroundColor: "rgba(10, 10, 10, 0.8)", borderColor: "#262626" }}
+        className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 border-b backdrop-blur-md px-6 py-4 flex items-center justify-between ${
+          isNavVisible ? "translate-y-0" : "-translate-y-full"
+        }`}
+      >
         <div className="flex items-center gap-3 cursor-pointer" onClick={() => scrollToSection("hero")}>
           <img src={logoUrl} alt="BrokerMind Logo" className="h-7 w-auto object-contain" />
           <span className="font-medium text-sm text-white tracking-tight">BrokerMind</span>
         </div>
 
-        <div className="hidden md:flex items-center gap-6 px-5 py-2 rounded-full border border-neutral-800 bg-[#171717]">
+        <div style={styles.bgCard} className="hidden md:flex items-center gap-6 px-5 py-2 rounded-full border backdrop-blur-md">
           <button type="button" onClick={() => scrollToSection("features")} className="text-xs text-neutral-400 hover:text-white transition-colors">Features</button>
           <button type="button" onClick={() => scrollToSection("how-it-works")} className="text-xs text-neutral-400 hover:text-white transition-colors">How it Works</button>
           <button type="button" onClick={() => scrollToSection("pricing")} className="text-xs text-neutral-400 hover:text-white transition-colors">Pricing</button>
@@ -88,8 +101,9 @@ export default function LandingPageRedesign() {
         <div>
           <button 
             type="button"
+            style={styles.brandBg}
             onClick={() => scrollToSection("hero")}
-            className="bg-orange-600 hover:bg-orange-700 text-white font-medium text-xs tracking-wider uppercase px-4 py-2 rounded-full transition-all active:scale-95"
+            className="hover:opacity-90 text-white font-medium text-xs tracking-wider uppercase px-4 py-2 rounded-full transition-all active:scale-95"
           >
             Join Waitlist
           </button>
@@ -101,8 +115,8 @@ export default function LandingPageRedesign() {
         <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-12 gap-16 items-center relative z-10">
           
           <div className="lg:col-span-7 flex flex-col space-y-6 text-left">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#171717] border border-neutral-800 w-fit">
-              <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
+            <div style={styles.bgCard} className="inline-flex items-center gap-2 px-3 py-1 rounded-full border w-fit">
+              <span style={styles.brandBg} className="w-1.5 h-1.5 rounded-full animate-pulse" />
               <span className="text-[10px] uppercase font-mono tracking-widest text-neutral-400">Private Beta Access</span>
             </div>
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-semibold leading-[1.15] text-white tracking-tight">
@@ -114,7 +128,7 @@ export default function LandingPageRedesign() {
           </div>
 
           <div className="lg:col-span-5 w-full flex justify-center lg:justify-end">
-            <div className="w-full max-w-md p-8 bg-[#171717] rounded-2xl relative border border-neutral-800 shadow-2xl text-left">
+            <div style={{ backgroundColor: "rgba(23, 23, 23, 0.6)", borderColor: "#262626" }} className="w-full max-w-md p-8 rounded-2xl relative border shadow-2xl text-left backdrop-blur-md">
               {!isSubmitted ? (
                 <form onSubmit={handleWaitlistSubmit} className="flex flex-col space-y-6">
                   <div>
@@ -129,12 +143,14 @@ export default function LandingPageRedesign() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       disabled={isPending}
-                      className="w-full bg-[#0a0a0a] text-white border border-neutral-800 focus:border-orange-500 rounded-lg px-4 py-3.5 text-sm transition-all outline-none"
+                      style={styles.bgInput}
+                      className="w-full text-white border focus:border-orange-500 rounded-lg px-4 py-3.5 text-sm transition-all outline-none"
                     />
                     <button 
                       type="submit" 
                       disabled={isPending}
-                      className="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs tracking-wider uppercase py-4 rounded-lg transition-all active:scale-[0.98] shadow-xl flex items-center justify-center gap-2"
+                      style={styles.brandBg}
+                      className="w-full hover:opacity-90 text-white font-bold text-xs tracking-wider uppercase py-4 rounded-lg transition-all active:scale-[0.98] shadow-xl flex items-center justify-center gap-2"
                     >
                       {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : "Join the Waitlist"}
                     </button>
@@ -142,7 +158,7 @@ export default function LandingPageRedesign() {
                 </form>
               ) : (
                 <div className="py-12 text-center flex flex-col items-center justify-center space-y-4">
-                  <div className="w-12 h-12 rounded-full border border-orange-500 flex items-center justify-center text-orange-500 text-lg font-mono bg-[#171717]">✓</div>
+                  <div style={{ borderColor: "#ea580c" }} className="w-12 h-12 rounded-full border flex items-center justify-center text-orange-500 text-lg font-mono">✓</div>
                   <div>
                     <h3 className="text-lg font-medium text-white">You're on the list!</h3>
                     <p className="text-xs text-neutral-400 mt-1 max-w-xs mx-auto font-light leading-relaxed">
@@ -160,33 +176,24 @@ export default function LandingPageRedesign() {
       {/* 02. FEATURES SECTIONS */}
       <section id="features" className="py-16 px-6 max-w-7xl mx-auto scroll-mt-20">
         <div className="mb-12 text-left">
-          <p className="text-xs font-mono tracking-widest uppercase text-orange-500 mb-2">Capabilities</p>
+          <p style={styles.brandColor} className="text-xs font-mono tracking-widest uppercase mb-2">Capabilities</p>
           <h2 className="text-2xl sm:text-3xl font-medium text-white">Platform Core Features</h2>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           
-          <div className="p-6 bg-[#171717] border border-neutral-800 rounded-xl text-left">
-            <div className="w-10 h-10 rounded-lg bg-neutral-800 border border-neutral-700 flex items-center justify-center text-orange-500 mb-4">
+          <div style={{ backgroundColor: "rgba(23, 23, 23, 0.4)", borderColor: "#262626" }} className="p-6 border rounded-xl text-left">
+            <div style={{ backgroundColor: "#262626", borderColor: "#404040" }} className="w-10 h-10 rounded-lg border flex items-center justify-center text-orange-500 mb-4">
               <Brain className="w-5 h-5" />
             </div>
             <h4 className="text-base font-medium text-white mb-2">AI Underwriting</h4>
             <p className="text-xs text-neutral-400 font-light leading-relaxed">Automate complex risk calculations and parse applicant data files instantly.</p>
           </div>
 
-          <div className="p-6 bg-[#171717] border border-neutral-800 rounded-xl text-left">
-            <div className="w-10 h-10 rounded-lg bg-neutral-800 border border-neutral-700 flex items-center justify-center text-orange-500 mb-4">
+          <div style={{ backgroundColor: "rgba(23, 23, 23, 0.4)", borderColor: "#262626" }} className="p-6 border rounded-xl text-left">
+            <div style={{ backgroundColor: "#262626", borderColor: "#404040" }} className="w-10 h-10 rounded-lg border flex items-center justify-center text-orange-500 mb-4">
               <FileSearch className="w-5 h-5" />
             </div>
             <h4 className="text-base font-medium text-white mb-2">Automated Document Audits</h4>
             <p className="text-xs text-neutral-400 font-light leading-relaxed">Instantly screen bank records, corporate filings, and tax transcripts for discrepancies.</p>
           </div>
 
-          <div className="p-6 bg-[#171717] border border-neutral-800 rounded-xl text-left">
-            <div className="w-10 h-10 rounded-lg bg-neutral-800 border border-neutral-700 flex items-center justify-center text-orange-500 mb-4">
-              <Gauge className="w-5 h-5" />
-            </div>
-            <h4 className="text-base font-medium text-white mb-2">Deal Velocity Tracking</h4>
-            <p className="text-xs text-neutral-400 font-light leading-relaxed">Monitor deal progress vectors and workflow bottlenecks across your underwriting team from one central view.</p>
-          </div>
-
-          <div className="p-6 bg-[#171717] border border-neutral-800 rounded-xl text-left">
