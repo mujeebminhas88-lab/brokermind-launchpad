@@ -19,19 +19,6 @@ import {
 
 import logoUrl from "@/assets/brokermind-logo.png";
 
-const FAQS = [
-  { q: "What is BrokerMind?", a: "BrokerMind is an AI-powered underwriting and decision intelligence platform built for modern mortgage brokers, private lenders, and credit unions to help analyze documents and close deals faster." },
-  { q: "How long is the waitlist?", a: "We are currently rolling out private beta access in sequential batches to ensure high platform stability. Joining now secures your priority place in line." },
-  { q: "Is our borrower data secure?", a: "Yes. BrokerMind uses enterprise-grade encryption (TLS 1.3) and fully isolated database environments to ensure compliance with institutional data standards." }
-];
-
-const FEATURES = [
-  { icon: Brain, title: "AI Underwriting", desc: "Automate complex risk calculations and parse applicant data files instantly." },
-  { icon: FileSearch, title: "Automated Document Audits", desc: "Instantly screen bank records, corporate filings, and tax transcripts for discrepancies." },
-  { icon: Gauge, title: "Deal Velocity Tracking", desc: "Monitor deal progress vectors and workflow bottlenecks across your underwriting team from one central view." },
-  { icon: ShieldCheck, title: "Smart Compliance Checks", desc: "Real-time policy auditing that flags loan variances and guidelines automatically." }
-];
-
 export default function LandingPageRedesign() {
   const [email, setEmail] = useState("");
   const [isPending, setIsPending] = useState(false);
@@ -82,7 +69,7 @@ export default function LandingPageRedesign() {
     <div className="bg-neutral-950 text-neutral-100 relative min-h-screen selection:bg-orange-500/30 selection:text-white pb-12">
       <Toaster position="top-center" theme="dark" />
 
-      {/* HEADER NAVIGATION */}
+      {/* HEADER NAVIGATION SYSTEM */}
       <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 border-b border-white/5 bg-neutral-950/80 backdrop-blur-md px-6 py-4 flex items-center justify-between ${
         isNavVisible ? "translate-y-0" : "-translate-y-full"
       }`}>
@@ -170,18 +157,32 @@ export default function LandingPageRedesign() {
         </div>
       </section>
 
-      {/* 02. CORE FEATURES (BENTO GRID) */}
+      {/* 02. CORE FEATURES (BENTO GRID FLAT RENDERING) */}
       <section id="features" className="py-16 px-6 max-w-7xl mx-auto scroll-mt-20">
         <div className="mb-12 text-left">
           <p className="text-xs font-mono tracking-widest uppercase text-orange-500 mb-2">Capabilities</p>
           <h2 className="text-2xl sm:text-3xl font-medium text-white">Platform Core Features</h2>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {FEATURES.map((item, index) => {
-            const Icon = item.icon;
-            return (
-              <div key={index} className="p-6 bg-neutral-900/40 border border-white/5 hover:border-orange-500/20 rounded-xl transition-all group duration-300 text-left backdrop-blur-sm">
-                <div className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-orange-500 mb-4">
-                  <Icon className="w-5 h-5" />
-                </div>
-                <h4 className="text-base font-medium text-white mb-2">{item.title}</h4>
+          
+          <div className="p-6 bg-neutral-900/40 border border-white/5 hover:border-orange-500/20 rounded-xl transition-all group duration-300 text-left backdrop-blur-sm">
+            <div className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-orange-500 mb-4">
+              <Brain className="w-5 h-5" />
+            </div>
+            <h4 className="text-base font-medium text-white mb-2">AI Underwriting</h4>
+            <p className="text-xs text-neutral-400 font-light leading-relaxed">Automate complex risk calculations and parse applicant data files instantly.</p>
+          </div>
+
+          <div className="p-6 bg-neutral-900/40 border border-white/5 hover:border-orange-500/20 rounded-xl transition-all group duration-300 text-left backdrop-blur-sm">
+            <div className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-orange-500 mb-4">
+              <FileSearch className="w-5 h-5" />
+            </div>
+            <h4 className="text-base font-medium text-white mb-2">Automated Document Audits</h4>
+            <p className="text-xs text-neutral-400 font-light leading-relaxed">Instantly screen bank records, corporate filings, and tax transcripts for discrepancies.</p>
+          </div>
+
+          <div className="p-6 bg-neutral-900/40 border border-white/5 hover:border-orange-500/20 rounded-xl transition-all group duration-300 text-left backdrop-blur-sm">
+            <div className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-orange-500 mb-4">
+              <Gauge className="w-5 h-5" />
+            </div>
+            <h4 className="text-base font-medium text-white mb-2">Deal Velocity Tracking</h4>
