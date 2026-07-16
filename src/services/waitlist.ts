@@ -9,7 +9,7 @@
  *
  * Contract:
  *   POST /api/waitlist
- *     body:   { email, utm_source?, utm_campaign?, referrer? }
+ *     body:   { email, filesPerMonth?, utm_source?, utm_campaign?, referrer? }
  *     200:    { ok: true, alreadyJoined?: boolean }
  *     409:    { ok: true, alreadyJoined: true }   // duplicate email
  *     4xx:    { ok: false, error: string }
@@ -19,6 +19,8 @@ const WAITLIST_ENDPOINT = "/api/waitlist";
 
 export interface WaitlistEntry {
   email: string;
+  /** Bucketed volume estimate, e.g. "16-60" — see pricing.ts VOLUME_BUCKETS. */
+  filesPerMonth?: string | null;
   utm_source?: string | null;
   utm_campaign?: string | null;
   referrer?: string | null;
@@ -57,6 +59,7 @@ export async function joinWaitlist(entry: WaitlistEntry): Promise<WaitlistResult
 
   const payload = {
     email: entry.email.trim().toLowerCase(),
+    filesPerMonth: entry.filesPerMonth ?? null,
     utm_source: entry.utm_source ?? null,
     utm_campaign: entry.utm_campaign ?? null,
     referrer: entry.referrer ?? null,

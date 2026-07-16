@@ -15,17 +15,19 @@ function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
-        <h1 className="text-7xl font-light text-foreground tracking-tight">404</h1>
-        <h2 className="mt-4 text-xl font-medium text-foreground tracking-tight">System Node Offline</h2>
-        <p className="mt-2 text-sm text-muted-foreground/80 font-light">
-          The requested coordinate matrix does not exist or has been shifted.
+        <p className="font-mono text-xs uppercase tracking-[0.2em] text-accent">Error 404</p>
+        <h1 className="mt-3 text-3xl font-semibold tracking-tight text-foreground">
+          Page not found
+        </h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          The page you're looking for doesn't exist or has moved.
         </p>
-        <div className="mt-6">
+        <div className="mt-8">
           <Link
             to="/"
-            className="inline-flex items-center justify-center rounded-md bg-primary px-5 py-2 text-xs font-semibold tracking-widest uppercase text-primary-foreground transition-all hover:bg-primary/90 active:scale-95 shadow-[0_0_20px_-5px_rgba(200,122,83,0.3)]"
+            className="inline-flex items-center justify-center rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-white transition-all hover:bg-accent-hover active:scale-[0.98]"
           >
-            Return to Core
+            Back to home
           </Link>
         </div>
       </div>
@@ -43,27 +45,30 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
-        <h1 className="text-xl font-medium tracking-tight text-foreground">
-          System Integrity Compromised
-        </h1>
-        <p className="mt-2 text-sm text-muted-foreground/80 font-light">
-          An execution barrier was encountered. Initialize a reload sequence or fall back to home.
+        <p className="font-mono text-xs uppercase tracking-[0.2em] text-warning">
+          Something went wrong
         </p>
-        <div className="mt-6 flex flex-wrap justify-center gap-3">
+        <h1 className="mt-3 text-2xl font-semibold tracking-tight text-foreground">
+          We hit an unexpected error
+        </h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Try reloading the page. If the problem continues, head back to the homepage.
+        </p>
+        <div className="mt-8 flex flex-wrap justify-center gap-3">
           <button
             onClick={() => {
               router.invalidate();
               reset();
             }}
-            className="inline-flex items-center justify-center rounded-md bg-primary px-5 py-2 text-xs font-semibold tracking-widest uppercase text-primary-foreground transition-all hover:bg-primary/90 active:scale-95"
+            className="inline-flex items-center justify-center rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-white transition-all hover:bg-accent-hover active:scale-[0.98]"
           >
-            Re-Initialize
+            Reload
           </button>
           <a
             href="/"
-            className="inline-flex items-center justify-center rounded-md border border-white/10 bg-white/5 px-5 py-2 text-xs font-semibold tracking-widest uppercase text-foreground transition-all hover:bg-white/10 active:scale-95"
+            className="inline-flex items-center justify-center rounded-lg border border-border bg-surface px-5 py-2.5 text-sm font-semibold text-foreground transition-all hover:bg-muted active:scale-[0.98]"
           >
-            Fallback Core
+            Go home
           </a>
         </div>
       </div>
@@ -76,30 +81,27 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "BrokerMind — Institutional Operational Intelligence" },
+      { title: "BrokerMindAI — AI Underwriting for Residential Mortgage Brokers" },
       {
         name: "description",
         content:
-          "Advanced underwriting engine, automated risk analysis, and priority queue architecture for enterprise brokerage teams.",
+          "AI document intelligence and underwriting prep for residential mortgage brokers, B lenders, and private lending teams. Faster files, fewer errors — in private beta now.",
       },
-      { property: "og:title", content: "BrokerMind — Institutional Operational Intelligence" },
+      { property: "og:title", content: "BrokerMindAI — AI Underwriting for Residential Mortgage Brokers" },
       {
         property: "og:description",
-        content: "Advanced underwriting engine, automated risk analysis, and priority queue architecture for enterprise brokerage teams.",
+        content:
+          "AI document intelligence and underwriting prep for residential mortgage brokers, B lenders, and private lending teams. Faster files, fewer errors — in private beta now.",
       },
       { property: "og:type", content: "website" },
-      { property: "og:site_name", content: "BrokerMind" },
+      { property: "og:site_name", content: "BrokerMindAI" },
       { property: "og:locale", content: "en_US" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "theme-color", content: "#060F0A" },
+      { name: "theme-color", content: "#0A0B08" },
       { name: "format-detection", content: "telephone=no" },
       { name: "robots", content: "index, follow, max-image-preview:large, max-snippet:-1" },
     ],
     links: [
-      {
-        rel: "stylesheet",
-        href: appCss,
-      },
       {
         rel: "preconnect",
         href: "https://fonts.googleapis.com",
@@ -111,20 +113,28 @@ export const Route = createRootRoute({
       },
       {
         rel: "stylesheet",
-        href: "https://googleapis.com",
+        href: "https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap",
+      },
+      {
+        rel: "stylesheet",
+        href: appCss,
       },
     ],
     scripts: [
+      {
+        children:
+          "(function(){try{if(localStorage.getItem('theme')==='light'){document.documentElement.setAttribute('data-theme','light');}}catch(e){}})();",
+      },
       {
         type: "application/ld+json",
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "Organization",
-          name: "BrokerMind",
+          name: "BrokerMindAI",
           url: "/",
           description:
-            "Advanced underwriting engine, automated risk analysis, and priority queue architecture for enterprise brokerage teams.",
-          slogan: "Elite Operational Intelligence.",
+            "AI document intelligence and underwriting prep for residential mortgage brokers, B lenders, and private lending teams.",
+          slogan: "Underwrite with quiet precision.",
         }),
       },
     ],
