@@ -14,7 +14,12 @@ function scrollToSection(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
 }
 
-export function Navbar() {
+interface NavbarProps {
+  /** Pass [] on pages that don't have these sections, instead of linking to nothing. */
+  links?: { id: string; label: string }[];
+}
+
+export function Navbar({ links = LINKS }: NavbarProps) {
   const { scrollY } = useScroll();
   const bgOpacity = useTransform(scrollY, [0, 80], [0, 1]);
   const borderOpacity = useTransform(scrollY, [0, 80], [0, 1]);
@@ -46,18 +51,20 @@ export function Navbar() {
           </span>
         </motion.button>
 
-        <div className="hidden items-center gap-0.5 rounded-full border border-border bg-surface/70 p-1 md:flex">
-          {LINKS.map((link) => (
-            <button
-              key={link.id}
-              type="button"
-              onClick={() => scrollToSection(link.id)}
-              className="rounded-full px-4 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-            >
-              {link.label}
-            </button>
-          ))}
-        </div>
+        {links.length > 0 && (
+          <div className="hidden items-center gap-0.5 rounded-full border border-border bg-surface/70 p-1 md:flex">
+            {links.map((link) => (
+              <button
+                key={link.id}
+                type="button"
+                onClick={() => scrollToSection(link.id)}
+                className="rounded-full px-4 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              >
+                {link.label}
+              </button>
+            ))}
+          </div>
+        )}
 
         <div className="flex items-center gap-3">
           <ThemeToggle />

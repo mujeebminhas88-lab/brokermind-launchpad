@@ -12,7 +12,12 @@ function scrollToSection(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
 }
 
-export function Footer() {
+interface FooterProps {
+  /** Pass [] on pages that don't have these sections, instead of linking to nothing. */
+  links?: { id: string; label: string }[];
+}
+
+export function Footer({ links = PRODUCT_LINKS }: FooterProps) {
   return (
     <footer className="relative overflow-hidden bg-footer">
       <div
@@ -43,18 +48,20 @@ export function Footer() {
         </div>
 
         <div className="mt-14 flex flex-col gap-6 border-t border-footer-border pt-8 sm:flex-row sm:items-center sm:justify-between">
-          <nav className="flex flex-wrap gap-x-6 gap-y-2">
-            {PRODUCT_LINKS.map((link) => (
-              <button
-                key={link.id}
-                type="button"
-                onClick={() => scrollToSection(link.id)}
-                className="text-sm text-footer-muted transition-colors hover:text-footer-foreground"
-              >
-                {link.label}
-              </button>
-            ))}
-          </nav>
+          {links.length > 0 && (
+            <nav className="flex flex-wrap gap-x-6 gap-y-2">
+              {links.map((link) => (
+                <button
+                  key={link.id}
+                  type="button"
+                  onClick={() => scrollToSection(link.id)}
+                  className="text-sm text-footer-muted transition-colors hover:text-footer-foreground"
+                >
+                  {link.label}
+                </button>
+              ))}
+            </nav>
+          )}
           <p className="text-xs text-footer-muted">
             © {new Date().getFullYear()} BrokerMind. All rights reserved.
           </p>
