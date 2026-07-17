@@ -16,7 +16,7 @@ export function LegalPage({ eyebrow, title, children }: LegalPageProps) {
   return (
     <div className="min-h-screen bg-background px-6 py-24">
       <div className="mx-auto max-w-2xl">
-        <Link to="/preview" className="font-mono text-xs text-muted-foreground transition-colors hover:text-foreground">
+        <Link to="/" className="font-mono text-xs text-muted-foreground transition-colors hover:text-foreground">
           &larr; BrokerMindAI
         </Link>
         <p className="mt-10 font-mono text-xs uppercase tracking-[0.24em] text-accent">{eyebrow}</p>

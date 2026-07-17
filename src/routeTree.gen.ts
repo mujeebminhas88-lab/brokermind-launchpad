@@ -13,7 +13,6 @@ import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SecurityRouteImport } from './routes/security'
 import { Route as PrivacyRouteImport } from './routes/privacy'
-import { Route as PreviewRouteImport } from './routes/preview'
 import { Route as OpeningRouteImport } from './routes/opening'
 import { Route as CookiesRouteImport } from './routes/cookies'
 import { Route as IndexRouteImport } from './routes/index'
@@ -38,11 +37,6 @@ const PrivacyRoute = PrivacyRouteImport.update({
   path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PreviewRoute = PreviewRouteImport.update({
-  id: '/preview',
-  path: '/preview',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const OpeningRoute = OpeningRouteImport.update({
   id: '/opening',
   path: '/opening',
@@ -63,7 +57,6 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/cookies': typeof CookiesRoute
   '/opening': typeof OpeningRoute
-  '/preview': typeof PreviewRoute
   '/privacy': typeof PrivacyRoute
   '/security': typeof SecurityRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -73,7 +66,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/cookies': typeof CookiesRoute
   '/opening': typeof OpeningRoute
-  '/preview': typeof PreviewRoute
   '/privacy': typeof PrivacyRoute
   '/security': typeof SecurityRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -84,7 +76,6 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/cookies': typeof CookiesRoute
   '/opening': typeof OpeningRoute
-  '/preview': typeof PreviewRoute
   '/privacy': typeof PrivacyRoute
   '/security': typeof SecurityRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -96,7 +87,6 @@ export interface FileRouteTypes {
     | '/'
     | '/cookies'
     | '/opening'
-    | '/preview'
     | '/privacy'
     | '/security'
     | '/sitemap.xml'
@@ -106,7 +96,6 @@ export interface FileRouteTypes {
     | '/'
     | '/cookies'
     | '/opening'
-    | '/preview'
     | '/privacy'
     | '/security'
     | '/sitemap.xml'
@@ -116,7 +105,6 @@ export interface FileRouteTypes {
     | '/'
     | '/cookies'
     | '/opening'
-    | '/preview'
     | '/privacy'
     | '/security'
     | '/sitemap.xml'
@@ -127,7 +115,6 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CookiesRoute: typeof CookiesRoute
   OpeningRoute: typeof OpeningRoute
-  PreviewRoute: typeof PreviewRoute
   PrivacyRoute: typeof PrivacyRoute
   SecurityRoute: typeof SecurityRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -164,13 +151,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/preview': {
-      id: '/preview'
-      path: '/preview'
-      fullPath: '/preview'
-      preLoaderRoute: typeof PreviewRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/opening': {
       id: '/opening'
       path: '/opening'
@@ -199,7 +179,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CookiesRoute: CookiesRoute,
   OpeningRoute: OpeningRoute,
-  PreviewRoute: PreviewRoute,
   PrivacyRoute: PrivacyRoute,
   SecurityRoute: SecurityRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
