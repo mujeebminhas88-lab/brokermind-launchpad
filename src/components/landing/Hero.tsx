@@ -1,74 +1,43 @@
-import { motion } from "framer-motion";
-import { Spotlight } from "./ui/Spotlight";
-import { TiltCard } from "./ui/TiltCard";
-import { FileSimulation } from "./FileSimulation";
-import { WaitlistForm } from "./WaitlistForm";
+import { ArrowRight } from "lucide-react";
+import { HeroArt } from "./HeroArt";
+import { Button } from "./ui/Button";
 
+function scrollToSection(id: string) {
+  document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+}
+
+/**
+ * The approved hero. Artwork and copy are locked — content is centered in
+ * the frame per direction; the brand mark lives in the Navbar, not here.
+ */
 export function Hero() {
   return (
-    <section id="hero" className="atmosphere relative overflow-hidden">
-      <Spotlight size={800} className="pt-36 pb-20 sm:pt-40 sm:pb-28">
-      <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-16 px-6 lg:grid-cols-12">
-        <div className="lg:col-span-7">
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1"
-          >
-            <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-            <span className="font-mono text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
-              Private beta &middot; Residential mortgages
-            </span>
-          </motion.div>
+    <section id="hero" className="relative min-h-svh w-full overflow-hidden bg-background">
+      <HeroArt className="absolute inset-0" />
 
-          <motion.h1
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-            className="mt-6 font-display text-5xl font-extrabold leading-[1.02] tracking-tight text-foreground sm:text-6xl md:text-7xl"
-          >
-            Underwrite with
-            <br />
-            <span className="text-accent">quiet precision.</span>
-          </motion.h1>
-
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground"
-          >
-            AI decision intelligence for residential mortgage brokers, B lenders, and private
-            lending teams. Every file reviewed, flagged, and packaged before it reaches
-            underwriting.
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="mt-8"
-          >
-            <WaitlistForm className="max-w-md" showVolumeField />
-            <p className="mt-3 text-xs text-muted-foreground">
-              Private beta · No credit card required
-            </p>
-          </motion.div>
-        </div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
-          className="lg:col-span-5"
+      <div className="pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-center px-[6vw] text-center">
+        <p className="mb-3.5 font-mono text-[0.68rem] uppercase tracking-[0.24em] text-muted-foreground">
+          BrokerMindAI
+        </p>
+        <h1
+          className="mb-2.5 max-w-2xl font-display italic text-foreground"
+          style={{ fontSize: "clamp(1.7rem, 3.2vw, 2.6rem)", lineHeight: 1.12, letterSpacing: "-0.01em" }}
         >
-          <TiltCard max={4} className="glow-card glow-card-shadow mx-auto max-w-sm rounded-2xl">
-            <FileSimulation className="border-transparent" />
-          </TiltCard>
-        </motion.div>
+          Certainty has a shape.
+        </h1>
+        <p className="max-w-[34ch] font-mono text-[0.72rem] leading-[1.65] text-muted-foreground">
+          Every relationship illuminates only once it's verified — the rest stays quietly unproven.
+        </p>
+
+        <div className="pointer-events-auto mt-6 flex flex-wrap items-center justify-center gap-3">
+          <Button size="sm" icon={<ArrowRight className="h-3.5 w-3.5" />} onClick={() => scrollToSection("waitlist")}>
+            Join the waitlist
+          </Button>
+          <Button size="sm" variant="ghost" onClick={() => scrollToSection("workflow")}>
+            See how it works
+          </Button>
+        </div>
       </div>
-      </Spotlight>
     </section>
   );
 }

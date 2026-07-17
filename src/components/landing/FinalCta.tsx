@@ -1,5 +1,6 @@
+import { ArrowRight } from "lucide-react";
 import { RevealOnScroll } from "./ui/RevealOnScroll";
-import { WaitlistForm } from "./WaitlistForm";
+import { Button } from "./ui/Button";
 import { FileSimulation } from "./FileSimulation";
 
 export function FinalCta() {
@@ -17,7 +18,9 @@ export function FinalCta() {
             </p>
 
             <div className="mt-8 flex justify-center lg:justify-start">
-              <WaitlistForm variant="dark" className="max-w-md" />
+              <Button icon={<ArrowRight className="h-4 w-4" />} onClick={() => (window.location.href = "/preview#waitlist")}>
+                Join the waitlist
+              </Button>
             </div>
           </div>
 

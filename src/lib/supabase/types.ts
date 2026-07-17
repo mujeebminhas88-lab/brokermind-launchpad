@@ -14,30 +14,78 @@ export type Database = {
   }
   public: {
     Tables: {
-      waitlist: {
+      contact_messages: {
         Row: {
           created_at: string
           email: string
           id: string
-          referrer: string | null
+          message: string
+          name: string
           status: string
-          utm_campaign: string | null
-          utm_source: string | null
         }
         Insert: {
           created_at?: string
           email: string
           id?: string
-          referrer?: string | null
+          message: string
+          name: string
           status?: string
-          utm_campaign?: string | null
-          utm_source?: string | null
         }
         Update: {
           created_at?: string
           email?: string
           id?: string
+          message?: string
+          name?: string
+          status?: string
+        }
+        Relationships: []
+      }
+      waitlist: {
+        Row: {
+          company: string | null
+          country: string | null
+          created_at: string
+          current_los_crm: string | null
+          email: string
+          id: string
+          monthly_volume: string | null
+          name: string | null
+          notes: string | null
+          referrer: string | null
+          source: string
+          status: string
+          utm_campaign: string | null
+          utm_source: string | null
+        }
+        Insert: {
+          company?: string | null
+          country?: string | null
+          created_at?: string
+          current_los_crm?: string | null
+          email: string
+          id?: string
+          monthly_volume?: string | null
+          name?: string | null
+          notes?: string | null
           referrer?: string | null
+          source?: string
+          status?: string
+          utm_campaign?: string | null
+          utm_source?: string | null
+        }
+        Update: {
+          company?: string | null
+          country?: string | null
+          created_at?: string
+          current_los_crm?: string | null
+          email?: string
+          id?: string
+          monthly_volume?: string | null
+          name?: string | null
+          notes?: string | null
+          referrer?: string | null
+          source?: string
           status?: string
           utm_campaign?: string | null
           utm_source?: string | null

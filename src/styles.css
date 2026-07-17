@@ -2,13 +2,16 @@
 @import "tw-animate-css";
 
 @theme {
-  --color-background: #0a0b08;
-  --color-surface: #14160f;
-  --color-card: #14160f;
-  --color-muted: #191b13;
-  --color-foreground: #f4f2e8;
-  --color-muted-foreground: #9a9d8e;
-  --color-subtle-foreground: #676a5d;
+  /* Deep charcoal — the fixed ground of the approved hero direction, not
+     pure black. This is the sitewide foundation now, not a per-section
+     accent (see docs/creative-direction.md ADR on the fiber-optic pivot). */
+  --color-background: #14140f;
+  --color-surface: #1b1c15;
+  --color-card: #1b1c15;
+  --color-muted: #202018;
+  --color-foreground: #ece6d6;
+  --color-muted-foreground: #8f8a78;
+  --color-subtle-foreground: #64604f;
   --color-accent: #2ecc81;
   --color-accent-hover: #29b873;
   --color-accent-subtle: rgba(46, 204, 129, 0.1);
@@ -17,19 +20,22 @@
   --color-primary-foreground: #06170f;
   --color-warning: #e3a23c;
   --color-warning-subtle: rgba(227, 162, 60, 0.12);
-  --color-border: #262a1e;
-  --color-border-strong: #34392a;
+  --color-border: #2a2b20;
+  --color-border-strong: #3a3c2c;
 
-  /* Fixed (non-theme-flipping): used only by the punctuation-moment sections
-     (FinalCta, Footer) that stay dark regardless of the page theme. */
-  --color-footer: #0a0b08;
-  --color-footer-foreground: #f4f2e8;
-  --color-footer-muted: #9a9d8e;
-  --color-footer-border: #262a1e;
+  /* Fixed (non-theme-flipping): the footer/final-CTA punctuation sections
+     now match the sitewide charcoal rather than a separately-darker zone. */
+  --color-footer: #100f0b;
+  --color-footer-foreground: #ece6d6;
+  --color-footer-muted: #8f8a78;
+  --color-footer-border: #2a2b20;
 
-  --font-sans: "Manrope", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-display: "Instrument Sans", "Manrope", ui-sans-serif, system-ui, sans-serif;
+  /* Editorial serif for headlines, monospace for everything else — the
+     same pairing as the approved hero, extended sitewide. No sans-serif. */
+  --font-editorial: "Fraunces", ui-serif, Georgia, "Iowan Old Style", serif;
+  --font-display: var(--font-editorial);
   --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --font-sans: var(--font-mono);
 
   --animate-ripple: ripple 0.6s ease-out;
 }
@@ -57,13 +63,13 @@
 /* Reusable dark scope for components dropped onto the fixed-dark footer/CTA
    sections, independent of the page-level data-theme. */
 .theme-dark-scope {
-  --color-background: #0a0b08;
-  --color-surface: #14160f;
-  --color-card: #14160f;
-  --color-muted: #191b13;
-  --color-foreground: #f4f2e8;
-  --color-muted-foreground: #9a9d8e;
-  --color-subtle-foreground: #676a5d;
+  --color-background: #14140f;
+  --color-surface: #1b1c15;
+  --color-card: #1b1c15;
+  --color-muted: #202018;
+  --color-foreground: #ece6d6;
+  --color-muted-foreground: #8f8a78;
+  --color-subtle-foreground: #64604f;
   --color-accent: #2ecc81;
   --color-accent-hover: #29b873;
   --color-accent-subtle: rgba(46, 204, 129, 0.1);
@@ -72,15 +78,15 @@
   --color-primary-foreground: #06170f;
   --color-warning: #e3a23c;
   --color-warning-subtle: rgba(227, 162, 60, 0.12);
-  --color-border: #262a1e;
-  --color-border-strong: #34392a;
+  --color-border: #2a2b20;
+  --color-border-strong: #3a3c2c;
 }
 
 @layer base {
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
-    font-family: var(--font-sans);
+    font-family: var(--font-mono);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }

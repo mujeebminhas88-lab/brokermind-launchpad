@@ -52,28 +52,33 @@ export const TRUST_POINTS = [
 
 export const FAQ = [
   {
-    question: "Who is BrokerMind built for?",
+    question: "Is BrokerMindAI only for residential mortgages?",
     answer:
-      "BrokerMind is built for residential mortgage brokers, B lenders, and private lenders who want to speed up file preparation and reduce underwriting risk without adding headcount.",
+      "Yes. BrokerMindAI is built specifically for residential mortgage brokers, B lenders, and private lending teams — not stretched to fit commercial, insurance, or unrelated document workflows.",
   },
   {
-    question: "Does BrokerMind replace my underwriter?",
+    question: "What happens to my clients' data?",
     answer:
-      "No. BrokerMind prepares and flags files so your underwriting team can make faster, better-informed decisions. The final call always stays with your team.",
+      "Documents are processed securely and are never used to train external models. Every file, flag, and verification is scoped to your account only.",
   },
   {
-    question: "How does file-based pricing work?",
+    question: "How is data kept secure?",
     answer:
-      "Each plan includes a monthly file allowance — a standard file is up to 30 documents or 300 pages. Need more in a given month? Extra files are billed at your plan's overage rate, so there's no surprise cutoff.",
+      "Data is encrypted in transit and at rest, access is role-based, and every review or decision is logged in a full audit trail — traceable end to end.",
   },
   {
-    question: "Is my client data secure?",
+    question: "How do file limits work?",
     answer:
-      "Yes. Documents are processed securely and are never used to train external models. Access controls and audit trails are built into every plan.",
+      "Each plan includes a monthly file allowance — a standard file is up to 30 documents or 300 pages. Files up to 1.5× that size are still counted as one file; larger files, or going over your monthly allowance, are billed at your plan's overage rate.",
   },
   {
-    question: "Can I cancel anytime?",
+    question: "How does pricing work?",
     answer:
-      "Yes. Monthly plans have no long-term contract and can be cancelled anytime; annual plans run for the committed term. You can upgrade or downgrade whenever you need to.",
+      "Plans are priced by files processed per month, not seats. Founding partners from the waitlist get 25% off for six months, annual billing saves 15%, and the two combine up to a 30% maximum discount.",
+  },
+  {
+    question: "What happens after I request early access?",
+    answer:
+      "There's no automated signup or email verification — every submission is reviewed manually, and we reach out directly as access opens up.",
   },
 ];

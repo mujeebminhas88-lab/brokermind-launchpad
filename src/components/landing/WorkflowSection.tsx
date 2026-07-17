@@ -1,119 +1,102 @@
-import { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
-import { UploadCloud, ScanSearch, PackageCheck, Check } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { HOW_IT_WORKS } from "./content";
-import { SectionHeading } from "./ui/SectionHeading";
+import { motion, useReducedMotion } from "framer-motion";
+import { RevealOnScroll } from "./ui/RevealOnScroll";
 
-const ICONS = [UploadCloud, ScanSearch, PackageCheck];
-
-const STEP_CHECKS = [
-  ["Pay stub received", "Bank statement received", "Photo ID received"],
-  ["Income cross-checked", "Credit history checked", "1 condition flagged"],
-  ["Package assembled", "Audit trail attached", "Ready to submit"],
+const STEPS = [
+  { label: "Intake", note: null },
+  { label: "Verification", note: null },
+  { label: "Cross-checking", note: "Catches inconsistencies before submission" },
+  { label: "Risk detection", note: "Canadian underwriting rules applied" },
+  { label: "Affordability", note: null },
+  { label: "Best lender", note: null },
 ];
 
-const listVariants = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.12, delayChildren: 0.1 } },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, x: -6 },
-  show: { opacity: 1, x: 0 },
-};
+const STEP_DELAY = 0.12;
 
 export function WorkflowSection() {
-  const refs = useRef<Array<HTMLDivElement | null>>([]);
-  const [active, setActive] = useState(0);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const idx = Number((entry.target as HTMLElement).dataset.index);
-            setActive(idx);
-          }
-        });
-      },
-      { rootMargin: "-40% 0px -40% 0px", threshold: 0 },
-    );
-    refs.current.forEach((el) => el && observer.observe(el));
-    return () => observer.disconnect();
-  }, []);
-
-  const ActiveIcon = ICONS[active];
+  const shouldReduceMotion = useReducedMotion();
+  const resultDelay = STEPS.length * STEP_DELAY + 0.5;
 
   return (
-    <section id="workflow" className="mx-auto max-w-7xl scroll-mt-24 px-6 py-24">
-      <SectionHeading
-        eyebrow="Process"
-        title="How BrokerMind works"
-        description="From upload to close, every file follows the same clear path."
-      />
+    <section id="workflow" className="scroll-mt-24 border-t border-border bg-surface/40">
+      <div className="mx-auto max-w-6xl px-6 py-20">
+        <RevealOnScroll className="max-w-2xl">
+          <p className="font-mono text-xs uppercase tracking-[0.24em] text-accent">What it does</p>
+          <h2 className="mt-5 text-balance font-display text-3xl italic leading-[1.15] text-foreground sm:text-4xl">
+            Residential mortgages. One workflow, start to finish.
+          </h2>
+          <p className="mt-6 max-w-lg font-mono text-sm leading-[1.8] text-muted-foreground">
+            Built specifically for residential lending in Canada — not a generic document tool
+            stretched to fit. Every file moves through the same verified path.
+          </p>
+        </RevealOnScroll>
 
-      <div className="mt-14 grid grid-cols-1 gap-12 lg:grid-cols-12">
-        <div className="lg:col-span-7">
-          {HOW_IT_WORKS.map((item, i) => (
-            <div
-              key={item.step}
-              ref={(el) => {
-                refs.current[i] = el;
-              }}
-              data-index={i}
-              className={cn(
-                "flex min-h-[50vh] flex-col justify-center border-l-2 pl-6 transition-colors duration-300",
-                active === i ? "border-accent" : "border-border",
-              )}
-            >
-              <span className={cn("font-mono text-xs", active === i ? "text-accent" : "text-muted-foreground")}>
-                {item.step}
-              </span>
-              <h3 className="mt-2 text-2xl font-semibold tracking-tight text-foreground">{item.title}</h3>
-              <p className="mt-3 max-w-md text-muted-foreground">{item.description}</p>
-            </div>
-          ))}
-        </div>
+        <div className="relative mt-16">
+          <svg
+            className="pointer-events-none absolute inset-x-0 top-[7px] hidden h-px w-full md:block"
+            preserveAspectRatio="none"
+            aria-hidden
+          >
+            <motion.line
+              x1="0"
+              y1="0.5"
+              x2="100%"
+              y2="0.5"
+              stroke="var(--color-border-strong)"
+              strokeWidth={1}
+              initial={shouldReduceMotion ? undefined : { pathLength: 0 }}
+              whileInView={{ pathLength: 1 }}
+              viewport={{ once: true, margin: "-10%" }}
+              transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
+            />
+          </svg>
 
-        <div className="hidden lg:col-span-5 lg:block">
-          <div className="sticky top-32 rounded-2xl border border-border bg-surface p-6">
-            <div className="flex items-center gap-3">
-              <motion.div
-                key={active}
-                initial={{ opacity: 0, scale: 0.85 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-accent-subtle"
-              >
-                <ActiveIcon className="h-5 w-5 text-accent" />
-              </motion.div>
-              <motion.p
-                key={`label-${active}`}
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.25 }}
-                className="text-sm font-medium text-foreground"
-              >
-                {HOW_IT_WORKS[active].title}
-              </motion.p>
-            </div>
+          <ol className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-6 md:gap-x-4">
+            {STEPS.map((step, i) => (
+              <li key={step.label} className="relative">
+                <motion.span
+                  aria-hidden
+                  className="absolute left-0 top-0 h-[15px] w-[15px] rounded-full border border-border-strong bg-surface md:static md:mb-4 md:block"
+                  initial={shouldReduceMotion ? undefined : { opacity: 0, scale: 0.6 }}
+                  whileInView={{
+                    opacity: 1,
+                    scale: 1,
+                    borderColor: "var(--color-accent)",
+                    boxShadow: "0 0 0 3px var(--color-accent-subtle), 0 0 14px 1px rgba(46,204,129,0.5)",
+                  }}
+                  viewport={{ once: true, margin: "-10%" }}
+                  transition={{ duration: 0.5, delay: i * STEP_DELAY, ease: [0.16, 1, 0.3, 1] }}
+                />
+                <div className="pl-8 md:pl-0">
+                  <p className="font-mono text-[11px] text-muted-foreground/70">{String(i + 1).padStart(2, "0")}</p>
+                  <p className="mt-1 font-mono text-sm font-medium text-foreground">{step.label}</p>
+                  {step.note && (
+                    <p className="mt-1 max-w-[16ch] font-mono text-[11px] leading-snug text-muted-foreground/70">
+                      {step.note}
+                    </p>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ol>
 
-            <motion.div
-              key={`checks-${active}`}
-              variants={listVariants}
-              initial="hidden"
-              animate="show"
-              className="mt-6 space-y-2.5 border-t border-border pt-6"
-            >
-              {STEP_CHECKS[active].map((check) => (
-                <motion.div key={check} variants={itemVariants} className="flex items-center gap-2.5 text-sm">
-                  <Check className="h-3.5 w-3.5 shrink-0 text-accent" />
-                  <span className="text-foreground">{check}</span>
-                </motion.div>
-              ))}
-            </motion.div>
-          </div>
+          {/* The recommendation emerging from verified evidence — a result,
+              not another step, so it settles in slightly after the path. */}
+          <motion.div
+            className="mt-14 flex items-center gap-3 border-t border-border pt-8"
+            initial={shouldReduceMotion ? undefined : { opacity: 0, y: 8 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-10%" }}
+            transition={{ duration: 0.6, delay: resultDelay, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <span
+              aria-hidden
+              className="h-2 w-2 shrink-0 rounded-full bg-accent"
+              style={{ boxShadow: "0 0 10px 2px rgba(46,204,129,0.6)" }}
+            />
+            <p className="font-mono text-sm text-foreground">
+              Recommended lender, matched from verified evidence — not a guess.
+            </p>
+          </motion.div>
         </div>
       </div>
     </section>
