@@ -21,18 +21,6 @@ async function mailerliteFetch(path: string, init: RequestInit): Promise<unknown
     },
   });
 
-  // TEMP DIAGNOSTIC — remove once the MailerLite integration is confirmed
-  // working. Never logs the API key; only status/endpoint/body.
-  const diagBody = await response
-    .clone()
-    .text()
-    .catch(() => "<unreadable body>");
-  console.log(
-    `[diag:mailerlite] ${init.method ?? "GET"} ${path} -> status=${response.status} ok=${response.ok}`,
-    "body=",
-    diagBody,
-  );
-
   if (!response.ok) {
     const body = await response.text().catch(() => "");
     throw new Error(
@@ -55,8 +43,6 @@ async function findOrCreateFoundingWaitlistGroupId(): Promise<string> {
 
   const existing = search.data?.find((group) => group.name === FOUNDING_WAITLIST_GROUP_NAME);
   if (existing) {
-    // TEMP DIAGNOSTIC — remove once the MailerLite integration is confirmed working.
-    console.log(`[diag:mailerlite] group "${FOUNDING_WAITLIST_GROUP_NAME}" found, id=${existing.id}`);
     cachedGroupId = existing.id;
     return existing.id;
   }
@@ -65,9 +51,6 @@ async function findOrCreateFoundingWaitlistGroupId(): Promise<string> {
     method: "POST",
     body: JSON.stringify({ name: FOUNDING_WAITLIST_GROUP_NAME }),
   })) as { data: { id: string } };
-
-  // TEMP DIAGNOSTIC — remove once the MailerLite integration is confirmed working.
-  console.log(`[diag:mailerlite] group "${FOUNDING_WAITLIST_GROUP_NAME}" not found, created id=${created.data.id}`);
 
   cachedGroupId = created.data.id;
   return created.data.id;
@@ -87,24 +70,16 @@ export async function syncFoundingWaitlistSubscriber(
 ): Promise<void> {
   const groupId = await findOrCreateFoundingWaitlistGroupId();
 
-  try {
-    await mailerliteFetch("/subscribers", {
-      method: "POST",
-      body: JSON.stringify({
-        email: subscriber.email,
-        fields: {
-          name: subscriber.name,
-          company: subscriber.company,
-          files_per_month: subscriber.filesPerMonth,
-        },
-        groups: [groupId],
-      }),
-    });
-    // TEMP DIAGNOSTIC — remove once the MailerLite integration is confirmed working.
-    console.log(`[diag:mailerlite] subscriber upsert succeeded for group ${groupId}`);
-  } catch (subscriberError) {
-    // TEMP DIAGNOSTIC — remove once the MailerLite integration is confirmed working.
-    console.log(`[diag:mailerlite] subscriber upsert failed for group ${groupId}:`, subscriberError);
-    throw subscriberError;
-  }
+  await mailerliteFetch("/subscribers", {
+    method: "POST",
+    body: JSON.stringify({
+      email: subscriber.email,
+      fields: {
+        name: subscriber.name,
+        company: subscriber.company,
+        files_per_month: subscriber.filesPerMonth,
+      },
+      groups: [groupId],
+    }),
+  });
 }

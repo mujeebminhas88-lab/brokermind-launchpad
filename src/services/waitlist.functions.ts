@@ -28,7 +28,7 @@ export const submitWaitlistEntry = createServerFn({ method: "POST" })
 
     const email = data.email.trim().toLowerCase();
 
-    const { data: insertData, error } = await supabaseAdmin.from("waitlist").insert({
+    const { error } = await supabaseAdmin.from("waitlist").insert({
       name: data.name,
       company: data.company,
       email,
@@ -43,27 +43,14 @@ export const submitWaitlistEntry = createServerFn({ method: "POST" })
       status: "new",
     });
 
-    // TEMP DIAGNOSTIC — remove after confirming why production returns
-    // { ok: true } with no row inserted. Logs the raw insert result only.
-    console.log("[diag:waitlist-insert] data=", JSON.stringify(insertData), "error=", error ? JSON.stringify({
-      code: error.code,
-      message: error.message,
-      details: error.details,
-      hint: error.hint,
-    }) : null);
-
     if (error) {
       // Postgres unique_violation on the email column — they're already on the list.
       if (error.code === "23505") {
-        console.log("[diag:waitlist-insert] branch=duplicate (23505) — returning ok:true, alreadyJoined:true");
         return { ok: true, alreadyJoined: true };
       }
       console.error("[waitlist] insert failed", error);
-      console.log("[diag:waitlist-insert] branch=insert-failed (non-duplicate) — returning ok:false");
       return { ok: false, error: "Something went wrong. Please try again." };
     }
-
-    console.log("[diag:waitlist-insert] branch=clean-success (error was null) — proceeding to MailerLite sync");
 
     try {
       const { syncFoundingWaitlistSubscriber } = await import("@/lib/mailerlite/client.server");
