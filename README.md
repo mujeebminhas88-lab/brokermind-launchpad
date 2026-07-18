@@ -22,17 +22,17 @@ bun run format     # prettier
 
 ## Environment variables
 
-The site itself renders without any environment variables. Values live in
-`.env` (git-ignored) and are inlined at build time by Vite when prefixed with
-`VITE_`.
+Values live in `.env` (git-ignored) and are inlined at build time by Vite
+when prefixed with `VITE_`.
 
 | Variable | Scope | Purpose |
 | --- | --- | --- |
-| _(none required for the marketing site)_ | | |
-
-The Lovable-managed `.env` may still contain `VITE_SUPABASE_*` / `SUPABASE_*`
-values from the previous integration. These are unused by the application
-today and can be removed once the project is fully migrated off Lovable.
+| `VITE_SUPABASE_URL` | Client + server | Supabase project URL |
+| `VITE_SUPABASE_ANON_KEY` | Client + server | Supabase anon/publishable key |
+| `SUPABASE_URL` | Server only | Supabase project URL for server routes |
+| `SUPABASE_ANON_KEY` | Server only | Anon/publishable key for server-side auth checks |
+| `SUPABASE_SERVICE_ROLE_KEY` | Server only | Service role key — bypasses RLS, never expose to the client |
+| `MAILERLITE_API_KEY` | Server only | MailerLite waitlist integration |
 
 ## Project structure
 
@@ -119,12 +119,11 @@ absolute URLs.
 
 ## Deployment
 
-The build targets an edge runtime (Cloudflare Workers by default via
-the bundled build config). Any host that can serve a TanStack Start build
-works — Cloudflare Workers, Vercel, Netlify, Node behind a reverse proxy.
+GitHub → Vercel → Production. The build targets Vercel via the `nitro`
+`vercel` preset configured in `vite.config.ts`.
 
 1. `bun run build`
-2. Deploy the generated output for your target platform.
+2. Push to `main` — Vercel deploys automatically.
 3. Set the production domain, then update `BASE_URL` in the sitemap route
    and any absolute URLs in metadata.
 
