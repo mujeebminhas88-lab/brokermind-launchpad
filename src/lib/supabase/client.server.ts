@@ -32,26 +32,6 @@ function createSupabaseAdminClient() {
   const SUPABASE_URL = process.env.SUPABASE_URL;
   const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-  // TEMP DIAGNOSTIC — remove after confirming the role claim (investigating
-  // 42501 RLS violation on waitlist insert). Never logs the raw key.
-  {
-    let decoded = false;
-    let role: unknown = null;
-    let iss: unknown = null;
-    try {
-      const payload = SUPABASE_SERVICE_ROLE_KEY?.split('.')[1];
-      if (payload) {
-        const claims = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8'));
-        decoded = true;
-        role = claims.role ?? null;
-        iss = claims.iss ?? null;
-      }
-    } catch {
-      decoded = false;
-    }
-    console.log(`[diag:service-role-key] decoded=${decoded} role=${role} iss=${iss}`);
-  }
-
   if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
     const missing = [
       ...(!SUPABASE_URL ? ['SUPABASE_URL'] : []),
