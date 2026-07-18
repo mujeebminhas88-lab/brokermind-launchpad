@@ -18,17 +18,20 @@ export type WaitlistFnResult =
   | { ok: false; error: string };
 
 // Route-file and *.functions.ts modules ship to the client bundle, so the
-// service-role Supabase client is dynamically imported inside the handler
-// (server-only execution) rather than at the top of this file.
+// service-role Supabase client and the MailerLite API key are dynamically
+// imported inside the handler (server-only execution) rather than at the
+// top of this file.
 export const submitWaitlistEntry = createServerFn({ method: "POST" })
   .validator((data: WaitlistPayload) => data)
   .handler(async ({ data }): Promise<WaitlistFnResult> => {
     const { supabaseAdmin } = await import("@/lib/supabase/client.server");
 
+    const email = data.email.trim().toLowerCase();
+
     const { error } = await supabaseAdmin.from("waitlist").insert({
       name: data.name,
       company: data.company,
-      email: data.email.trim().toLowerCase(),
+      email,
       monthly_volume: data.monthlyVolume,
       country: data.country,
       current_los_crm: data.currentLosCrm || null,
@@ -47,6 +50,20 @@ export const submitWaitlistEntry = createServerFn({ method: "POST" })
       }
       console.error("[waitlist] insert failed", error);
       return { ok: false, error: "Something went wrong. Please try again." };
+    }
+
+    try {
+      const { syncFoundingWaitlistSubscriber } = await import("@/lib/mailerlite/client.server");
+      await syncFoundingWaitlistSubscriber({
+        email,
+        name: data.name,
+        company: data.company,
+        filesPerMonth: data.monthlyVolume,
+      });
+    } catch (mailerliteError) {
+      // MailerLite is a marketing-list sync, not the source of truth — never
+      // fail the waitlist submission because of it.
+      console.error("[waitlist] mailerlite sync failed", mailerliteError);
     }
 
     return { ok: true, alreadyJoined: false };
