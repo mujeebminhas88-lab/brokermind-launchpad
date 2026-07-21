@@ -68,8 +68,12 @@ export function ContactModal({ open, onClose }: ContactModalProps) {
       <div className="w-full max-w-md rounded-lg border border-border bg-background p-8">
         <div className="flex items-start justify-between">
           <div>
-            <p className="font-mono text-xs uppercase tracking-[0.24em] text-accent">Contact</p>
-            <h2 className="mt-3 font-display text-2xl italic text-foreground">Get in touch.</h2>
+            <p className="font-mono text-xs uppercase tracking-[0.24em] text-accent">
+              Contact
+            </p>
+            <h2 className="mt-3 font-display text-2xl italic text-foreground">
+              Get in touch.
+            </h2>
           </div>
           <button
             type="button"
@@ -83,56 +87,4 @@ export function ContactModal({ open, onClose }: ContactModalProps) {
 
         {isSubmitted ? (
           <div className="mt-6 flex items-center gap-3 rounded-lg border border-accent/30 bg-accent-subtle px-4 py-3">
-            <CheckCircle2 className="h-5 w-5 shrink-0 text-accent" />
-            <p className="font-mono text-sm text-foreground">
-              Message sent — we'll get back to you at {email}.
-            </p>
-          </div>
-        ) : (
-          <form
-  method="POST"
-  onSubmit={handleSubmit}
- className="mt-6 flex flex-col gap-4">
-            <input
-              type="text"
-              required
-              placeholder="Your name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              disabled={isPending}
-              className={fieldClass}
-            />
-            <input
-              type="email"
-              required
-              placeholder="Your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              disabled={isPending}
-              className={fieldClass}
-            />
-            <textarea
-              required
-              placeholder="How can we help?"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              disabled={isPending}
-              rows={4}
-              className={cn(fieldClass, "resize-none")}
-            />
-            <Button type="submit" loading={isPending} icon={<ArrowRight className="h-4 w-4" />} className="self-start">
-              Send message
-            </Button>
-            <p className="font-mono text-xs text-muted-foreground">
-              Or email us directly at{" "}
-              <a href="mailto:hello@brokermindapp.com" className="text-foreground transition-colors hover:text-accent">
-                hello@brokermindapp.com
-              </a>
-              .
-            </p>
-          </form>
-        )}
-      </div>
-    </div>
-  );
-}
+            <CheckCircle2 className="h-5 w-5 shrink-0 text-accent
