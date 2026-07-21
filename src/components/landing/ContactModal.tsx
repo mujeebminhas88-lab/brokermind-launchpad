@@ -22,9 +22,11 @@ export function ContactModal({ open, onClose }: ContactModalProps) {
 
   useEffect(() => {
     if (!open) return;
+
     function onKeyDown(e: KeyboardEvent) {
       if (e.key === "Escape") onClose();
     }
+
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [open, onClose]);
@@ -40,16 +42,25 @@ export function ContactModal({ open, onClose }: ContactModalProps) {
 
   if (!open) return null;
 
-  async function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+
     setIsPending(true);
+
     try {
-      const result = await sendContactMessage({ name, email, message });
+      const result = await sendContactMessage({
+        name,
+        email,
+        message,
+      });
+
       if (result.ok) {
         setIsSubmitted(true);
       } else {
-        toast.error(result.error);
+        toast.error(result.error ?? "Something went wrong.");
       }
+    } catch {
+      toast.error("Unable to send your message.");
     } finally {
       setIsPending(false);
     }
@@ -71,10 +82,12 @@ export function ContactModal({ open, onClose }: ContactModalProps) {
             <p className="font-mono text-xs uppercase tracking-[0.24em] text-accent">
               Contact
             </p>
+
             <h2 className="mt-3 font-display text-2xl italic text-foreground">
               Get in touch.
             </h2>
           </div>
+
           <button
             type="button"
             onClick={onClose}
@@ -87,4 +100,72 @@ export function ContactModal({ open, onClose }: ContactModalProps) {
 
         {isSubmitted ? (
           <div className="mt-6 flex items-center gap-3 rounded-lg border border-accent/30 bg-accent-subtle px-4 py-3">
-            <CheckCircle2 className="h-5 w-5 shrink-0 text-accent
+            <CheckCircle2 className="h-5 w-5 shrink-0 text-accent" />
+
+            <p className="font-mono text-sm text-foreground">
+              Message sent — we'll get back to you at {email}.
+            </p>
+          </div>
+        ) : (
+          <form
+            method="POST"
+            onSubmit={handleSubmit}
+            className="mt-6 flex flex-col gap-4"
+          >
+            <input
+              type="text"
+              required
+              autoComplete="name"
+              placeholder="Your name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              disabled={isPending}
+              className={fieldClass}
+            />
+
+            <input
+              type="email"
+              required
+              autoComplete="email"
+              placeholder="Your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              disabled={isPending}
+              className={fieldClass}
+            />
+
+            <textarea
+              required
+              placeholder="How can we help?"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              disabled={isPending}
+              rows={4}
+              className={cn(fieldClass, "resize-none")}
+            />
+
+            <Button
+              type="submit"
+              loading={isPending}
+              icon={<ArrowRight className="h-4 w-4" />}
+              className="self-start"
+            >
+              Send message
+            </Button>
+
+            <p className="font-mono text-xs text-muted-foreground">
+              Or email us directly at{" "}
+              <a
+                href="mailto:hello@brokermindapp.com"
+                className="text-foreground transition-colors hover:text-accent"
+              >
+                hello@brokermindapp.com
+              </a>
+              .
+            </p>
+          </form>
+        )}
+      </div>
+    </div>
+  );
+}
