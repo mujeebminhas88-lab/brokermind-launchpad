@@ -92,7 +92,6 @@ export function ContactModal({ open, onClose }: ContactModalProps) {
           <form
   method="POST"
   onSubmit={handleSubmit}
->
  className="mt-6 flex flex-col gap-4">
             <input
               type="text"
