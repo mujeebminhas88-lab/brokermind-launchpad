@@ -1,5 +1,5 @@
 export interface PricingTier {
-  id: "starter" | "growth" | "scale" | "enterprise";
+  id: "zero" | "starter" | "growth" | "scale" | "enterprise";
   name: string;
   segment: string;
   filesIncluded: number | null;
@@ -10,6 +10,21 @@ export interface PricingTier {
 }
 
 export const PRICING_TIERS: PricingTier[] = [
+  {
+    id: "zero",
+    name: "Zero",
+    segment: "Mortgage agents",
+    filesIncluded: 3,
+    monthlyPrice: 39,
+    overagePerFile: 15,
+    highlighted: false,
+    features: [
+      "3 files per month included",
+      "AI document extraction & verification",
+      "Compliance guardrails & flagging",
+      "Email support",
+    ],
+  },
   {
     id: "starter",
     name: "Starter",
