@@ -17,12 +17,28 @@ const SURFACE = "#faf9f5";
 const FONT_DISPLAY = "Georgia, 'Times New Roman', serif";
 const FONT_MONO = "'Courier New', Courier, monospace";
 
+// Email clients can't reference bundled/hashed Vite assets (the URL must be
+// stable across builds), so this points at public/brokermind-logo.png,
+// served unchanged at the domain root rather than through Vite's asset
+// pipeline. Assumes the landing page is served from the bare domain (the
+// app itself lives on app.brokermindapp.com) -- update this if that's wrong.
+const LOGO_URL = "https://brokermindapp.com/brokermind-logo.png";
+
 export function renderEmailLayout(bodyHtml: string): string {
   return `
 <div style="background-color:${SURFACE}; padding:40px 16px; font-family:${FONT_MONO};">
   <div style="max-width:480px; margin:0 auto; background-color:#ffffff; border:1px solid ${BORDER}; border-radius:8px; overflow:hidden;">
-    <div style="padding:28px 32px; border-bottom:1px solid ${BORDER};">
-      <span style="font-family:${FONT_DISPLAY}; font-style:italic; font-size:21px; color:${FOREGROUND};">BrokerMindAI</span>
+    <div style="padding:24px 32px; border-bottom:1px solid ${BORDER};">
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td style="vertical-align:middle; padding-right:10px;">
+            <img src="${LOGO_URL}" alt="" width="32" height="32" style="display:block; width:32px; height:32px; object-fit:contain;">
+          </td>
+          <td style="vertical-align:middle;">
+            <span style="font-family:${FONT_DISPLAY}; font-style:italic; font-size:21px; color:${FOREGROUND};">BrokerMindAI</span>
+          </td>
+        </tr>
+      </table>
     </div>
     <div style="padding:28px 32px; font-family:${FONT_MONO}; font-size:14px; line-height:1.7; color:${FOREGROUND};">
       ${bodyHtml}
