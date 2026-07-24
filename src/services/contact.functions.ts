@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { renderEmailLayout, emailLabel, emailQuoteBlock } from "@/lib/resend/emailTemplate";
 
 export interface ContactPayload {
   name: string;
@@ -20,21 +21,22 @@ function escapeHtml(value: string): string {
 }
 
 function ownerNotificationHtml(data: ContactPayload): string {
-  return `
-    <p>New contact form submission from BrokerMindAI:</p>
-    <p><strong>Name:</strong> ${escapeHtml(data.name)}<br>
-    <strong>Email:</strong> ${escapeHtml(data.email)}</p>
-    <p><strong>Message:</strong><br>${escapeHtml(data.message).replace(/\n/g, "<br>")}</p>
-  `;
+  return renderEmailLayout(`
+    ${emailLabel("New Contact Message")}
+    <p style="margin:0 0 12px;"><strong>${escapeHtml(data.name)}</strong> · ${escapeHtml(data.email)}</p>
+    ${emailQuoteBlock(escapeHtml(data.message).replace(/\n/g, "<br>"))}
+    <p style="margin:20px 0 0; font-size:12px; color:#63665a;">Reply to this email to respond directly to ${escapeHtml(data.name)}.</p>
+  `);
 }
 
 function senderConfirmationHtml(data: ContactPayload): string {
-  return `
-    <p>Hi ${escapeHtml(data.name)},</p>
-    <p>Thanks for reaching out to BrokerMindAI — we've received your message and will get back to you shortly.</p>
-    <p><strong>Your message:</strong><br>${escapeHtml(data.message).replace(/\n/g, "<br>")}</p>
-    <p>— The BrokerMindAI team</p>
-  `;
+  return renderEmailLayout(`
+    ${emailLabel("Message Received")}
+    <p style="margin:0 0 12px;">Hi ${escapeHtml(data.name)},</p>
+    <p style="margin:0 0 16px;">Thanks for reaching out — we've received your message and will get back to you shortly.</p>
+    ${emailQuoteBlock(escapeHtml(data.message).replace(/\n/g, "<br>"))}
+    <p style="margin:20px 0 0;">— The BrokerMindAI team</p>
+  `);
 }
 
 // Dynamically imported inside the handler (server-only) — see waitlist.functions.ts
