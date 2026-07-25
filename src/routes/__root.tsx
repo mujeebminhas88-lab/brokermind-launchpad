@@ -132,6 +132,15 @@ export const Route = createRootRoute({
           "(function(){try{if(localStorage.getItem('theme')==='light'){document.documentElement.setAttribute('data-theme','light');}}catch(e){}})();",
       },
       {
+        // Self-serve analytics opt-out: visit once with ?ga_optout=1 (from
+        // each browser/device you check the site from) and it's remembered
+        // via localStorage from then on. ?ga_optout=0 reverses it. Must run
+        // before gtag.js loads — this is Google's documented opt-out flag,
+        // which gtag.js checks internally before sending anything.
+        children:
+          "(function(){try{var p=new URLSearchParams(location.search);if(p.has('ga_optout')){if(p.get('ga_optout')==='0'){localStorage.removeItem('ga_optout');}else{localStorage.setItem('ga_optout','1');}}if(localStorage.getItem('ga_optout')==='1'){window['ga-disable-G-KGMBENNNL3']=true;}}catch(e){}})();",
+      },
+      {
         src: "https://www.googletagmanager.com/gtag/js?id=G-KGMBENNNL3",
         async: true,
       },
