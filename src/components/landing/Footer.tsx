@@ -1,7 +1,13 @@
-import { useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import logoUrl from "@/assets/brokermind-logo.png";
-import { ContactModal } from "./ContactModal";
+
+// Deferred: only ever needed after the visitor clicks "Contact", so its
+// module (and the contact service it pulls in) never has to load, parse, or
+// execute on the initial page load.
+const ContactModal = lazy(() =>
+  import("./ContactModal").then((m) => ({ default: m.ContactModal })),
+);
 
 function scrollToSection(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
@@ -16,6 +22,7 @@ const LEGAL_LINKS = [
 
 export function Footer() {
   const [contactOpen, setContactOpen] = useState(false);
+  const [contactLoaded, setContactLoaded] = useState(false);
 
   return (
     <footer className="border-t border-footer-border bg-footer">
@@ -44,7 +51,10 @@ export function Footer() {
             </button>
             <button
               type="button"
-              onClick={() => setContactOpen(true)}
+              onClick={() => {
+                setContactLoaded(true);
+                setContactOpen(true);
+              }}
               className="text-left transition-colors hover:text-footer-foreground"
             >
               Contact
@@ -77,7 +87,11 @@ export function Footer() {
           </p>
         </div>
       </div>
-      <ContactModal open={contactOpen} onClose={() => setContactOpen(false)} />
+      {contactLoaded && (
+        <Suspense fallback={null}>
+          <ContactModal open={contactOpen} onClose={() => setContactOpen(false)} />
+        </Suspense>
+      )}
     </footer>
   );
 }

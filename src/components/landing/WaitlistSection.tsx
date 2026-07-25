@@ -1,6 +1,5 @@
 import { useState, type FormEvent } from "react";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
-import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { joinWaitlist } from "@/services/waitlist";
 import { VOLUME_BUCKETS } from "./pricing";
@@ -26,15 +25,18 @@ export function WaitlistSection() {
     e.preventDefault();
     setIsPending(true);
     try {
-      const result = await joinWaitlist({
-        name,
-        company,
-        email,
-        monthlyVolume,
-        country,
-        currentLosCrm: currentLosCrm || null,
-        notes: notes || null,
-      });
+      const [result, { toast }] = await Promise.all([
+        joinWaitlist({
+          name,
+          company,
+          email,
+          monthlyVolume,
+          country,
+          currentLosCrm: currentLosCrm || null,
+          notes: notes || null,
+        }),
+        import("sonner"),
+      ]);
       if (result.ok) {
         setIsSubmitted(true);
         toast.success(result.alreadyJoined ? "You're already on the list." : "You're on the list.");

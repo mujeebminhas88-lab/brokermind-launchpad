@@ -1,6 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { ArrowRight, CheckCircle2, X } from "lucide-react";
-import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { sendContactMessage } from "@/services/contact";
 import { Button } from "./ui/Button";
@@ -48,11 +47,14 @@ export function ContactModal({ open, onClose }: ContactModalProps) {
     setIsPending(true);
 
     try {
-      const result = await sendContactMessage({
-        name,
-        email,
-        message,
-      });
+      const [result, { toast }] = await Promise.all([
+        sendContactMessage({
+          name,
+          email,
+          message,
+        }),
+        import("sonner"),
+      ]);
 
       if (result.ok) {
         setIsSubmitted(true);
@@ -60,6 +62,7 @@ export function ContactModal({ open, onClose }: ContactModalProps) {
         toast.error(result.error ?? "Something went wrong.");
       }
     } catch {
+      const { toast } = await import("sonner");
       toast.error("Unable to send your message.");
     } finally {
       setIsPending(false);
