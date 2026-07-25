@@ -54,7 +54,7 @@ export function Navbar({ links = LINKS }: NavbarProps) {
           className="absolute inset-x-0 bottom-0 h-px bg-border"
           style={{ opacity: borderOpacity }}
         />
-        <nav className="relative mx-auto grid max-w-7xl grid-cols-3 items-center px-6">
+        <nav className="relative mx-auto flex max-w-7xl items-center justify-end px-6 md:grid md:grid-cols-3">
           <div aria-hidden />
 
           {links.length > 0 && (
@@ -72,7 +72,11 @@ export function Navbar({ links = LINKS }: NavbarProps) {
             </div>
           )}
 
-          <Button size="sm" className="justify-self-end" onClick={() => scrollToSection("waitlist")}>
+          <Button
+            size="sm"
+            className="whitespace-nowrap justify-self-end"
+            onClick={() => scrollToSection("waitlist")}
+          >
             Join waitlist
           </Button>
         </nav>
