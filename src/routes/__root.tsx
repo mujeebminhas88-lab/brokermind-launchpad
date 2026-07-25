@@ -132,6 +132,14 @@ export const Route = createRootRoute({
           "(function(){try{if(localStorage.getItem('theme')==='light'){document.documentElement.setAttribute('data-theme','light');}}catch(e){}})();",
       },
       {
+        src: "https://www.googletagmanager.com/gtag/js?id=G-KGMBENNNL3",
+        async: true,
+      },
+      {
+        children:
+          "window.dataLayer = window.dataLayer || [];\nfunction gtag(){dataLayer.push(arguments);}\ngtag('js', new Date());\ngtag('config', 'G-KGMBENNNL3');",
+      },
+      {
         type: "application/ld+json",
         children: JSON.stringify({
           "@context": "https://schema.org",
