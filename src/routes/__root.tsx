@@ -10,6 +10,12 @@ import type { ReactNode } from "react";
 import { Analytics } from "@vercel/analytics/react";
 
 import appCss from "../styles.css?url";
+// Preloaded below: these are the only two font files the above-the-fold
+// content (hero heading + body text) actually needs. Without a preload the
+// browser can't discover them until it has downloaded and parsed the full
+// stylesheet, which was pushing the LCP text's render well past first paint.
+import ibmPlexMonoRegular from "@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-400-normal.woff2?url";
+import frauncesItalic from "@fontsource/fraunces/files/fraunces-latin-400-italic.woff2?url";
 
 function NotFoundComponent() {
   return (
@@ -101,6 +107,20 @@ export const Route = createRootRoute({
     links: [
       { rel: "icon", type: "image/png", href: "/favicon.png" },
       { rel: "apple-touch-icon", href: "/favicon.png" },
+      {
+        rel: "preload",
+        as: "font",
+        type: "font/woff2",
+        href: ibmPlexMonoRegular,
+        crossOrigin: "anonymous",
+      },
+      {
+        rel: "preload",
+        as: "font",
+        type: "font/woff2",
+        href: frauncesItalic,
+        crossOrigin: "anonymous",
+      },
       {
         rel: "stylesheet",
         href: appCss,
