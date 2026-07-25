@@ -117,7 +117,7 @@ export const Route = createRootRoute({
           "@context": "https://schema.org",
           "@type": "Organization",
           name: "BrokerMindAI",
-          url: "/",
+          url: "https://www.brokermindapp.com/",
           description:
             "AI document intelligence and underwriting prep for residential mortgage brokers, B lenders, and private lending teams.",
           slogan: "Underwrite with quiet precision.",
