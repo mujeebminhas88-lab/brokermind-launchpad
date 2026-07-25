@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { ArrowRight, CheckCircle2, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { trackEvent } from "@/lib/analytics";
 import { sendContactMessage } from "@/services/contact";
 import { Button } from "./ui/Button";
 
@@ -58,6 +59,7 @@ export function ContactModal({ open, onClose }: ContactModalProps) {
 
       if (result.ok) {
         setIsSubmitted(true);
+        trackEvent("generate_lead", { form_name: "contact" });
       } else {
         toast.error(result.error ?? "Something went wrong.");
       }

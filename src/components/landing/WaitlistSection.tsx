@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { trackEvent } from "@/lib/analytics";
 import { joinWaitlist } from "@/services/waitlist";
 import { VOLUME_BUCKETS } from "./pricing";
 import { COUNTRIES } from "./countries";
@@ -39,6 +40,9 @@ export function WaitlistSection() {
       ]);
       if (result.ok) {
         setIsSubmitted(true);
+        if (!result.alreadyJoined) {
+          trackEvent("generate_lead", { form_name: "waitlist" });
+        }
         toast.success(result.alreadyJoined ? "You're already on the list." : "You're on the list.");
       } else {
         toast.error(result.error);
