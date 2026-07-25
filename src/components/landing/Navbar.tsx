@@ -33,7 +33,13 @@ export function Navbar({ links = LINKS }: NavbarProps) {
         onClick={() => scrollToSection("hero")}
         className="fixed left-6 top-5 z-[60] flex items-center gap-2.5"
       >
-        <img src={logoUrl} alt="BrokerMindAI" className="h-11 w-auto object-contain" />
+        <img
+          src={logoUrl}
+          alt="BrokerMindAI"
+          width={44}
+          height={44}
+          className="h-11 w-auto object-contain"
+        />
         <span className="font-display text-sm italic text-foreground">BrokerMindAI</span>
       </button>
 

@@ -10,6 +10,36 @@ import { cn } from "@/lib/utils";
  * approved concept pass, not an incidental refactor.
  */
 
+// The composition below draws hundreds of glow-bearing strokes (each with a
+// shadowBlur pass, which is expensive on the canvas 2D rasterizer). Doing
+// that in one synchronous pass blocks the main thread for seconds. Every
+// draw call is instead queued as a no-arg closure ("Op") and the queue is
+// drained across animation frames in bounded time slices — same calls, same
+// order, same final pixels, just spread out so the browser stays responsive
+// while it paints in.
+type Op = () => void;
+
+function runOps(ops: Op[], budgetMs = 30): () => void {
+  let idx = 0;
+  let raf = 0;
+  let cancelled = false;
+  function step() {
+    if (cancelled) return;
+    const start = performance.now();
+    while (idx < ops.length && performance.now() - start < budgetMs) {
+      ops[idx++]();
+    }
+    if (!cancelled && idx < ops.length) {
+      raf = requestAnimationFrame(step);
+    }
+  }
+  raf = requestAnimationFrame(step);
+  return () => {
+    cancelled = true;
+    cancelAnimationFrame(raf);
+  };
+}
+
 interface Node {
   x: number;
   y: number;
@@ -70,13 +100,23 @@ function fitCanvas(canvas: HTMLCanvasElement) {
   return { ctx, w, h };
 }
 
-function grain(ctx: CanvasRenderingContext2D, w: number, h: number, rand: () => number, count: number) {
-  for (let i = 0; i < count; i++) {
-    const x = rand() * w;
-    const y = rand() * h;
-    ctx.fillStyle = rand() > 0.5 ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.055)";
-    ctx.fillRect(x, y, 1, 1);
-  }
+function grain(
+  ops: Op[],
+  ctx: CanvasRenderingContext2D,
+  w: number,
+  h: number,
+  rand: () => number,
+  count: number,
+) {
+  // Cheap (no shadowBlur) — queued as one op rather than per-speck.
+  ops.push(() => {
+    for (let i = 0; i < count; i++) {
+      const x = rand() * w;
+      const y = rand() * h;
+      ctx.fillStyle = rand() > 0.5 ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.055)";
+      ctx.fillRect(x, y, 1, 1);
+    }
+  });
 }
 
 // Builds a node list with parent pointers — an asymmetric, irregular
@@ -158,7 +198,13 @@ function markVerified(nodes: Node[], leaves: number[], rand: () => number, k: nu
   return { lit, chosenLeaves };
 }
 
-function crossLinks(nodes: Node[], lit: Set<number>, rand: () => number, count: number, maxDist: number) {
+function crossLinks(
+  nodes: Node[],
+  lit: Set<number>,
+  rand: () => number,
+  count: number,
+  maxDist: number,
+) {
   const litArr = [...lit].filter((i) => nodes[i].depth > 2);
   const links: [number, number][] = [];
   let tries = 0;
@@ -202,11 +248,23 @@ function drawSegment(
   ctx.globalAlpha = 1;
 }
 
-function drawDormant(ctx: CanvasRenderingContext2D, nodes: Node[], color: string) {
+function drawDormant(ops: Op[], ctx: CanvasRenderingContext2D, nodes: Node[], color: string) {
   for (let i = 1; i < nodes.length; i++) {
     const n = nodes[i];
     const p = nodes[n.parent];
-    drawSegment(ctx, p.x, p.y, n.x, n.y, n.bow!, Math.max(0.5, n.width * 0.55), color, 0.05 + n.width * 0.01);
+    ops.push(() =>
+      drawSegment(
+        ctx,
+        p.x,
+        p.y,
+        n.x,
+        n.y,
+        n.bow!,
+        Math.max(0.5, n.width * 0.55),
+        color,
+        0.05 + n.width * 0.01,
+      ),
+    );
   }
 }
 
@@ -215,6 +273,7 @@ function drawDormant(ctx: CanvasRenderingContext2D, nodes: Node[], color: string
 // brand emerald, and a crisp near-white core. Real bloom is never one flat
 // glow — it's several radii stacked, warmer and wider the further out.
 function drawLit(
+  ops: Op[],
   ctx: CanvasRenderingContext2D,
   nodes: Node[],
   lit: Set<number>,
@@ -230,39 +289,56 @@ function drawLit(
     const p = nodes[n.parent];
     const t = ease(Math.min(1, n.depth / maxDepth));
     const col = mixColor(haloColor, tipColor, Math.pow(t, 1.7));
-    ctx.shadowColor = col;
-    ctx.shadowBlur = lerp(38, 12, t);
-    drawSegment(ctx, p.x, p.y, n.x, n.y, n.bow!, n.width * 3.4, col, lerp(0.08, 0.13, t));
+    ops.push(() => {
+      ctx.shadowColor = col;
+      ctx.shadowBlur = lerp(38, 12, t);
+      drawSegment(ctx, p.x, p.y, n.x, n.y, n.bow!, n.width * 3.4, col, lerp(0.08, 0.13, t));
+      ctx.shadowBlur = 0;
+    });
   });
-  ctx.shadowBlur = 0;
 
   litNodes.forEach((i) => {
     const n = nodes[i];
     const p = nodes[n.parent];
     const t = ease(Math.min(1, n.depth / maxDepth));
     const col = mixColor(baseColor, tipColor, Math.pow(t, 1.6));
-    ctx.shadowColor = col;
-    ctx.shadowBlur = lerp(22, 6, t);
-    drawSegment(ctx, p.x, p.y, n.x, n.y, n.bow!, n.width * 1.9, col, lerp(0.22, 0.32, t));
+    ops.push(() => {
+      ctx.shadowColor = col;
+      ctx.shadowBlur = lerp(22, 6, t);
+      drawSegment(ctx, p.x, p.y, n.x, n.y, n.bow!, n.width * 1.9, col, lerp(0.22, 0.32, t));
+      ctx.shadowBlur = 0;
+    });
   });
-  ctx.shadowBlur = 0;
 
   litNodes.forEach((i) => {
     const n = nodes[i];
     const p = nodes[n.parent];
     const t = ease(Math.min(1, n.depth / maxDepth));
     const col = mixColor(baseColor, tipColor, Math.pow(t, 1.6));
-    ctx.shadowColor = col;
-    ctx.shadowBlur = lerp(9, 2, t);
-    drawSegment(ctx, p.x, p.y, n.x, n.y, n.bow!, Math.max(0.7, n.width * 0.66), col, lerp(0.82, 0.98, t));
+    ops.push(() => {
+      ctx.shadowColor = col;
+      ctx.shadowBlur = lerp(9, 2, t);
+      drawSegment(
+        ctx,
+        p.x,
+        p.y,
+        n.x,
+        n.y,
+        n.bow!,
+        Math.max(0.7, n.width * 0.66),
+        col,
+        lerp(0.82, 0.98, t),
+      );
+      ctx.shadowBlur = 0;
+    });
   });
-  ctx.shadowBlur = 0;
 }
 
 // Every lit junction gets a small confirmed-point light, not just the
 // terminal tips — each one is a real node on a real branch, not a scattered
 // particle. This is where "richness" comes from, not noise.
 function drawJunctionLights(
+  ops: Op[],
   ctx: CanvasRenderingContext2D,
   nodes: Node[],
   lit: Set<number>,
@@ -273,70 +349,99 @@ function drawJunctionLights(
   lit.forEach((i) => {
     if (leafSet.has(i)) return;
     const n = nodes[i];
-    ctx.beginPath();
-    ctx.arc(n.x, n.y, 1.3, 0, Math.PI * 2);
-    ctx.fillStyle = tipColor;
-    ctx.shadowColor = tipColor;
-    ctx.shadowBlur = 7;
-    ctx.globalAlpha = 0.8;
-    ctx.fill();
-    ctx.globalAlpha = 1;
-    ctx.shadowBlur = 0;
+    ops.push(() => {
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, 1.3, 0, Math.PI * 2);
+      ctx.fillStyle = tipColor;
+      ctx.shadowColor = tipColor;
+      ctx.shadowBlur = 7;
+      ctx.globalAlpha = 0.8;
+      ctx.fill();
+      ctx.globalAlpha = 1;
+      ctx.shadowBlur = 0;
+    });
   });
 }
 
-function drawCrossLinks(ctx: CanvasRenderingContext2D, nodes: Node[], links: [number, number][], color: string) {
+function drawCrossLinks(
+  ops: Op[],
+  ctx: CanvasRenderingContext2D,
+  nodes: Node[],
+  links: [number, number][],
+  color: string,
+) {
   links.forEach(([a, b]) => {
     const na = nodes[a];
     const nb = nodes[b];
     const bow = Math.hypot(na.x - nb.x, na.y - nb.y) * 0.18;
-    ctx.shadowColor = color;
-    ctx.shadowBlur = 6;
-    drawSegment(ctx, na.x, na.y, nb.x, nb.y, bow, 0.7, color, 0.4);
-    ctx.shadowBlur = 0;
+    ops.push(() => {
+      ctx.shadowColor = color;
+      ctx.shadowBlur = 6;
+      drawSegment(ctx, na.x, na.y, nb.x, nb.y, bow, 0.7, color, 0.4);
+      ctx.shadowBlur = 0;
+    });
   });
 }
 
-function drawTerminals(ctx: CanvasRenderingContext2D, nodes: Node[], chosenLeaves: number[], tipColor: string) {
+function drawTerminals(
+  ops: Op[],
+  ctx: CanvasRenderingContext2D,
+  nodes: Node[],
+  chosenLeaves: number[],
+  tipColor: string,
+) {
   chosenLeaves.forEach((i) => {
     const n = nodes[i];
-    // soft wide halo before the hard point — this is what makes a tip read
-    // as a light source rather than a drawn dot
-    const halo = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, 26);
-    halo.addColorStop(0, "rgba(234,255,242,0.55)");
-    halo.addColorStop(0.4, "rgba(127,224,172,0.16)");
-    halo.addColorStop(1, "rgba(127,224,172,0)");
-    ctx.fillStyle = halo;
-    ctx.fillRect(n.x - 26, n.y - 26, 52, 52);
+    ops.push(() => {
+      // soft wide halo before the hard point — this is what makes a tip read
+      // as a light source rather than a drawn dot
+      const halo = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, 26);
+      halo.addColorStop(0, "rgba(234,255,242,0.55)");
+      halo.addColorStop(0.4, "rgba(127,224,172,0.16)");
+      halo.addColorStop(1, "rgba(127,224,172,0)");
+      ctx.fillStyle = halo;
+      ctx.fillRect(n.x - 26, n.y - 26, 52, 52);
 
-    ctx.beginPath();
-    ctx.arc(n.x, n.y, 2.6, 0, Math.PI * 2);
-    ctx.fillStyle = tipColor;
-    ctx.shadowColor = tipColor;
-    ctx.shadowBlur = 16;
-    ctx.fill();
-    ctx.shadowBlur = 0;
-    // tiny glass-like specular catch
-    ctx.beginPath();
-    ctx.arc(n.x - 0.8, n.y - 0.8, 0.7, 0, Math.PI * 2);
-    ctx.fillStyle = "rgba(255,255,255,0.9)";
-    ctx.fill();
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, 2.6, 0, Math.PI * 2);
+      ctx.fillStyle = tipColor;
+      ctx.shadowColor = tipColor;
+      ctx.shadowBlur = 16;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+      // tiny glass-like specular catch
+      ctx.beginPath();
+      ctx.arc(n.x - 0.8, n.y - 0.8, 0.7, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(255,255,255,0.9)";
+      ctx.fill();
+    });
   });
 }
 
-function sourceGlow(ctx: CanvasRenderingContext2D, x: number, y: number, r: number, color: string, strength: number) {
-  const g = ctx.createRadialGradient(x, y, 0, x, y, r);
-  g.addColorStop(0, color);
-  g.addColorStop(1, "rgba(0,0,0,0)");
-  ctx.globalAlpha = strength;
-  ctx.fillStyle = g;
-  ctx.fillRect(x - r, y - r, r * 2, r * 2);
-  ctx.globalAlpha = 1;
+function sourceGlow(
+  ops: Op[],
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  r: number,
+  color: string,
+  strength: number,
+) {
+  ops.push(() => {
+    const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+    g.addColorStop(0, color);
+    g.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.globalAlpha = strength;
+    ctx.fillStyle = g;
+    ctx.fillRect(x - r, y - r, r * 2, r * 2);
+    ctx.globalAlpha = 1;
+  });
 }
 
 // A soft volumetric column rising from the source — light traveling up out
 // of the file, not just pooling at its base.
 function lightBeam(
+  ops: Op[],
   ctx: CanvasRenderingContext2D,
   x: number,
   y: number,
@@ -345,122 +450,166 @@ function lightBeam(
   width: number,
   rgb: string,
 ) {
-  ctx.save();
-  ctx.translate(x, y);
-  ctx.rotate(angle);
-  const g = ctx.createLinearGradient(0, 0, 0, -length);
-  g.addColorStop(0, `rgba(${rgb},0.14)`);
-  g.addColorStop(0.5, `rgba(${rgb},0.05)`);
-  g.addColorStop(1, `rgba(${rgb},0)`);
-  ctx.fillStyle = g;
-  ctx.beginPath();
-  ctx.moveTo(-width / 2, 0);
-  ctx.lineTo(width / 2, 0);
-  ctx.lineTo(width * 1.6, -length);
-  ctx.lineTo(-width * 1.6, -length);
-  ctx.closePath();
-  ctx.fill();
-  ctx.restore();
+  ops.push(() => {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(angle);
+    const g = ctx.createLinearGradient(0, 0, 0, -length);
+    g.addColorStop(0, `rgba(${rgb},0.14)`);
+    g.addColorStop(0.5, `rgba(${rgb},0.05)`);
+    g.addColorStop(1, `rgba(${rgb},0)`);
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.moveTo(-width / 2, 0);
+    ctx.lineTo(width / 2, 0);
+    ctx.lineTo(width * 1.6, -length);
+    ctx.lineTo(-width * 1.6, -length);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  });
 }
 
-function renderHero(canvas: HTMLCanvasElement) {
+// Builds the full sequence of draw operations for one frame of the hero
+// art, in the exact order the original synchronous version issued them.
+// Geometry (tree generation, verified-path selection) is deterministic and
+// cheap, so it still runs eagerly here; only the expensive canvas calls are
+// queued for the time-sliced runner.
+function buildHeroOps(canvas: HTMLCanvasElement): Op[] {
   const { ctx, w, h } = fitCanvas(canvas);
   const rand = mulberry32(7321);
+  const ops: Op[] = [];
 
   // deep charcoal ground with a faint edge vignette (not pure black)
-  ctx.fillStyle = "#14140f";
-  ctx.fillRect(0, 0, w, h);
-  const vg = ctx.createRadialGradient(w * 0.5, h * 0.62, h * 0.15, w * 0.5, h * 0.62, h * 1.05);
-  vg.addColorStop(0, "rgba(20,20,15,0)");
-  vg.addColorStop(1, "rgba(12,11,9,0.75)");
-  ctx.fillStyle = vg;
-  ctx.fillRect(0, 0, w, h);
+  ops.push(() => {
+    ctx.fillStyle = "#14140f";
+    ctx.fillRect(0, 0, w, h);
+    const vg = ctx.createRadialGradient(w * 0.5, h * 0.62, h * 0.15, w * 0.5, h * 0.62, h * 1.05);
+    vg.addColorStop(0, "rgba(20,20,15,0)");
+    vg.addColorStop(1, "rgba(12,11,9,0.75)");
+    ctx.fillStyle = vg;
+    ctx.fillRect(0, 0, w, h);
+  });
 
   // soft volumetric light wash, one diagonal source, very low opacity
-  ctx.save();
-  ctx.translate(w * 0.62, h * 0.28);
-  ctx.rotate(-0.5);
-  const wash = ctx.createLinearGradient(-w * 0.55, 0, w * 0.55, 0);
-  wash.addColorStop(0, "rgba(232,255,241,0)");
-  wash.addColorStop(0.5, "rgba(232,255,241,0.045)");
-  wash.addColorStop(1, "rgba(232,255,241,0)");
-  ctx.fillStyle = wash;
-  ctx.fillRect(-w * 0.55, -h * 0.9, w * 1.1, h * 1.8);
-  ctx.restore();
+  ops.push(() => {
+    ctx.save();
+    ctx.translate(w * 0.62, h * 0.28);
+    ctx.rotate(-0.5);
+    const wash = ctx.createLinearGradient(-w * 0.55, 0, w * 0.55, 0);
+    wash.addColorStop(0, "rgba(232,255,241,0)");
+    wash.addColorStop(0.5, "rgba(232,255,241,0.045)");
+    wash.addColorStop(1, "rgba(232,255,241,0)");
+    ctx.fillStyle = wash;
+    ctx.fillRect(-w * 0.55, -h * 0.9, w * 1.1, h * 1.8);
+    ctx.restore();
+  });
 
   // ---- far background ghost structure — a third file, distant and soft,
   // so the right side of the frame reads as depth rather than dead space ----
-  ctx.filter = "blur(7px)";
+  ops.push(() => (ctx.filter = "blur(7px)"));
   const ghost = buildTree(mulberry32(99), {
-    x: w * 0.86, y: h * 1.1, angle: -Math.PI / 2 - 0.1, len: h * 0.4, width: 4.2,
-    maxDepth: 7, branchiness: 0.5, minLen: h * 0.012, richBase: true,
+    x: w * 0.86,
+    y: h * 1.1,
+    angle: -Math.PI / 2 - 0.1,
+    len: h * 0.4,
+    width: 4.2,
+    maxDepth: 7,
+    branchiness: 0.5,
+    minLen: h * 0.012,
+    richBase: true,
   });
   const ghostLeaves = leavesOf(ghost);
   const ghostVerified = markVerified(ghost, ghostLeaves, mulberry32(98), 4);
-  sourceGlow(ctx, w * 0.86, h * 1.08, h * 0.22, "rgba(243,230,200,0.4)", 0.4);
-  drawDormant(ctx, ghost, "rgba(120,150,135,0.22)");
-  drawLit(ctx, ghost, ghostVerified.lit, 7, "#1c6f49", "#eafff2", "#caa25f");
-  ctx.filter = "none";
+  sourceGlow(ops, ctx, w * 0.86, h * 1.08, h * 0.22, "rgba(243,230,200,0.4)", 0.4);
+  drawDormant(ops, ctx, ghost, "rgba(120,150,135,0.22)");
+  drawLit(ops, ctx, ghost, ghostVerified.lit, 7, "#1c6f49", "#eafff2", "#caa25f");
+  ops.push(() => (ctx.filter = "none"));
 
   // ---- companion tree: a simpler file, fewer verified relationships ----
   const simple = buildTree(mulberry32(41), {
-    x: w * 0.16, y: h * 1.03, angle: -Math.PI / 2 + 0.1, len: h * 0.22, width: 4.4,
-    maxDepth: 6, branchiness: 0.35, minLen: h * 0.016, richBase: false,
+    x: w * 0.16,
+    y: h * 1.03,
+    angle: -Math.PI / 2 + 0.1,
+    len: h * 0.22,
+    width: 4.4,
+    maxDepth: 6,
+    branchiness: 0.35,
+    minLen: h * 0.016,
+    richBase: false,
   });
   const simpleLeaves = leavesOf(simple);
   const simpleVerified = markVerified(simple, simpleLeaves, mulberry32(42), 4);
-  lightBeam(ctx, w * 0.16, h * 1.0, -Math.PI / 2 + 0.1, h * 0.62, h * 0.07, "233,221,196");
-  sourceGlow(ctx, w * 0.16, h * 1.0, h * 0.26, "rgba(243,230,200,0.55)", 0.55);
-  drawDormant(ctx, simple, "rgba(120,116,100,0.1)");
-  drawLit(ctx, simple, simpleVerified.lit, 6, "#1c6f49", "#eafff2", "#caa25f");
-  drawJunctionLights(ctx, simple, simpleVerified.lit, simpleVerified.chosenLeaves, "#eafff2");
-  drawTerminals(ctx, simple, simpleVerified.chosenLeaves, "#eafff2");
+  lightBeam(ops, ctx, w * 0.16, h * 1.0, -Math.PI / 2 + 0.1, h * 0.62, h * 0.07, "233,221,196");
+  sourceGlow(ops, ctx, w * 0.16, h * 1.0, h * 0.26, "rgba(243,230,200,0.55)", 0.55);
+  drawDormant(ops, ctx, simple, "rgba(120,116,100,0.1)");
+  drawLit(ops, ctx, simple, simpleVerified.lit, 6, "#1c6f49", "#eafff2", "#caa25f");
+  drawJunctionLights(ops, ctx, simple, simpleVerified.lit, simpleVerified.chosenLeaves, "#eafff2");
+  drawTerminals(ops, ctx, simple, simpleVerified.chosenLeaves, "#eafff2");
 
   // ---- primary tree: a complex file, many interconnected relationships ----
   const main = buildTree(mulberry32(7), {
-    x: w * 0.52, y: h * 1.08, angle: -Math.PI / 2 + 0.16, len: h * 0.52, width: 8,
-    maxDepth: 9, branchiness: 0.85, minLen: h * 0.009, richBase: true,
+    x: w * 0.52,
+    y: h * 1.08,
+    angle: -Math.PI / 2 + 0.16,
+    len: h * 0.52,
+    width: 8,
+    maxDepth: 9,
+    branchiness: 0.85,
+    minLen: h * 0.009,
+    richBase: true,
   });
   const mainLeaves = leavesOf(main);
   const mainVerified = markVerified(main, mainLeaves, mulberry32(8), 22);
   const links = crossLinks(main, mainVerified.lit, mulberry32(9), 5, w * 0.16);
 
-  lightBeam(ctx, w * 0.52, h * 1.04, -Math.PI / 2 + 0.16, h * 0.85, h * 0.13, "233,221,196");
-  sourceGlow(ctx, w * 0.52, h * 1.04, h * 0.5, "rgba(243,230,200,0.68)", 0.78);
-  drawDormant(ctx, main, "rgba(120,116,100,0.11)");
-  drawLit(ctx, main, mainVerified.lit, 9, "#1c6f49", "#eafff2", "#caa25f");
-  drawCrossLinks(ctx, main, links, "#7fe0ac");
-  drawJunctionLights(ctx, main, mainVerified.lit, mainVerified.chosenLeaves, "#eafff2");
-  drawTerminals(ctx, main, mainVerified.chosenLeaves, "#eafff2");
+  lightBeam(ops, ctx, w * 0.52, h * 1.04, -Math.PI / 2 + 0.16, h * 0.85, h * 0.13, "233,221,196");
+  sourceGlow(ops, ctx, w * 0.52, h * 1.04, h * 0.5, "rgba(243,230,200,0.68)", 0.78);
+  drawDormant(ops, ctx, main, "rgba(120,116,100,0.11)");
+  drawLit(ops, ctx, main, mainVerified.lit, 9, "#1c6f49", "#eafff2", "#caa25f");
+  drawCrossLinks(ops, ctx, main, links, "#7fe0ac");
+  drawJunctionLights(ops, ctx, main, mainVerified.lit, mainVerified.chosenLeaves, "#eafff2");
+  drawTerminals(ops, ctx, main, mainVerified.chosenLeaves, "#eafff2");
 
-  grain(ctx, w, h, mulberry32(3), 1400);
+  grain(ops, ctx, w, h, mulberry32(3), 1400);
 
   // gentle edge darkening (cinematic frame, still charcoal not black)
-  const edge = ctx.createRadialGradient(w * 0.5, h * 0.5, h * 0.35, w * 0.5, h * 0.5, h * 0.95);
-  edge.addColorStop(0, "rgba(0,0,0,0)");
-  edge.addColorStop(1, "rgba(9,8,7,0.4)");
-  ctx.fillStyle = edge;
-  ctx.fillRect(0, 0, w, h);
+  ops.push(() => {
+    const edge = ctx.createRadialGradient(w * 0.5, h * 0.5, h * 0.35, w * 0.5, h * 0.5, h * 0.95);
+    edge.addColorStop(0, "rgba(0,0,0,0)");
+    edge.addColorStop(1, "rgba(9,8,7,0.4)");
+    ctx.fillStyle = edge;
+    ctx.fillRect(0, 0, w, h);
+  });
+
+  return ops;
 }
 
 export function HeroArt({ className }: { className?: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+    const el = canvasRef.current;
+    if (!el) return;
+    const canvas: HTMLCanvasElement = el;
 
-    renderHero(canvas);
+    let cancelRun: (() => void) | null = null;
+    function start() {
+      cancelRun?.();
+      cancelRun = runOps(buildHeroOps(canvas));
+    }
+    start();
 
     let timer: number | undefined;
     function onResize() {
       window.clearTimeout(timer);
-      timer = window.setTimeout(() => canvas && renderHero(canvas), 200);
+      timer = window.setTimeout(start, 200);
     }
     window.addEventListener("resize", onResize);
     return () => {
       window.removeEventListener("resize", onResize);
       window.clearTimeout(timer);
+      cancelRun?.();
     };
   }, []);
 

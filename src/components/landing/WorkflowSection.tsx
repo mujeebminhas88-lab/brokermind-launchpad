@@ -67,10 +67,10 @@ export function WorkflowSection() {
                   transition={{ duration: 0.5, delay: i * STEP_DELAY, ease: [0.16, 1, 0.3, 1] }}
                 />
                 <div className="pl-8 md:pl-0">
-                  <p className="font-mono text-[11px] text-muted-foreground/70">{String(i + 1).padStart(2, "0")}</p>
+                  <p className="font-mono text-[11px] text-muted-foreground">{String(i + 1).padStart(2, "0")}</p>
                   <p className="mt-1 font-mono text-sm font-medium text-foreground">{step.label}</p>
                   {step.note && (
-                    <p className="mt-1 max-w-[16ch] font-mono text-[11px] leading-snug text-muted-foreground/70">
+                    <p className="mt-1 max-w-[16ch] font-mono text-[11px] leading-snug text-muted-foreground">
                       {step.note}
                     </p>
                   )}

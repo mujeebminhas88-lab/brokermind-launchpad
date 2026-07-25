@@ -23,7 +23,13 @@ export function Footer() {
         <div className="flex flex-col gap-10 sm:flex-row sm:justify-between">
           <div>
             <div className="flex items-center gap-2.5">
-              <img src={logoUrl} alt="BrokerMindAI" className="h-6 w-auto object-contain" />
+              <img
+                src={logoUrl}
+                alt="BrokerMindAI"
+                width={24}
+                height={24}
+                className="h-6 w-auto object-contain"
+              />
               <span className="font-display text-sm italic text-footer-foreground">BrokerMindAI</span>
             </div>
             <p className="mt-4 max-w-xs font-mono text-xs leading-relaxed text-footer-muted">

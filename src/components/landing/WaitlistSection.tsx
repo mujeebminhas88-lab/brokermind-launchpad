@@ -103,6 +103,7 @@ export function WaitlistSection() {
                 />
                 <select
                   required
+                  aria-label="Country"
                   value={country}
                   onChange={(e) => setCountry(e.target.value)}
                   disabled={isPending}
@@ -122,6 +123,7 @@ export function WaitlistSection() {
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                 <select
                   required
+                  aria-label="Monthly file volume"
                   value={monthlyVolume}
                   onChange={(e) => setMonthlyVolume(e.target.value)}
                   disabled={isPending}
