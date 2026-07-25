@@ -92,7 +92,11 @@ function fitCanvas(canvas: HTMLCanvasElement) {
   const rect = canvas.getBoundingClientRect();
   const w = Math.max(1, Math.round(rect.width));
   const h = Math.max(1, Math.round(rect.height));
-  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  // Capped at 1x (not the usual 2x) — shadowBlur cost scales with pixel
+  // area, and this canvas is almost entirely soft glow strokes, so the
+  // extra sharpness of a higher DPR buys little while costing a lot of
+  // main-thread time.
+  const dpr = Math.min(window.devicePixelRatio || 1, 1);
   canvas.width = w * dpr;
   canvas.height = h * dpr;
   const ctx = canvas.getContext("2d")!;
@@ -291,7 +295,7 @@ function drawLit(
     const col = mixColor(haloColor, tipColor, Math.pow(t, 1.7));
     ops.push(() => {
       ctx.shadowColor = col;
-      ctx.shadowBlur = lerp(38, 12, t);
+      ctx.shadowBlur = lerp(20, 10, t);
       drawSegment(ctx, p.x, p.y, n.x, n.y, n.bow!, n.width * 3.4, col, lerp(0.08, 0.13, t));
       ctx.shadowBlur = 0;
     });
@@ -304,7 +308,7 @@ function drawLit(
     const col = mixColor(baseColor, tipColor, Math.pow(t, 1.6));
     ops.push(() => {
       ctx.shadowColor = col;
-      ctx.shadowBlur = lerp(22, 6, t);
+      ctx.shadowBlur = lerp(14, 5, t);
       drawSegment(ctx, p.x, p.y, n.x, n.y, n.bow!, n.width * 1.9, col, lerp(0.22, 0.32, t));
       ctx.shadowBlur = 0;
     });
@@ -506,8 +510,10 @@ function buildHeroOps(canvas: HTMLCanvasElement): Op[] {
   });
 
   // ---- far background ghost structure — a third file, distant and soft,
-  // so the right side of the frame reads as depth rather than dead space ----
-  ops.push(() => (ctx.filter = "blur(7px)"));
+  // so the right side of the frame reads as depth rather than dead space.
+  // Drawn to an offscreen canvas and blurred once on composite, rather than
+  // with ctx.filter active for every stroke underneath it (which reruns a
+  // full blur pass per draw call and dominates main-thread time). ----
   const ghost = buildTree(mulberry32(99), {
     x: w * 0.86,
     y: h * 1.1,
@@ -521,10 +527,21 @@ function buildHeroOps(canvas: HTMLCanvasElement): Op[] {
   });
   const ghostLeaves = leavesOf(ghost);
   const ghostVerified = markVerified(ghost, ghostLeaves, mulberry32(98), 4);
-  sourceGlow(ops, ctx, w * 0.86, h * 1.08, h * 0.22, "rgba(243,230,200,0.4)", 0.4);
-  drawDormant(ops, ctx, ghost, "rgba(120,150,135,0.22)");
-  drawLit(ops, ctx, ghost, ghostVerified.lit, 7, "#1c6f49", "#eafff2", "#caa25f");
-  ops.push(() => (ctx.filter = "none"));
+  const ghostCanvas = document.createElement("canvas");
+  ghostCanvas.width = canvas.width;
+  ghostCanvas.height = canvas.height;
+  const ghostCtx = ghostCanvas.getContext("2d")!;
+  ghostCtx.setTransform(ctx.getTransform());
+  const ghostOps: Op[] = [];
+  sourceGlow(ghostOps, ghostCtx, w * 0.86, h * 1.08, h * 0.22, "rgba(243,230,200,0.4)", 0.4);
+  drawDormant(ghostOps, ghostCtx, ghost, "rgba(120,150,135,0.22)");
+  drawLit(ghostOps, ghostCtx, ghost, ghostVerified.lit, 7, "#1c6f49", "#eafff2", "#caa25f");
+  ghostOps.forEach((op) => op());
+  ops.push(() => {
+    ctx.filter = "blur(7px)";
+    ctx.drawImage(ghostCanvas, 0, 0, w, h);
+    ctx.filter = "none";
+  });
 
   // ---- companion tree: a simpler file, fewer verified relationships ----
   const simple = buildTree(mulberry32(41), {
