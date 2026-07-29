@@ -1,4 +1,4 @@
-import { FileText, Fingerprint, ShieldCheck, Landmark, ListChecks, Lock, type LucideIcon } from "lucide-react";
+import { FileText, Fingerprint, ShieldCheck, Landmark, Lock, type LucideIcon } from "lucide-react";
 import { RevealOnScroll } from "./ui/RevealOnScroll";
 
 import docRegistryWebp from "@/assets/screenshots/doc-registry.webp";
@@ -9,8 +9,6 @@ import stressTestWebp from "@/assets/screenshots/b20-stress-test.webp";
 import stressTestJpg from "@/assets/screenshots/b20-stress-test.jpg";
 import lenderWebp from "@/assets/screenshots/lender-recommendation.webp";
 import lenderJpg from "@/assets/screenshots/lender-recommendation.jpg";
-import conditionsWebp from "@/assets/screenshots/conditions-tracking.webp";
-import conditionsJpg from "@/assets/screenshots/conditions-tracking.jpg";
 
 interface ShowcaseCard {
   icon: LucideIcon;
@@ -59,15 +57,6 @@ const CARDS: ShowcaseCard[] = [
     jpg: lenderJpg,
     alt: "Lender suitability recommendation showing an Alt / B lender classification with supporting rationale and lender guideline library",
   },
-  {
-    icon: ListChecks,
-    label: "Conditions Tracking",
-    headline: "Nothing falls through the cracks.",
-    caption: "See exactly what's outstanding before a file goes to submission.",
-    webp: conditionsWebp,
-    jpg: conditionsJpg,
-    alt: "Conditions tracking board with outstanding, documents received, under review, satisfied, and waived columns",
-  },
 ];
 
 function ShowcaseFrame({ card }: { card: ShowcaseCard }) {
@@ -90,7 +79,7 @@ function ShowcaseFrame({ card }: { card: ShowcaseCard }) {
             src={card.jpg}
             alt={card.alt}
             width={900}
-            height={667}
+            height={430}
             loading="lazy"
             decoding="async"
             className="block w-full"
@@ -126,7 +115,7 @@ export function ProductShowcase() {
           </p>
         </RevealOnScroll>
 
-        <ul className="mx-auto mt-20 grid max-w-5xl grid-cols-1 gap-x-8 gap-y-16 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="mx-auto mt-20 grid max-w-4xl grid-cols-1 gap-x-10 gap-y-16 sm:grid-cols-2">
           {CARDS.map((card, i) => (
             <li key={card.label}>
               <RevealOnScroll delay={i * 0.08}>
