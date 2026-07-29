@@ -85,17 +85,20 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "BrokerMindAI — AI Underwriting for Residential Mortgage Brokers" },
+      { title: "BrokerMindAI — Canadian Mortgage Underwriting Software for Brokers & Lenders" },
       {
         name: "description",
         content:
-          "AI document intelligence and underwriting prep for residential mortgage brokers, B lenders, and private lending teams. Faster files, fewer errors — in private beta now.",
+          "BrokerMindAI is Canadian mortgage underwriting software for brokers, B lenders, and private lenders — document verification, FINTRAC compliance, OSFI B-20 stress testing, and lender recommendations in one underwriting workspace.",
       },
-      { property: "og:title", content: "BrokerMindAI — AI Underwriting for Residential Mortgage Brokers" },
+      {
+        property: "og:title",
+        content: "BrokerMindAI — Canadian Mortgage Underwriting Software for Brokers & Lenders",
+      },
       {
         property: "og:description",
         content:
-          "AI document intelligence and underwriting prep for residential mortgage brokers, B lenders, and private lending teams. Faster files, fewer errors — in private beta now.",
+          "Canadian mortgage underwriting software for brokers, B lenders, and private lenders — document verification, FINTRAC compliance, OSFI B-20 stress testing, and lender recommendations in one underwriting workspace.",
       },
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "BrokerMindAI" },
@@ -157,8 +160,25 @@ export const Route = createRootRoute({
           name: "BrokerMindAI",
           url: "https://www.brokermindapp.com/",
           description:
-            "AI document intelligence and underwriting prep for residential mortgage brokers, B lenders, and private lending teams.",
+            "Canadian mortgage underwriting software for residential mortgage brokers, B lenders, and private lending teams.",
           slogan: "Underwrite with quiet precision.",
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "SoftwareApplication",
+          name: "BrokerMindAI",
+          applicationCategory: "BusinessApplication",
+          operatingSystem: "Web",
+          url: "https://www.brokermindapp.com/",
+          description:
+            "Canadian mortgage underwriting platform for document verification, FINTRAC compliance, OSFI B-20 stress testing, and lender recommendations — built for mortgage brokers, B lenders, and private lender underwriting.",
+          offers: {
+            "@type": "Offer",
+            availability: "https://schema.org/PreOrder",
+          },
         }),
       },
     ],

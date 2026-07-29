@@ -133,6 +133,42 @@
   box-shadow: 0 30px 80px -24px rgba(46, 204, 129, 0.22), 0 12px 40px -16px rgba(0, 0, 0, 0.5);
 }
 
+/* Product showcase cards: a slow-traveling gradient hairline, dimmer at
+   rest and brighter on hover, layered under the card via a masked
+   pseudo-element (same xor-mask technique as .glow-card). */
+.showcase-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    115deg,
+    rgba(46, 204, 129, 0) 15%,
+    rgba(46, 204, 129, 0.5) 50%,
+    rgba(46, 204, 129, 0) 85%
+  );
+  background-size: 260% 260%;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0.5;
+  animation: showcase-glow 8s ease-in-out infinite;
+  transition: opacity 0.3s ease;
+}
+.showcase-card:hover::before {
+  opacity: 1;
+}
+@keyframes showcase-glow {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
 /* Ambient atmosphere for hero-weight sections: faint grid + radial glow blobs. */
 .atmosphere {
   position: relative;

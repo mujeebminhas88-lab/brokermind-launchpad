@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect, useState } from "react";
 import { Navbar } from "@/components/landing/Navbar";
 import { Hero } from "@/components/landing/Hero";
+import { ProductShowcase } from "@/components/landing/ProductShowcase";
 import { WhySection } from "@/components/landing/WhySection";
 import { WorkflowSection } from "@/components/landing/WorkflowSection";
 import { ComplianceSection } from "@/components/landing/ComplianceSection";
@@ -33,6 +34,7 @@ export default function PremiumLanding() {
       <Navbar />
       <main>
         <Hero />
+        <ProductShowcase />
         <WhySection />
         <WorkflowSection />
         <ComplianceSection />
