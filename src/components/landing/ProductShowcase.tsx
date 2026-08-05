@@ -1,4 +1,4 @@
-import { FileText, Fingerprint, ShieldCheck, Landmark, Lock, type LucideIcon } from "lucide-react";
+import { FileText, Fingerprint, ShieldCheck, Landmark, type LucideIcon } from "lucide-react";
 import { RevealOnScroll } from "./ui/RevealOnScroll";
 
 import docRegistryWebp from "@/assets/screenshots/doc-registry.webp";
@@ -12,9 +12,8 @@ import lenderJpg from "@/assets/screenshots/lender-recommendation.jpg";
 
 interface ShowcaseCard {
   icon: LucideIcon;
-  label: string;
-  headline: string;
-  caption: string;
+  title: string;
+  description: string;
   webp: string;
   jpg: string;
   alt: string;
@@ -23,36 +22,32 @@ interface ShowcaseCard {
 const CARDS: ShowcaseCard[] = [
   {
     icon: FileText,
-    label: "Document Registry",
-    headline: "Every document. Verified.",
-    caption: "Track every mortgage document through a verified compliance registry.",
+    title: "Document Registry",
+    description: "Track every mortgage document through a verified compliance registry.",
     webp: docRegistryWebp,
     jpg: docRegistryJpg,
     alt: "BrokerMind AI document registry showing verified mortgage documents including NOA, T4, T1, appraisal report, and credit bureau report, with an application risk score",
   },
   {
     icon: Fingerprint,
-    label: "FINTRAC Compliance",
-    headline: "Compliance, done automatically.",
-    caption: "Identity verification and audit-ready documentation for every file.",
+    title: "FINTRAC Compliance",
+    description: "Identity verification and audit-ready documentation for every file.",
     webp: fintracWebp,
     jpg: fintracJpg,
     alt: "AML and FINTRAC compliance checklist with identity verification, PEP screening, and source-of-down-payment documentation",
   },
   {
     icon: ShieldCheck,
-    label: "OSFI B-20 Stress Test",
-    headline: "Affordability. Automatically.",
-    caption: "Automatic affordability calculations using Canadian mortgage guidelines.",
+    title: "OSFI B-20 Stress Test",
+    description: "Automatic affordability calculations using Canadian mortgage guidelines.",
     webp: stressTestWebp,
     jpg: stressTestJpg,
     alt: "OSFI B-20 stress test panel showing qualifying rate, GDS and TDS ratios at contract rate and at the minimum qualifying rate",
   },
   {
     icon: Landmark,
-    label: "Lender Recommendations",
-    headline: "The right lender, backed by evidence.",
-    caption: "Recommendations built from verified borrower documents, not guesswork.",
+    title: "Lender Recommendations",
+    description: "Recommendations built from verified borrower documents, not guesswork.",
     webp: lenderWebp,
     jpg: lenderJpg,
     alt: "Lender suitability recommendation showing an Alt / B lender classification with supporting rationale and lender guideline library",
@@ -61,18 +56,14 @@ const CARDS: ShowcaseCard[] = [
 
 function ShowcaseFrame({ card }: { card: ShowcaseCard }) {
   return (
-    <figure className="group">
-      <div className="overflow-hidden rounded-2xl border border-white/[0.06] bg-white shadow-[0_20px_45px_-22px_rgba(0,0,0,0.5)] transition-all duration-300 ease-out group-hover:-translate-y-1.5 group-hover:scale-[1.01] group-hover:shadow-[0_28px_60px_-20px_rgba(0,0,0,0.6)]">
-        {/* Browser chrome — a framing device only; the application UI inside is unedited. */}
-        <div className="flex items-center gap-1.5 bg-[#1b1c17] px-4 py-3" aria-hidden>
-          <span className="h-2.5 w-2.5 rounded-full bg-[#e3746b]/70" />
-          <span className="h-2.5 w-2.5 rounded-full bg-[#e3c257]/70" />
-          <span className="h-2.5 w-2.5 rounded-full bg-[#5fb886]/70" />
-          <span className="mx-auto flex items-center gap-1.5 font-mono text-[11px] tracking-wide text-neutral-400">
-            app.brokermindapp.com
-            <Lock className="h-2.5 w-2.5" />
-          </span>
-        </div>
+    <div className="group relative flex h-full flex-col rounded-2xl border border-accent/15 bg-card p-6 shadow-[0_0_0_1px_rgba(46,204,129,0.06),0_25px_60px_-28px_rgba(46,204,129,0.3),0_20px_45px_-22px_rgba(0,0,0,0.55)] transition-all duration-300 ease-out hover:-translate-y-1 hover:border-accent/35 hover:shadow-[0_0_0_1px_rgba(46,204,129,0.14),0_35px_80px_-25px_rgba(46,204,129,0.45),0_25px_55px_-20px_rgba(0,0,0,0.65)]">
+      <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent-subtle text-accent">
+        <card.icon className="h-5 w-5" aria-hidden />
+      </span>
+      <h3 className="mt-4 font-display text-lg font-semibold not-italic text-foreground">{card.title}</h3>
+      <p className="mt-1.5 font-mono text-sm leading-relaxed text-muted-foreground">{card.description}</p>
+
+      <div className="mt-5 overflow-hidden rounded-xl border border-white/[0.06]">
         <picture>
           <source srcSet={card.webp} type="image/webp" />
           <img
@@ -86,17 +77,7 @@ function ShowcaseFrame({ card }: { card: ShowcaseCard }) {
           />
         </picture>
       </div>
-      <figcaption className="mt-6 flex flex-col items-start">
-        <span className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-accent-subtle text-accent">
-          <card.icon className="h-5 w-5" aria-hidden />
-        </span>
-        <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-accent">{card.label}</p>
-        <h3 className="mt-2 font-display text-xl font-semibold not-italic leading-tight text-foreground">
-          {card.headline}
-        </h3>
-        <p className="mt-2 max-w-[36ch] font-mono text-sm leading-relaxed text-muted-foreground">{card.caption}</p>
-      </figcaption>
-    </figure>
+    </div>
   );
 }
 
@@ -115,10 +96,10 @@ export function ProductShowcase() {
           </p>
         </RevealOnScroll>
 
-        <ul className="mx-auto mt-20 grid max-w-4xl grid-cols-1 gap-x-10 gap-y-16 sm:grid-cols-2">
+        <ul className="mx-auto mt-20 grid max-w-4xl grid-cols-1 gap-6 sm:grid-cols-2">
           {CARDS.map((card, i) => (
-            <li key={card.label}>
-              <RevealOnScroll delay={i * 0.08}>
+            <li key={card.title} className="h-full">
+              <RevealOnScroll delay={i * 0.08} className="h-full">
                 <ShowcaseFrame card={card} />
               </RevealOnScroll>
             </li>
